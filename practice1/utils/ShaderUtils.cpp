@@ -62,6 +62,7 @@ GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
     glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logLen);
 
     if (logLen <= 0) {
+        glDeleteProgram(programID);
         throw std::invalid_argument(TAG + ": Can't read log.");
     }
 
