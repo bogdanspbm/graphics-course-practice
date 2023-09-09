@@ -7,7 +7,14 @@
 
 #include <GL/glew.h>
 
-GLuint create_shader(GLenum shader_type,
-                     const char *shader_source);
+GLuint createProgram(GLuint vertexShader, GLuint fragmentShader);
+
+GLuint createShader(GLenum shaderType,
+                    const char *shaderSource);
+
+
+GLuint createFragmentShader();
+
+GLuint createVertexShader();
 
 #endif //PRACTICE1_SHADERUTILS_H

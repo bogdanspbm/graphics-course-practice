@@ -2,7 +2,9 @@
 #include <SDL.h>
 #undef main
 #else
+
 #include <SDL2/SDL.h>
+
 #endif
 
 #include <GL/glew.h>
@@ -10,32 +12,29 @@
 #include <string_view>
 #include <stdexcept>
 #include <iostream>
+#include "utils/ShaderUtils.h"
 
-std::string to_string(std::string_view str)
-{
+std::string to_string(std::string_view str) {
     return std::string(str.begin(), str.end());
 }
 
-void sdl2_fail(std::string_view message)
-{
+void sdl2_fail(std::string_view message) {
     throw std::runtime_error(to_string(message) + SDL_GetError());
 }
 
-void glew_fail(std::string_view message, GLenum error)
-{
+void glew_fail(std::string_view message, GLenum error) {
     throw std::runtime_error(to_string(message) + reinterpret_cast<const char *>(glewGetErrorString(error)));
 }
 
-int main() try
-{
+int main() try {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
         sdl2_fail("SDL_Init: ");
 
-    SDL_Window * window = SDL_CreateWindow("Graphics course practice 1",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        800, 600,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+    SDL_Window *window = SDL_CreateWindow("Graphics course practice 1",
+                                          SDL_WINDOWPOS_CENTERED,
+                                          SDL_WINDOWPOS_CENTERED,
+                                          800, 600,
+                                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
 
     if (!window)
         sdl2_fail("SDL_CreateWindow: ");
@@ -57,20 +56,32 @@ int main() try
 
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
+    GLuint fragmentShader = createFragmentShader();
+    GLuint vertexShader = createVertexShader();
+    GLuint programID = createProgram(vertexShader, fragmentShader);
+
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+
     bool running = true;
-    while (running)
-    {
-        for (SDL_Event event; SDL_PollEvent(&event);) switch (event.type)
-        {
-        case SDL_QUIT:
-            running = false;
-            break;
-        }
+    while (running) {
+        for (SDL_Event event; SDL_PollEvent(&event);)
+            switch (event.type) {
+                case SDL_QUIT:
+                    running = false;
+                    break;
+            }
 
         if (!running)
             break;
 
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // Draw Triangles
+        glUseProgram(programID);
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
 
         SDL_GL_SwapWindow(window);
     }
@@ -78,8 +89,7 @@ int main() try
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
 }
-catch (std::exception const & e)
-{
+catch (std::exception const &e) {
     std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;
 }
