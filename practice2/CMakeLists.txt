@@ -24,7 +24,9 @@ set(TARGET_NAME "${PROJECT_NAME}")
 
 add_executable(${TARGET_NAME} main.cpp
         utils/ShaderUtils.cpp
-        utils/ShaderUtils.h)
+        utils/ShaderUtils.h
+		objects/ProgramAdapter.cpp
+		objects/ProgramAdapter.h)
 target_include_directories(${TARGET_NAME} PUBLIC
 	"${SDL2_INCLUDE_DIRS}"
 	"${GLEW_INCLUDE_DIRS}"

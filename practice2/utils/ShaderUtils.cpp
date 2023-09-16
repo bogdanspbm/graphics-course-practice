@@ -32,12 +32,27 @@ const vec3 COLORS[3] = vec3[3](
     vec3(0.0, 0.0, 1.0)
 );
 
+uniform mat4 transform = mat4(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+);
+
+uniform mat4 view = mat4(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+);
+
 out vec3 color;
 
 void main()
 {
     vec2 position = VERTICES[gl_VertexID];
-    gl_Position = vec4(position, 0.0, 1.0);
+    vec4 transformedPosition = transform * vec4(position, 0.0, 1.0);
+    gl_Position = view * transformedPosition;
     color = COLORS[gl_VertexID];
 }
 )";

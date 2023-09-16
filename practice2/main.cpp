@@ -12,7 +12,7 @@
 #include <string_view>
 #include <stdexcept>
 #include <iostream>
-#include "utils/ShaderUtils.h"
+#include "objects/ProgramAdapter.h"
 
 std::string to_string(std::string_view str) {
     return std::string(str.begin(), str.end());
@@ -56,15 +56,20 @@ int main() try {
 
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
-    GLuint fragmentShader = createFragmentShader();
-    GLuint vertexShader = createVertexShader();
-    GLuint programID = createProgram(vertexShader, fragmentShader);
+    auto *program = new ProgramAdapter();
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
 
+    const clock_t startTime = clock();
+
     bool running = true;
     while (running) {
+
+        const auto time = float(clock() - startTime) / CLOCKS_PER_SEC;
+        int width, height;
+        SDL_GetWindowSize(window, &width, &height);
+
         for (SDL_Event event; SDL_PollEvent(&event);)
             switch (event.type) {
                 case SDL_QUIT:
@@ -77,8 +82,15 @@ int main() try {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
+        program->setScaleX(0.2);
+        program->setScaleY(0.2);
+        program->setRatio((float) width / (float) height);
+        program->setRotation(time);
+        program->setOffsetX(0.2f * (cos(time) - sin(time)));
+        program->setOffsetY(0.2f * (cos(time) + sin(time)));
+        program->useProgram();
+
         // Draw Triangles
-        glUseProgram(programID);
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
