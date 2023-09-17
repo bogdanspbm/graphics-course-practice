@@ -1,0 +1,3 @@
+/Users/bogdanspbm/Documents/graphics-course-practice/practice2/build/CMakeFiles/practice2.dir
+/Users/bogdanspbm/Documents/graphics-course-practice/practice2/build/CMakeFiles/edit_cache.dir
+/Users/bogdanspbm/Documents/graphics-course-practice/practice2/build/CMakeFiles/rebuild_cache.dir
