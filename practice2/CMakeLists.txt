@@ -26,7 +26,9 @@ add_executable(${TARGET_NAME} main.cpp
         utils/ShaderUtils.cpp
         utils/ShaderUtils.h
 		objects/ProgramAdapter.cpp
-		objects/ProgramAdapter.h)
+		objects/ProgramAdapter.h
+		objects/KeyHandler.cpp
+		objects/KeyHandler.h)
 target_include_directories(${TARGET_NAME} PUBLIC
 	"${SDL2_INCLUDE_DIRS}"
 	"${GLEW_INCLUDE_DIRS}"

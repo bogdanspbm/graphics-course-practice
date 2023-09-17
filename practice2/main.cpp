@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <iostream>
 #include "objects/ProgramAdapter.h"
+#include "objects/KeyHandler.h"
 
 std::string to_string(std::string_view str) {
     return std::string(str.begin(), str.end());
@@ -57,45 +58,71 @@ int main() try {
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
     auto *program = new ProgramAdapter();
+    auto *keyHandler = new KeyHandler();
+
+    float posX = 0, posY = 0;
+    float speed = 0.5f;
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
 
-    const clock_t startTime = clock();
+    int startTick = 0;
+    clock_t lastTick = clock();
 
     bool running = true;
     while (running) {
 
-        const auto time = float(clock() - startTime) / CLOCKS_PER_SEC;
+        const auto deltaTick = clock() - lastTick;
+
         int width, height;
         SDL_GetWindowSize(window, &width, &height);
 
-        for (SDL_Event event; SDL_PollEvent(&event);)
+        for (SDL_Event event; SDL_PollEvent(&event);) {
+            keyHandler->handleKeyboardEvent(event.key);
             switch (event.type) {
                 case SDL_QUIT:
                     running = false;
                     break;
             }
+        }
 
         if (!running)
             break;
 
         glClear(GL_COLOR_BUFFER_BIT);
 
+        if (keyHandler->isPressed(SDL_KeyCode::SDLK_LEFT)) {
+            posX -= speed * (float) deltaTick / CLOCKS_PER_SEC;
+        }
+
+        if (keyHandler->isPressed(SDL_KeyCode::SDLK_RIGHT)) {
+            posX += speed * (float) deltaTick / CLOCKS_PER_SEC;
+        }
+
+        if (keyHandler->isPressed(SDL_KeyCode::SDLK_UP)) {
+            posY += speed * (float) deltaTick / CLOCKS_PER_SEC;
+        }
+
+        if (keyHandler->isPressed(SDL_KeyCode::SDLK_DOWN)) {
+            posY -= speed * (float) deltaTick / CLOCKS_PER_SEC;
+        }
+
         program->setScaleX(0.2);
         program->setScaleY(0.2);
+        program->setOffsetX(posX);
+        program->setOffsetY(posY);
         program->setRatio((float) width / (float) height);
-        program->setRotation(time);
-        program->setOffsetX(0.2f * (cos(time) - sin(time)));
-        program->setOffsetY(0.2f * (cos(time) + sin(time)));
+        program->setRotation((float) lastTick / CLOCKS_PER_SEC);
         program->useProgram();
+
 
         // Draw Triangles
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
 
 
         SDL_GL_SwapWindow(window);
+        lastTick += deltaTick;
     }
 
     SDL_GL_DeleteContext(gl_context);
