@@ -8,18 +8,32 @@
 
 #include <SDL2/SDL_events.h>
 #include <unordered_map>
+#include <functional>
+
+struct ButtonEvent {
+    std::function<void()> event;
+    int keyCode;
+};
 
 class KeyHandler {
 private:
     std::unordered_map<int, bool> keyState;
+    std::vector<ButtonEvent> events; // TODO: Replace With Map
 
 public:
 
     void handleKeyboardEvent(SDL_KeyboardEvent event);
 
-    bool isPressed(SDL_KeyCode keyCode);
+    void handleMouseEvent(SDL_MouseButtonEvent event);
 
-    bool isReleased(SDL_KeyCode keyCode);
+    bool isPressed(int keyCode);
+
+    bool isReleased(int keyCode);
+
+    void bindOnPressEvent(void (*event)(), int keyCode);
+
+private:
+    void notifyOnPressEvent(int keyCode);
 };
 
 

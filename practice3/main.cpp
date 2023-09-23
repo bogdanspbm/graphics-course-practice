@@ -62,6 +62,10 @@ int main() try {
     auto *program = new ProgramAdapter();
     auto *keyHandler = new KeyHandler();
 
+    keyHandler->bindOnPressEvent([]() -> void {
+        printf("Hello, world\n");
+    }, SDL_BUTTON_LEFT);
+
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -95,12 +99,14 @@ int main() try {
 
         for (SDL_Event event; SDL_PollEvent(&event);) {
             keyHandler->handleKeyboardEvent(event.key);
+            keyHandler->handleMouseEvent(event.button);
             switch (event.type) {
                 case SDL_QUIT:
                     running = false;
                     break;
             }
         }
+
 
         if (!running)
             break;

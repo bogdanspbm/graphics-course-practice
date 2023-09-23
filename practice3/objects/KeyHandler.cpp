@@ -11,11 +11,25 @@ void KeyHandler::handleKeyboardEvent(SDL_KeyboardEvent event) {
             break;
         case SDL_KEYUP:
             this->keyState[event.keysym.sym] = false;
+            notifyOnPressEvent(event.keysym.sym);
             break;
     }
 }
 
-bool KeyHandler::isPressed(SDL_KeyCode keyCode) {
+void KeyHandler::handleMouseEvent(SDL_MouseButtonEvent event) {
+    switch (event.button) {
+        case SDL_MOUSEBUTTONDOWN:
+            this->keyState[event.button] = true;
+            break;
+        case SDL_MOUSEBUTTONUP:
+            this->keyState[event.button] = false;
+            notifyOnPressEvent(event.button);
+            break;
+    }
+}
+
+
+bool KeyHandler::isPressed(int keyCode) {
     if (!this->keyState.contains(keyCode)) {
         return false;
     }
@@ -23,6 +37,20 @@ bool KeyHandler::isPressed(SDL_KeyCode keyCode) {
     return this->keyState[keyCode];
 }
 
-bool KeyHandler::isReleased(SDL_KeyCode keyCode) {
+bool KeyHandler::isReleased(int keyCode) {
     return !isPressed(keyCode);
+}
+
+void KeyHandler::bindOnPressEvent(void (*event)(), int keyCode) {
+    ButtonEvent buttonEvent = ButtonEvent{event, keyCode};
+    this->events.push_back(buttonEvent);
+}
+
+void KeyHandler::notifyOnPressEvent(int keyCode) {
+    for (const ButtonEvent &event: this->events) {
+        if (event.keyCode != keyCode) {
+            continue;
+        }
+        event.event();
+    }
 }
