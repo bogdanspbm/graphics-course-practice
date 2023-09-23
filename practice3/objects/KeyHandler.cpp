@@ -17,7 +17,7 @@ void KeyHandler::handleKeyboardEvent(SDL_KeyboardEvent event) {
 }
 
 void KeyHandler::handleMouseEvent(SDL_MouseButtonEvent event) {
-    switch (event.button) {
+    switch (event.type) {
         case SDL_MOUSEBUTTONDOWN:
             this->keyState[event.button] = true;
             break;
@@ -43,6 +43,7 @@ bool KeyHandler::isReleased(int keyCode) {
 
 void KeyHandler::bindOnPressEvent(void (*event)(), int keyCode) {
     ButtonEvent buttonEvent = ButtonEvent{event, keyCode};
+    printf("%i", keyCode);
     this->events.push_back(buttonEvent);
 }
 
