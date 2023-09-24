@@ -74,14 +74,7 @@ int main() try {
     glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(Vertex), points.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
-
-    GLuint colorVBO;
-    glGenBuffers(1, &colorVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colorsExampleArray), colorsExampleArray, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) (0));
-    glEnableVertexAttribArray(1);
-
+    
 
     keyHandler->bindOnMouseClickEvent([&points, &VBO](Position position) -> void {
         Vertex vertex = Vertex{(float) position.x, (float) position.y, 0};
@@ -130,8 +123,11 @@ int main() try {
         program->setResolution(width, height);
         program->useProgram();
 
+        glPointSize(10);
+
         glBindVertexArray(VAO);
         glDrawArrays(GL_LINE_STRIP, 0, points.size());
+        glDrawArrays(GL_POINTS, 0, points.size());
 
         SDL_GL_SwapWindow(window);
         lastTick += deltaTick;
