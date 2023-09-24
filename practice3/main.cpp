@@ -96,36 +96,46 @@ int main() try {
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) (0));
     glEnableVertexAttribArray(1);
 
-
-    keyHandler->bindOnMouseClickEvent(
-            [&bezierPoints, &bezierColors, &colorVBO, &points, &VBO, &bezierVBO, &quality](Position position) -> void {
-                Vertex vertex = Vertex{(float) position.x, (float) position.y, 0};
-                points.push_back(vertex);
-                bezierPoints = computeBezierCurve(points, quality);
-                bezierColors = computeBezierColors(bezierPoints);
-
-                glBindBuffer(GL_ARRAY_BUFFER, VBO);
-                glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(Vertex), points.data(), GL_STATIC_DRAW);
-
-                glBindBuffer(GL_ARRAY_BUFFER, bezierVBO);
-                glBufferData(GL_ARRAY_BUFFER, bezierPoints.size() * sizeof(Vertex), bezierPoints.data(),
-                             GL_STATIC_DRAW);
-
-                glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
-                glBufferData(GL_ARRAY_BUFFER, bezierColors.size() * sizeof(Vector), bezierColors.data(),
-                             GL_STATIC_DRAW);
-            }, SDL_BUTTON_LEFT);
-
-    keyHandler->bindOnMouseClickEvent([&bezierPoints, &points, &VBO, &bezierVBO, &quality](Position position) -> void {
-        points.pop_back();
+    auto updatePointFunction = [&bezierPoints, &bezierColors, &colorVBO, &points, &VBO, &bezierVBO, &quality]() -> void {
         bezierPoints = computeBezierCurve(points, quality);
+        bezierColors = computeBezierColors(bezierPoints);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(Vertex), points.data(), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, bezierVBO);
-        glBufferData(GL_ARRAY_BUFFER, bezierPoints.size() * sizeof(Vertex), bezierPoints.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, bezierPoints.size() * sizeof(Vertex), bezierPoints.data(),
+                     GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
+        glBufferData(GL_ARRAY_BUFFER, bezierColors.size() * sizeof(Vector), bezierColors.data(),
+                     GL_STATIC_DRAW);
+    };
+
+    keyHandler->bindOnMouseClickEvent(
+            [&points, &updatePointFunction](Position position) -> void {
+                Vertex vertex = Vertex{(float) position.x, (float) position.y, 0};
+                points.push_back(vertex);
+                updatePointFunction();
+            }, SDL_BUTTON_LEFT);
+
+    keyHandler->bindOnMouseClickEvent([&points, &updatePointFunction](Position position) -> void {
+        points.pop_back();
+        updatePointFunction();
     }, SDL_BUTTON_RIGHT);
+
+    keyHandler->bindOnPressEvent([&quality, &updatePointFunction]() -> void {
+        quality -= 1;
+        if (quality < 1) {
+            quality = 1;
+        }
+        updatePointFunction();
+    }, SDL_KeyCode::SDLK_LEFT);
+
+    keyHandler->bindOnPressEvent([&quality, &updatePointFunction]() -> void {
+        quality += 1;
+        updatePointFunction();
+    }, SDL_KeyCode::SDLK_RIGHT);
 
 
     int startTick = 0;
