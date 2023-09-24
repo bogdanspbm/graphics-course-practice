@@ -8,12 +8,24 @@ std::vector<Vertex> computeBezierCurve(const std::vector<Vertex> &points, int qu
     std::vector<Vertex> bezierCurvePoints;
 
     for (int i = 0; i <= quality; ++i) {
-        float t = (float)(i) / quality;
+        float t = (float) (i) / quality;
         Vertex pointOnCurve = calculateBezierPoint(points, t);
         bezierCurvePoints.push_back(pointOnCurve);
     }
 
     return bezierCurvePoints;
+}
+
+std::vector<Vector> computeBezierColors(const std::vector<Vertex> &points) {
+    std::vector<Vector> bezierColors;
+
+    for (int i = 0; i <= points.size(); ++i) {
+        Vector color = Vector{(float) (rand() % 1000) / 1000, (float) (rand() % 1000) / 1000,
+                              (float) (rand() % 1000) / 1000, 1.f};
+        bezierColors.push_back(color);
+    }
+
+    return bezierColors;
 }
 
 Vertex calculateBezierPoint(const std::vector<Vertex> &points, float t) {
