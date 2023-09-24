@@ -16,6 +16,7 @@
 #include "objects/KeyHandler.h"
 #include "structures/Vertex.h"
 #include "structures/Vector.h"
+#include "utils/BezierUtils.h"
 
 std::string to_string(std::string_view str) {
     return std::string(str.begin(), str.end());
@@ -63,6 +64,7 @@ int main() try {
     auto *keyHandler = new KeyHandler();
 
     std::vector<Vertex> points;
+    std::vector<Vertex> bezierPoints;
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
@@ -74,21 +76,45 @@ int main() try {
     glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(Vertex), points.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
+
+    int quality = 20;
+
+    GLuint bezierVAO;
+    glGenVertexArrays(1, &bezierVAO);
+    glBindVertexArray(bezierVAO);
+
+    GLuint bezierVBO;
+    glGenBuffers(1, &bezierVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, bezierVBO);
+
     
 
-    keyHandler->bindOnMouseClickEvent([&points, &VBO](Position position) -> void {
+// Настройка атрибутов вершин в VAO
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+
+
+    keyHandler->bindOnMouseClickEvent([&bezierPoints, &points, &VBO, &bezierVBO, &quality](Position position) -> void {
         Vertex vertex = Vertex{(float) position.x, (float) position.y, 0};
         points.push_back(vertex);
+        bezierPoints = computeBezierCurve(points, quality);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(Vertex), points.data(), GL_STATIC_DRAW);
-    }, SDL_BUTTON_LEFT);
 
-    keyHandler->bindOnMouseClickEvent([&points, &VBO](Position position) -> void {
+        glBindBuffer(GL_ARRAY_BUFFER, bezierVBO);
+        glBufferData(GL_ARRAY_BUFFER, bezierPoints.size() * sizeof(Vertex), bezierPoints.data(), GL_STATIC_DRAW);
+        }, SDL_BUTTON_LEFT);
+
+    keyHandler->bindOnMouseClickEvent([&bezierPoints, &points, &VBO, &bezierVBO, &quality](Position position) -> void {
         points.pop_back();
+        bezierPoints = computeBezierCurve(points, quality);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(Vertex), points.data(), GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ARRAY_BUFFER, bezierVBO);
+        glBufferData(GL_ARRAY_BUFFER, bezierPoints.size() * sizeof(Vertex), bezierPoints.data(), GL_STATIC_DRAW);
     }, SDL_BUTTON_RIGHT);
 
 
@@ -128,6 +154,9 @@ int main() try {
         glBindVertexArray(VAO);
         glDrawArrays(GL_LINE_STRIP, 0, points.size());
         glDrawArrays(GL_POINTS, 0, points.size());
+
+        glBindVertexArray(bezierVAO);
+        glDrawArrays(GL_LINE_STRIP, 0, bezierPoints.size());
 
         SDL_GL_SwapWindow(window);
         lastTick += deltaTick;
