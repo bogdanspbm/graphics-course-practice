@@ -24,6 +24,7 @@ void KeyHandler::handleMouseEvent(SDL_MouseButtonEvent event) {
         case SDL_MOUSEBUTTONUP:
             this->keyState[event.button] = false;
             notifyOnPressEvent(event.button);
+            notifyOnMouseClickEvent(event.button, Position{event.x, event.y});
             break;
     }
 }
@@ -41,17 +42,30 @@ bool KeyHandler::isReleased(int keyCode) {
     return !isPressed(keyCode);
 }
 
-void KeyHandler::bindOnPressEvent(void (*event)(), int keyCode) {
+void KeyHandler::bindOnPressEvent(std::function<void()> event, int keyCode) {
     ButtonEvent buttonEvent = ButtonEvent{event, keyCode};
-    printf("%i", keyCode);
-    this->events.push_back(buttonEvent);
+    this->buttonEvents.push_back(buttonEvent);
+}
+
+void KeyHandler::bindOnMouseClickEvent(std::function<void(Position position)> event, int keyCode) {
+    MouseEvent mouseEvent = MouseEvent{event, keyCode};
+    this->mouseEvents.push_back(mouseEvent);
 }
 
 void KeyHandler::notifyOnPressEvent(int keyCode) {
-    for (const ButtonEvent &event: this->events) {
+    for (const ButtonEvent &event: this->buttonEvents) {
         if (event.keyCode != keyCode) {
             continue;
         }
         event.event();
+    }
+}
+
+void KeyHandler::notifyOnMouseClickEvent(int keyCode, Position position) {
+    for (const MouseEvent &event: this->mouseEvents) {
+        if (event.keyCode != keyCode) {
+            continue;
+        }
+        event.event(position);
     }
 }

@@ -62,9 +62,7 @@ int main() try {
     auto *program = new ProgramAdapter();
     auto *keyHandler = new KeyHandler();
 
-    keyHandler->bindOnPressEvent([]() -> void {
-        printf("Hello, world\n");
-    }, SDL_BUTTON_LEFT);
+    std::vector<Vertex> points;
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
@@ -73,17 +71,33 @@ int main() try {
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesExampleArray), verticesExampleArray, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(Vertex), points.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
-    // Создание и заполнение VBO для цветов
     GLuint colorVBO;
     glGenBuffers(1, &colorVBO);
     glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(colorsExampleArray), colorsExampleArray, GL_STATIC_DRAW);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) (0));
     glEnableVertexAttribArray(1);
+
+
+    keyHandler->bindOnMouseClickEvent([&points, &VBO](Position position) -> void {
+        Vertex vertex = Vertex{(float) position.x, (float) position.y, 0};
+        points.push_back(vertex);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(Vertex), points.data(), GL_STATIC_DRAW);
+    }, SDL_BUTTON_LEFT);
+
+    keyHandler->bindOnMouseClickEvent([&points, &VBO](Position position) -> void {
+        points.pop_back();
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(Vertex), points.data(), GL_STATIC_DRAW);
+    }, SDL_BUTTON_RIGHT);
+
 
     int startTick = 0;
     clock_t lastTick = clock();
@@ -114,10 +128,10 @@ int main() try {
         glClear(GL_COLOR_BUFFER_BIT);
 
         program->setResolution(width, height);
-
         program->useProgram();
+
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_LINE_STRIP, 0, points.size());
 
         SDL_GL_SwapWindow(window);
         lastTick += deltaTick;

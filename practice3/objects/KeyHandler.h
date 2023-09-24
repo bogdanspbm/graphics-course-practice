@@ -9,16 +9,23 @@
 #include <SDL2/SDL_events.h>
 #include <unordered_map>
 #include <functional>
+#include "structures/Position.h"
 
 struct ButtonEvent {
     std::function<void()> event;
     int keyCode;
 };
 
+struct MouseEvent {
+    std::function<void(Position position)> event;
+    int keyCode;
+};
+
 class KeyHandler {
 private:
     std::unordered_map<int, bool> keyState;
-    std::vector<ButtonEvent> events; // TODO: Replace With Map
+    std::vector<ButtonEvent> buttonEvents; // TODO: Replace With Map
+    std::vector<MouseEvent> mouseEvents; // TODO: Replace With Map
 
 public:
 
@@ -30,10 +37,14 @@ public:
 
     bool isReleased(int keyCode);
 
-    void bindOnPressEvent(void (*event)(), int keyCode);
+    void bindOnPressEvent(std::function<void()> event, int keyCode);
+
+    void bindOnMouseClickEvent(std::function<void(Position position)> event, int keyCode);
 
 private:
     void notifyOnPressEvent(int keyCode);
+
+    void notifyOnMouseClickEvent(int keyCode, Position position);
 };
 
 
