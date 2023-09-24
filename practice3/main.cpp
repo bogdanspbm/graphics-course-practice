@@ -175,8 +175,11 @@ int main() try {
         glDrawArrays(GL_LINE_STRIP, 0, points.size());
         glDrawArrays(GL_POINTS, 0, points.size());
 
+
         glBindVertexArray(bezierVBO);
-        glDrawArrays(GL_LINE_STRIP, 0, bezierPoints.size());
+        glDrawArrays(GL_LINES, 0, bezierPoints.size());
+
+
 
         SDL_GL_SwapWindow(window);
         lastTick += deltaTick;

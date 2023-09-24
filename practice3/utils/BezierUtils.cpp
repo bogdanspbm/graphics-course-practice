@@ -20,8 +20,7 @@ std::vector<Vector> computeBezierColors(const std::vector<Vertex> &points) {
     std::vector<Vector> bezierColors;
 
     for (int i = 0; i <= points.size(); ++i) {
-        Vector color = Vector{(float) (rand() % 1000) / 1000, (float) (rand() % 1000) / 1000,
-                              (float) (rand() % 1000) / 1000, 1.f};
+        Vector color = Vector{1.f, 0.f, 0.f, 1.f};
         bezierColors.push_back(color);
     }
 
