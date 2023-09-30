@@ -14,9 +14,9 @@ class Model {
 
 
 public:
-    std::vector<Vertex> getVertices();
+    std::vector<Vertex> *getVertices();
 
-    std::vector<std::uint32_t> getIndices();
+    std::vector<std::uint32_t> *getIndices();
 };
 
 

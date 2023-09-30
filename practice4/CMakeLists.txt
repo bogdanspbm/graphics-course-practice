@@ -34,8 +34,6 @@ add_executable(${TARGET_NAME} main.cpp
         structures/Vertex.h
         structures/Vector.h
         structures/Position.h
-        utils/BezierUtils.cpp
-        utils/BezierUtils.h
         objects/Model.cpp
         objects/Model.h
         structures/Vertex.h

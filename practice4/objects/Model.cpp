@@ -4,10 +4,10 @@
 
 #include "Model.h"
 
-std::vector<Vertex> Model::getVertices() {
-    return vertices;
+std::vector<Vertex>* Model::getVertices() {
+    return &vertices;
 }
 
-std::vector<std::uint32_t> Model::getIndices() {
-    return indices;
+std::vector<std::uint32_t>* Model::getIndices() {
+    return &indices;
 }

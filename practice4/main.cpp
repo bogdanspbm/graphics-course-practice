@@ -14,7 +14,7 @@
 #include <vector>
 #include <map>
 
-#include "obj_parser.hpp"
+#include "utils/ObjectUtils.hpp"
 
 std::string to_string(std::string_view str)
 {
@@ -150,7 +150,7 @@ int main() try
     GLuint transform_location = glGetUniformLocation(program, "transform");
 
     std::string project_root = PROJECT_ROOT;
-    obj_data bunny = parse_obj(project_root + "/bunny.obj");
+    Model bunny = parseModel(project_root + "/bunny.obj");
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 

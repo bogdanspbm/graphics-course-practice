@@ -108,9 +108,9 @@ Model parseModel(std::filesystem::path const &path) {
 
                 auto it = index_map.find(index);
                 if (it == index_map.end()) {
-                    it = index_map.insert({index, result.getVertices().size()}).first;
+                    it = index_map.insert({index, result.getVertices()->size()}).first;
 
-                    auto &v = result.getVertices().emplace_back();
+                    auto &v = result.getVertices()->emplace_back();
 
                     v.position = positions[index[0]];
 
@@ -129,9 +129,9 @@ Model parseModel(std::filesystem::path const &path) {
             }
 
             for (std::size_t i = 1; i + 1 < vertices.size(); ++i) {
-                result.getIndices().push_back(vertices[0]);
-                result.getIndices().push_back(vertices[i]);
-                result.getIndices().push_back(vertices[i + 1]);
+                result.getIndices()->push_back(vertices[0]);
+                result.getIndices()->push_back(vertices[i]);
+                result.getIndices()->push_back(vertices[i + 1]);
             }
         }
     }
