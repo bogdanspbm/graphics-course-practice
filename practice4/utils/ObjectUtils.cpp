@@ -17,7 +17,7 @@ namespace {
 
 }
 
-Model parseModel(std::filesystem::path const &path) {
+void fillModelFromFile(Model *model, std::filesystem::path const &path) {
     std::ifstream is(path);
 
     std::vector<std::array<float, 3>> positions;
@@ -25,8 +25,6 @@ Model parseModel(std::filesystem::path const &path) {
     std::vector<std::array<float, 2>> texcoords;
 
     std::map<std::array<std::uint32_t, 3>, std::uint32_t> index_map;
-
-    Model result;
 
     std::string line;
     std::size_t line_count = 0;
@@ -108,9 +106,9 @@ Model parseModel(std::filesystem::path const &path) {
 
                 auto it = index_map.find(index);
                 if (it == index_map.end()) {
-                    it = index_map.insert({index, result.getVertices()->size()}).first;
+                    it = index_map.insert({index, model->getVertices()->size()}).first;
 
-                    auto &v = result.getVertices()->emplace_back();
+                    auto &v = model->getVertices()->emplace_back();
 
                     v.position = positions[index[0]];
 
@@ -129,12 +127,18 @@ Model parseModel(std::filesystem::path const &path) {
             }
 
             for (std::size_t i = 1; i + 1 < vertices.size(); ++i) {
-                result.getIndices()->push_back(vertices[0]);
-                result.getIndices()->push_back(vertices[i]);
-                result.getIndices()->push_back(vertices[i + 1]);
+                model->getIndices()->push_back(vertices[0]);
+                model->getIndices()->push_back(vertices[i]);
+                model->getIndices()->push_back(vertices[i + 1]);
             }
         }
     }
 
+}
+
+
+Model parseModel(std::filesystem::path const &path) {
+    Model result;
+    fillModelFromFile(&result, path);
     return result;
 }
