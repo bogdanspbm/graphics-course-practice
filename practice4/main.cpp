@@ -174,12 +174,10 @@ int main() try {
     float speed = 10;
 
     keyHandler->bindOnPressedEvent([&dt, &x, &speed]() -> void {
-        printf("%f\n", dt);
         x -= 1 * dt * speed;
     }, SDL_KeyCode::SDLK_LEFT);
 
     keyHandler->bindOnPressedEvent([&dt, &x, &speed]() -> void {
-        printf("%f\n", dt);
         x += 1 * dt * speed;
     }, SDL_KeyCode::SDLK_RIGHT);
 
@@ -246,16 +244,16 @@ int main() try {
 
         float model[16] =
                 {
-                        scale * cos(time), scale * -sin(time), 0.0f, 0.0f,
-                        scale * sin(time), scale * cos(time), 0.0f, 0.0f,
+                        scale * cos(time), scale * -sin(time), 0.0f, x,
+                        scale * sin(time), scale * cos(time), 0.0f, y,
                         0.0f, 0.0f, scale, 0.0f,
                         0.0f, 0.0f, 0.0f, 1.0f
                 };
 
         float view[16] =
                 {
-                        1.f, 0.f, 0.f, x,
-                        0.f, 1.f, 0.f, y,
+                        1.f, 0.f, 0.f, 0.f,
+                        0.f, 1.f, 0.f, 0.f,
                         0.f, 0.f, 1.f, -2.f,
                         0.f, 0.f, 0.f, 1.f,
                 };
@@ -272,7 +270,16 @@ int main() try {
         glUniformMatrix4fv(model_location, 1, GL_TRUE, model);
         glUniformMatrix4fv(view_location, 1, GL_TRUE, view);
         glUniformMatrix4fv(projection_location, 1, GL_TRUE, projection);
+        bunny.draw();
 
+        model[3] -= 1.f;
+        model[7] -= 1.f;
+        glUniformMatrix4fv(model_location, 1, GL_TRUE, model);
+        bunny.draw();
+
+        model[3] += 2.f;
+        model[7] += 2.f;
+        glUniformMatrix4fv(model_location, 1, GL_TRUE, model);
         bunny.draw();
 
         SDL_GL_SwapWindow(window);
