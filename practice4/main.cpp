@@ -274,11 +274,23 @@ int main() try {
 
         model[3] -= 1.f;
         model[7] -= 1.f;
+        model[8] = model[4];
+        model[2] = model[1];
+        model[10] = model[5];
+        model[1] = 0;
+        model[4] = 0;
+        model[5] = scale;
         glUniformMatrix4fv(model_location, 1, GL_TRUE, model);
         bunny.draw();
 
         model[3] += 2.f;
         model[7] += 2.f;
+        model[9] = model[2];
+        model[6] = model[8];
+        model[5] = model[0];
+        model[8] = 0;
+        model[2] = 0;
+        model[0] = scale;
         glUniformMatrix4fv(model_location, 1, GL_TRUE, model);
         bunny.draw();
 
