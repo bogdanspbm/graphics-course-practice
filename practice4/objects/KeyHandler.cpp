@@ -14,6 +14,8 @@ void KeyHandler::handleKeyboardEvent(SDL_KeyboardEvent event) {
             notifyOnPressEvent(event.keysym.sym);
             break;
     }
+
+    notifyOnPressedEvent();
 }
 
 void KeyHandler::handleMouseEvent(SDL_MouseButtonEvent event) {
@@ -47,6 +49,11 @@ void KeyHandler::bindOnPressEvent(std::function<void()> event, int keyCode) {
     this->buttonEvents.push_back(buttonEvent);
 }
 
+void KeyHandler::bindOnPressedEvent(std::function<void()> event, int keyCode) {
+    ButtonEvent buttonEvent = ButtonEvent{event, keyCode, true};
+    this->buttonEvents.push_back(buttonEvent);
+}
+
 void KeyHandler::bindOnMouseClickEvent(std::function<void(Position position)> event, int keyCode) {
     MouseEvent mouseEvent = MouseEvent{event, keyCode};
     this->mouseEvents.push_back(mouseEvent);
@@ -57,6 +64,16 @@ void KeyHandler::notifyOnPressEvent(int keyCode) {
         if (event.keyCode != keyCode) {
             continue;
         }
+        event.event();
+    }
+}
+
+void KeyHandler::notifyOnPressedEvent() {
+    for (const ButtonEvent &event: this->buttonEvents) {
+        if (!event.onPressed || !keyState.contains(event.keyCode) || !keyState[event.keyCode]) {
+            continue;
+        }
+
         event.event();
     }
 }

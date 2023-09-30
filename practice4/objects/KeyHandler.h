@@ -14,6 +14,7 @@
 struct ButtonEvent {
     std::function<void()> event;
     int keyCode;
+    bool onPressed = false;
 };
 
 struct MouseEvent {
@@ -37,11 +38,16 @@ public:
 
     bool isReleased(int keyCode);
 
+    void bindOnPressedEvent(std::function<void()> event, int keyCode);
+
     void bindOnPressEvent(std::function<void()> event, int keyCode);
 
     void bindOnMouseClickEvent(std::function<void(Position position)> event, int keyCode);
 
 private:
+
+    void notifyOnPressedEvent();
+
     void notifyOnPressEvent(int keyCode);
 
     void notifyOnMouseClickEvent(int keyCode, Position position);
