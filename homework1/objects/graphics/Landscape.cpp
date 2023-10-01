@@ -28,6 +28,7 @@ void Landscape::generateVertices() {
             float z = heightFunction(x, y);
             vertex.position = {x / cells, y / cells, z / cells};
             vertex.normal = positionToNormal(vertex.position);
+            vertex.texcoord = {0.f, 0.f};
             vertices.push_back(vertex);
         }
     }
