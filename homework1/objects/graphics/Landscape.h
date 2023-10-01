@@ -11,9 +11,19 @@
 class Landscape : Model {
 private:
     std::function<float(float x, float y)> heightFunction;
+    u_int32_t cells = 2;
+
 public:
     Landscape(std::function<float(float x, float y)> function);
+
     void draw();
+
+private:
+    void generateVertices();
+
+    void generateIndices();
+
+    u_int32_t vertexPositionToIndex(u_int32_t x, u_int32_t y);
 };
 
 
