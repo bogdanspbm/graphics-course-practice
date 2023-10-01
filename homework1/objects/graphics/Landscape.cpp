@@ -16,7 +16,7 @@ void Landscape::draw() {
 
 void Landscape::generateVertices() {
     for (u_int32_t i = 0; i <= cells; i++) {
-        for (u_int32_t k = 0; k <= cells; i++) {
+        for (u_int32_t k = 0; k <= cells; k++) {
             Vertex vertex = Vertex();
             float x = i;
             float y = i;
@@ -29,7 +29,7 @@ void Landscape::generateVertices() {
 
 void Landscape::generateIndices() {
     for (u_int32_t i = 0; i < cells; i++) {
-        for (u_int32_t k = 0; k < cells; i++) {
+        for (u_int32_t k = 0; k < cells; k++) {
             auto a = vertexPositionToIndex(i, k);
             auto b = vertexPositionToIndex(i, k + 1);
             auto c = vertexPositionToIndex(i + 1, k + 1);
