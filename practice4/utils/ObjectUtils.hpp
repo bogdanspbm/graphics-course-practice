@@ -5,4 +5,5 @@
 #include "objects/Model.h"
 
 
-Model parseModel(std::filesystem::path const & path);
+void fillModelFromFile(Model *model, std::filesystem::path const &path);
+Model parseModel(std::filesystem::path const &path);
