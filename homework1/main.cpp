@@ -168,7 +168,7 @@ int main() try {
     auto last_frame_start = std::chrono::high_resolution_clock::now();
     auto *keyHandler = new KeyHandler();
     auto landscape = Landscape([](float x, float y) -> float {
-        return x + y;
+        return sin(x) + 2 * cos(y / 2) - sin(x / 3) * cos(y * 3);
     });
 
     float dt = 0;
@@ -248,9 +248,9 @@ int main() try {
 
         float model[16] =
                 {
-                        scale * cos(time), scale * -sin(time), 0.0f, x,
-                        scale * sin(time), scale * cos(time), 0.0f, y,
-                        0.0f, 0.0f, scale, 0.0f,
+                        scale * cos(time), 0.f, scale * -sin(time), x,
+                        0.f, scale, 0.0f, y,
+                        scale * sin(time), 0.0f, scale * cos(time), 0.0f,
                         0.0f, 0.0f, 0.0f, 1.0f
                 };
 
@@ -258,7 +258,7 @@ int main() try {
                 {
                         1.f, 0.f, 0.f, 0.f,
                         0.f, 1.f, 0.f, 0.f,
-                        0.f, 0.f, 1.f, -2.f,
+                        0.f, 0.f, 1.f, -0.5f,
                         0.f, 0.f, 0.f, 1.f,
                 };
 
