@@ -2,7 +2,8 @@
 
 #include <vector>
 #include <filesystem>
-#include "objects/Model.h"
+#include "objects/graphics/Model.h"
 
 
-Model parseModel(std::filesystem::path const & path);
+void fillModelFromFile(Model *model, std::filesystem::path const &path);
+Model parseModel(std::filesystem::path const &path);

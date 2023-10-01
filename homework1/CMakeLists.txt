@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(practice4)
+project(homework1)
 
 cmake_policy(SET CMP0072 NEW)
 cmake_policy(SET CMP0074 NEW)
@@ -27,18 +27,20 @@ set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 add_executable(${TARGET_NAME} main.cpp
         utils/ShaderUtils.cpp
         utils/ShaderUtils.h
-        objects/ProgramAdapter.cpp
-        objects/ProgramAdapter.h
-        objects/KeyHandler.cpp
-        objects/KeyHandler.h
+        objects/opengl/ProgramAdapter.cpp
+        objects/opengl/ProgramAdapter.h
+        objects/input/KeyHandler.cpp
+        objects/input/KeyHandler.h
         structures/Vertex.h
         structures/Vector.h
         structures/Position.h
-        objects/Model.cpp
-        objects/Model.h
+        objects/graphics/Model.cpp
+        objects/graphics/Model.h
         structures/Vertex.h
         utils/ObjectUtils.hpp
-        utils/ObjectUtils.cpp)
+        utils/ObjectUtils.cpp
+        objects/graphics/Landscape.cpp
+        objects/graphics/Landscape.h)
 target_include_directories(${TARGET_NAME} PUBLIC
         "${SDL2_INCLUDE_DIRS}"
         "${GLEW_INCLUDE_DIRS}"
