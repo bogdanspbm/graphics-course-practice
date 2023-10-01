@@ -25,7 +25,7 @@ public:
 
     Model(std::filesystem::path const &path);
 
-private:
+protected:
     void createVAO();
 
     void createVBO();

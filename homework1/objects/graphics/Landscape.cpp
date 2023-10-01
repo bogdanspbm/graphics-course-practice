@@ -3,11 +3,16 @@
 //
 
 #include "Landscape.h"
+#include "utils/MathUtils.h"
 
 Landscape::Landscape(std::function<float(float, float)> function) {
     this->heightFunction = function;
     generateVertices();
     generateIndices();
+    Model::createVAO();
+    Model::createVBO();
+    Model::createEBO();
+    Model::detachBuffers();
 }
 
 void Landscape::draw() {
@@ -15,13 +20,14 @@ void Landscape::draw() {
 }
 
 void Landscape::generateVertices() {
-    for (u_int32_t i = 0; i <= cells; i++) {
-        for (u_int32_t k = 0; k <= cells; k++) {
+    for (int i = 0; i <= cells; i++) {
+        for (int k = 0; k <= cells; k++) {
             Vertex vertex = Vertex();
-            float x = i;
-            float y = i;
+            float x = (float) i - (float) cells / 2;
+            float y = (float) k - (float) cells / 2;
             float z = heightFunction(x, y);
-            vertex.position = {x, y, z};
+            vertex.position = {x / cells, y / cells, z / cells};
+            vertex.normal = positionToNormal(vertex.position);
             vertices.push_back(vertex);
         }
     }

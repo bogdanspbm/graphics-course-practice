@@ -11,7 +11,7 @@
 class Landscape : Model {
 private:
     std::function<float(float x, float y)> heightFunction;
-    u_int32_t cells = 2;
+    u_int32_t cells = 32;
 
 public:
     Landscape(std::function<float(float x, float y)> function);
