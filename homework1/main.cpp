@@ -15,8 +15,8 @@
 #include <chrono>
 #include <vector>
 #include <map>
-#include "objects/graphics/Model.h"
 #include "objects/input/KeyHandler.h"
+#include "objects/graphics/Model.h"
 #include "objects/graphics/Landscape.h"
 
 std::string to_string(std::string_view str) {
@@ -158,20 +158,50 @@ int main() try {
     auto fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_shader_source);
     auto program = create_program(vertex_shader, fragment_shader);
 
+    GLuint model_location = glGetUniformLocation(program, "model");
+    GLuint view_location = glGetUniformLocation(program, "view");
+    GLuint projection_location = glGetUniformLocation(program, "projection");
+
     std::string project_root = PROJECT_ROOT;
+    Model bunny = Model(project_root + "/bunny.obj");
+
+    auto last_frame_start = std::chrono::high_resolution_clock::now();
+    auto *keyHandler = new KeyHandler();
     auto landscape = Landscape([](float x, float y) -> float {
         return x + y;
     });
 
-    auto last_frame_start = std::chrono::high_resolution_clock::now();
-    auto *keyHandler = new KeyHandler();
-
     float dt = 0;
+    float x = 0;
+    float y = 0;
+
+    float speed = 10;
+
+    keyHandler->bindOnPressedEvent([&dt, &x, &speed]() -> void {
+        x -= 1 * dt * speed;
+    }, SDL_KeyCode::SDLK_LEFT);
+
+    keyHandler->bindOnPressedEvent([&dt, &x, &speed]() -> void {
+        x += 1 * dt * speed;
+    }, SDL_KeyCode::SDLK_RIGHT);
+
+    keyHandler->bindOnPressedEvent([&dt, &y, &speed]() -> void {
+        y -= 1 * dt * speed;
+    }, SDL_KeyCode::SDLK_DOWN);
+
+    keyHandler->bindOnPressedEvent([&dt, &y, &speed]() -> void {
+        y += 1 * dt * speed;
+    }, SDL_KeyCode::SDLK_UP);
 
     float time = 0.f;
 
     std::map<SDL_Keycode, bool> button_down;
 
+    float scale = 0.5f;
+    float near = 0.001f;
+    float far = 1000.0f;
+    float fov = 90;
+    float right = near * tan(fov / 2.0f); // fov - угол обзора в радианах
 
     glEnable(GL_DEPTH_TEST);
 
@@ -213,8 +243,37 @@ int main() try {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-        glUseProgram(program);
+        float aspectRatio = width / height;
+        float top = right / aspectRatio;
 
+        float model[16] =
+                {
+                        scale * cos(time), scale * -sin(time), 0.0f, x,
+                        scale * sin(time), scale * cos(time), 0.0f, y,
+                        0.0f, 0.0f, scale, 0.0f,
+                        0.0f, 0.0f, 0.0f, 1.0f
+                };
+
+        float view[16] =
+                {
+                        1.f, 0.f, 0.f, 0.f,
+                        0.f, 1.f, 0.f, 0.f,
+                        0.f, 0.f, 1.f, -2.f,
+                        0.f, 0.f, 0.f, 1.f,
+                };
+
+        float projection[16] =
+                {
+                        (2.0f * near) / (right * 2.0f), 0.0f, 0.0f, 0.0f,
+                        0.0f, (2.0f * near) / (top * 2.0f), 0.0f, 0.0f,
+                        0.0f, 0.0f, -(far + near) / (far - near), -(2.0f * far * near) / (far - near),
+                        0.0f, 0.0f, -1.0f, 0.0f
+                };
+
+        glUseProgram(program);
+        glUniformMatrix4fv(model_location, 1, GL_TRUE, model);
+        glUniformMatrix4fv(view_location, 1, GL_TRUE, view);
+        glUniformMatrix4fv(projection_location, 1, GL_TRUE, projection);
         landscape.draw();
 
         SDL_GL_SwapWindow(window);

@@ -47,6 +47,8 @@ public:
 
     void useProgram();
 
+    void cleanUniformMatrix4FV(const GLchar *name);
+
 private:
     GLfloat *calcTransformMatrix();
     GLfloat *calcViewMatrixRatio();

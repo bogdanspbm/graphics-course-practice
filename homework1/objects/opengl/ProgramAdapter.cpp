@@ -10,27 +10,27 @@ void ProgramAdapter::useProgram() {
 
 void ProgramAdapter::setScaleX(float scale) {
     this->scaleX = scale;
-    this->setUniformMatrix4FV("transform", this->calcTransformMatrix());
+    this->setUniformMatrix4FV("view", this->calcTransformMatrix());
 }
 
 void ProgramAdapter::setScaleY(float scale) {
     this->scaleY = scale;
-    this->setUniformMatrix4FV("transform", this->calcTransformMatrix());
+    this->setUniformMatrix4FV("view", this->calcTransformMatrix());
 }
 
 void ProgramAdapter::setOffsetX(float offset) {
     this->offsetX = offset;
-    this->setUniformMatrix4FV("transform", this->calcTransformMatrix());
+    this->setUniformMatrix4FV("view", this->calcTransformMatrix());
 }
 
 void ProgramAdapter::setOffsetY(float offset) {
     this->offsetY = offset;
-    this->setUniformMatrix4FV("transform", this->calcTransformMatrix());
+    this->setUniformMatrix4FV("view", this->calcTransformMatrix());
 }
 
 void ProgramAdapter::setRotation(float rotation) {
     this->rotationAngle = rotation;
-    this->setUniformMatrix4FV("transform", this->calcTransformMatrix());
+    this->setUniformMatrix4FV("view", this->calcTransformMatrix());
 }
 
 GLfloat *ProgramAdapter::calcTransformMatrix() {
@@ -85,7 +85,7 @@ void ProgramAdapter::setUniform1F(const GLchar *name, GLfloat value) {
 
 void ProgramAdapter::setRatio(float ratio) {
     this->ratio = ratio;
-    this->setUniformMatrix4FV("view", this->calcViewMatrixRatio());
+    this->setUniformMatrix4FV("projection", this->calcViewMatrixRatio());
 }
 
 GLfloat *ProgramAdapter::calcViewMatrixRatio() {
@@ -117,11 +117,11 @@ GLfloat *ProgramAdapter::calcViewMatrixRatio() {
 void ProgramAdapter::setResolution(int width, int height) {
     this->width = width;
     this->height = height;
-    this->setUniformMatrix4FV("view", this->calcViewMatrixResolution());
+    this->setUniformMatrix4FV("projection", this->calcViewMatrixResolution());
 }
 
 GLfloat *ProgramAdapter::calcViewMatrixResolution() {
-    GLfloat* transform = new GLfloat[16];
+    GLfloat *transform = new GLfloat[16];
 
     transform[0] = 2.0f / width;
     transform[1] = 0.0f;
@@ -144,4 +144,15 @@ GLfloat *ProgramAdapter::calcViewMatrixResolution() {
     transform[15] = 1.0f;
 
     return transform;
+}
+
+void ProgramAdapter::cleanUniformMatrix4FV(const GLchar *name) {
+    float matrix[16] =
+            {
+                    1.f, 0.f, 0.f, 0.f,
+                    0.f, 1.f, 0.f, 0.f,
+                    0.f, 0.f, 1.f, 0.f,
+                    0.f, 0.f, 0.f, 1.f,
+            };
+    this->setUniformMatrix4FV(name, matrix);
 }
