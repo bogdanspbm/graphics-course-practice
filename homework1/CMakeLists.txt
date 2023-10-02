@@ -45,6 +45,8 @@ add_executable(${TARGET_NAME} main.cpp
         utils/MathUtils.h
         objects/graphics/Placeable.cpp
         objects/graphics/Placeable.h
+        structures/Vector3D.cpp
+        structures/Vector3D.h
 )
 target_include_directories(${TARGET_NAME} PUBLIC
         "${SDL2_INCLUDE_DIRS}"

@@ -7,7 +7,6 @@
 
 
 #include "Renderable.h"
-#include "structures/Vector.h"
 #include "objects/opengl/ProgramAdapter.h"
 
 class Placeable : Renderable {

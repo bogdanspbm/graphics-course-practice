@@ -165,29 +165,30 @@ int main() try {
     auto last_frame_start = std::chrono::high_resolution_clock::now();
     auto *keyHandler = new KeyHandler();
     auto landscape = Landscape(program, [](float x, float y) -> float {
-        return sin(x) + 2 * cos(y / 2) - sin(x / 3) * cos(y * 3);
+        return sin(x + y);
     });
 
     float dt = 0;
-    float x = 0;
-    float y = 0;
+    float speed = 1;
 
-    float speed = 10;
-
-    keyHandler->bindOnPressedEvent([&dt, &x, &speed]() -> void {
-        x -= 1 * dt * speed;
+    keyHandler->bindOnPressedEvent([&dt, program, &speed]() -> void {
+        Vector3D rightVector = program->getRightVector();
+        program->addPosition(rightVector * -dt * speed);
     }, SDL_KeyCode::SDLK_LEFT);
 
-    keyHandler->bindOnPressedEvent([&dt, &x, &speed]() -> void {
-        x += 1 * dt * speed;
+    keyHandler->bindOnPressedEvent([&dt, program, &speed]() -> void {
+        Vector3D rightVector = program->getRightVector();
+        program->addPosition(rightVector * dt * speed);
     }, SDL_KeyCode::SDLK_RIGHT);
 
-    keyHandler->bindOnPressedEvent([&dt, &y, &speed]() -> void {
-        y -= 1 * dt * speed;
+    keyHandler->bindOnPressedEvent([&dt, program, &speed]() -> void {
+        Vector3D forwardVector = program->getForwardVector();
+        program->addPosition(forwardVector * dt * speed);
     }, SDL_KeyCode::SDLK_DOWN);
 
-    keyHandler->bindOnPressedEvent([&dt, &y, &speed]() -> void {
-        y += 1 * dt * speed;
+    keyHandler->bindOnPressedEvent([&dt, &program, &speed]() -> void {
+        Vector3D forwardVector = program->getForwardVector();
+        program->addPosition(forwardVector * -dt * speed);
     }, SDL_KeyCode::SDLK_UP);
 
     float time = 0.f;
@@ -195,10 +196,6 @@ int main() try {
     std::map<SDL_Keycode, bool> button_down;
 
     float scale = 0.5f;
-    float near = 0.001f;
-    float far = 1000.0f;
-    float fov = 90;
-    float right = near * tan(fov / 2.0f); // fov - угол обзора в радианах
 
     glEnable(GL_DEPTH_TEST);
 
@@ -239,30 +236,9 @@ int main() try {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-        float aspectRatio = width / height;
-        float top = right / aspectRatio;
-
-        float view[16] =
-                {
-                        1.f, 0.f, 0.f, 0.f,
-                        0.f, 1.f, 0.f, 0.f,
-                        0.f, 0.f, 1.f, -0.5f,
-                        0.f, 0.f, 0.f, 1.f,
-                };
-
-        float projection[16] =
-                {
-                        (2.0f * near) / (right * 2.0f), 0.0f, 0.0f, 0.0f,
-                        0.0f, (2.0f * near) / (top * 2.0f), 0.0f, 0.0f,
-                        0.0f, 0.0f, -(far + near) / (far - near), -(2.0f * far * near) / (far - near),
-                        0.0f, 0.0f, -1.0f, 0.0f
-                };
-
         program->useProgram();
-        program->setUniformMatrix4FV("view", view);
-        program->setUniformMatrix4FV("projection", projection);
-        // bunny.draw();
+        program->setProjectionMatrix();
+        program->setViewMatrix();
 
         landscape.setRotation({0, 0, time});
         landscape.setScale({scale, scale, scale});
