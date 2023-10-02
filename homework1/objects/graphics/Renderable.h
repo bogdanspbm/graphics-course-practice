@@ -1,24 +1,35 @@
 //
-// Created by Bogdan Madzhuga on 02.10.2023.
+// Created by Bogdan Madzhuga on 30.09.2023.
 //
 
-#ifndef HOMEWORK1_RENDERABLE_H
-#define HOMEWORK1_RENDERABLE_H
+#ifndef PRACTICE4_MODEL_H
+#define PRACTICE4_MODEL_H
 
-
-#include "Model.h"
-#include "structures/Vector.h"
+#include <GL/glew.h>
+#include "vector"
+#include "structures/Vertex.h"
+#include "filesystem"
 #include "objects/opengl/ProgramAdapter.h"
 
-class Renderable : Model {
-private:
-    Vector3D position = Vector3D();
-    Vector3D rotation = Vector3D();
-    Vector3D scale = Vector3D();
-protected:
-    ProgramAdapter *program;
+class Renderable {
 
 protected:
+    std::vector<Vertex> vertices;
+    std::vector<std::uint32_t> indices;
+    ProgramAdapter *program;
+
+    GLuint vao;
+    GLuint vbo;
+    GLuint ebo;
+
+protected:
+    Renderable();
+
+public:
+    Renderable(ProgramAdapter *programAdapter, std::filesystem::path const &path);
+
+protected:
+
     void createVAO();
 
     void createVBO();
@@ -27,30 +38,14 @@ protected:
 
     void detachBuffers();
 
-protected:
-    Renderable();
-
 public:
-
-    void setPosition(Vector3D position);
-
-    void setRotation(Vector3D rotation);
-
-    void setScale(Vector3D scale);
-
-    Renderable(ProgramAdapter *programAdapter, std::filesystem::path const &path);
-
-    void draw();
 
     std::vector<Vertex> *getVertices();
 
     std::vector<std::uint32_t> *getIndices();
 
-    Model *getModel();
-
-private:
-    void calcModelMatrix(float modelMatrix[16]);
+    virtual void draw();
 };
 
 
-#endif //HOMEWORK1_RENDERABLE_H
+#endif //PRACTICE4_MODEL_H

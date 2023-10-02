@@ -17,7 +17,7 @@ namespace {
 
 }
 
-void fillModelFromFile(Model *model, std::filesystem::path const &path) {
+void fillModelFromFile(Renderable *model, std::filesystem::path const &path) {
     std::ifstream is(path);
 
     std::vector<std::array<float, 3>> positions;

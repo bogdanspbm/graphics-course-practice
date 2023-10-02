@@ -16,7 +16,7 @@
 #include <vector>
 #include <map>
 #include "objects/input/KeyHandler.h"
-#include "objects/graphics/Model.h"
+#include "objects/graphics/Renderable.h"
 #include "objects/graphics/Landscape.h"
 #include "objects/opengl/ProgramAdapter.h"
 
@@ -160,7 +160,7 @@ int main() try {
     auto *program = new ProgramAdapter();
 
     std::string project_root = PROJECT_ROOT;
-    Model bunny = Model(program, project_root + "/bunny.obj");
+    Renderable bunny = Renderable(program, project_root + "/bunny.obj");
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
     auto *keyHandler = new KeyHandler();

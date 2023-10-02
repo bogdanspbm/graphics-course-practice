@@ -6,9 +6,9 @@
 #define PRACTICE4_LANDSCAPE_H
 
 
-#include "Renderable.h"
+#include "Placeable.h"
 
-class Landscape : Renderable {
+class Landscape : Placeable {
 private:
     std::function<float(float x, float y)> heightFunction;
     u_int32_t cells = 128;

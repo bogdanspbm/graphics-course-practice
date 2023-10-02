@@ -11,14 +11,14 @@ Landscape::Landscape(ProgramAdapter *programAdapter, std::function<float(float, 
     this->heightFunction = function;
     generateVertices();
     generateIndices();
-    Renderable::createVAO();
-    Renderable::createVBO();
-    Renderable::createEBO();
-    Renderable::detachBuffers();
+    Placeable::createVAO();
+    Placeable::createVBO();
+    Placeable::createEBO();
+    Placeable::detachBuffers();
 }
 
 void Landscape::draw() {
-    Renderable::draw();
+    Placeable::draw();
 }
 
 void Landscape::generateVertices() {
@@ -31,7 +31,7 @@ void Landscape::generateVertices() {
             vertex.position = {x / cells, y / cells, z / cells};
             vertex.normal = positionToNormal(vertex.position);
             vertex.texcoord = {0.f, 0.f};
-            Renderable::getVertices()->push_back(vertex);
+            Placeable::getVertices()->push_back(vertex);
         }
     }
 }
@@ -45,13 +45,13 @@ void Landscape::generateIndices() {
             auto d = vertexPositionToIndex(i + 1, k);
 
             // Polygon A
-            Renderable::getIndices()->push_back(a);
-            Renderable::getIndices()->push_back(b);
-            Renderable::getIndices()->push_back(c);
+            Placeable::getIndices()->push_back(a);
+            Placeable::getIndices()->push_back(b);
+            Placeable::getIndices()->push_back(c);
             // Polygon B
-            Renderable::getIndices()->push_back(a);
-            Renderable::getIndices()->push_back(c);
-            Renderable::getIndices()->push_back(d);
+            Placeable::getIndices()->push_back(a);
+            Placeable::getIndices()->push_back(c);
+            Placeable::getIndices()->push_back(d);
         }
     }
 }
@@ -61,13 +61,13 @@ u_int32_t Landscape::vertexPositionToIndex(u_int32_t x, u_int32_t y) {
 }
 
 void Landscape::setPosition(Vector3D position) {
-    Renderable::setPosition(position);
+    Placeable::setPosition(position);
 }
 
 void Landscape::setRotation(Vector3D rotation) {
-    Renderable::setRotation(rotation);
+    Placeable::setRotation(rotation);
 }
 
 void Landscape::setScale(Vector3D scale) {
-    Renderable::setScale(scale);
+    Placeable::setScale(scale);
 }
