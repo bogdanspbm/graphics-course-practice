@@ -16,4 +16,6 @@ Vector3D calculateRightVector(const Vector3D rotation);
 
 Vector3D rotateVector(const Vector3D vector, float yaw, float pitch);
 
+Vector3D linearInterpolation(Vector3D a, Vector3D b, float percentage);
+
 #endif //HOMEWORK1_MATHUTILS_H

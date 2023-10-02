@@ -37,11 +37,11 @@ layout (location = 0) out vec4 out_color;
 
 void main()
 {
-    vec3 ambient_dir = vec3(0.0, 1.0, 0.0);
-    vec3 ambient_color = vec3(0.2);
+    vec3 ambient_dir = vec3(0.0, 0.0, -1.0);
+    vec3 ambient_color = vec3(0.8);
 
-    vec3 light1_dir = normalize(vec3(3.0, 2.0, 1.0));
-    vec3 light2_dir = normalize(vec3(-3.0, 2.0, -1.0));
+    vec3 light1_dir = normalize(vec3(0.0, 0.0, -1.0));
+    vec3 light2_dir = normalize(vec3(0.0, 0.0, -1.0));
 
     vec3 light1_color = vec3(1.0, 0.5, 0.25);
     vec3 light2_color = vec3(0.25, 0.5, 1.0);
@@ -57,7 +57,7 @@ void main()
     color *= fragColor;
 
     float gamma = 1.0 / 2.2;
-    out_color = vec4(pow(min(vec3(1.0), color), vec3(gamma)), 1.0);
+    out_color = vec4(fragColor, 1.0);
 }
 )";
 

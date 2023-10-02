@@ -11,7 +11,11 @@
 class Landscape : Placeable {
 private:
     std::function<float(float x, float y)> heightFunction;
-    u_int32_t cells = 128;
+    u_int32_t cells = 256;
+    float scale = 2;
+
+    Vector3D colorA = {0.98, 0.68, 0.08};
+    Vector3D colorB = {0.22, 0.06, 0.52};
 
 public:
     Landscape(ProgramAdapter *programAdapter, std::function<float(float x, float y)> function);
@@ -21,7 +25,10 @@ public:
     void setPosition(Vector3D position);
 
     void setRotation(Vector3D rotation);
+
     void setScale(Vector3D scale);
+
+    void updateFunction(std::function<float(float x, float y)> function);
 
 private:
     void generateVertices();

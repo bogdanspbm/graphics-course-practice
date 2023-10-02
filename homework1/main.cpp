@@ -15,6 +15,7 @@
 #include <chrono>
 #include <vector>
 #include <map>
+#include "math.h"
 #include "objects/input/KeyHandler.h"
 #include "objects/graphics/Renderable.h"
 #include "objects/graphics/Landscape.h"
@@ -32,54 +33,6 @@ void glew_fail(std::string_view message, GLenum error) {
     throw std::runtime_error(to_string(message) + reinterpret_cast<const char *>(glewGetErrorString(error)));
 }
 
-const char vertex_shader_source[] =
-        R"(#version 330 core
-
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-
-layout (location = 0) in vec3 in_position;
-layout (location = 1) in vec3 in_normal;
-
-out vec3 normal;
-
-void main()
-{
-    gl_Position = projection * view * model * vec4(in_position, 1.0);
-    normal = normalize(mat3(model) * in_normal);
-}
-)";
-
-const char fragment_shader_source[] =
-        R"(#version 330 core
-
-in vec3 normal;
-
-layout (location = 0) out vec4 out_color;
-
-void main()
-{
-    vec3 ambient_dir = vec3(0.0, 1.0, 0.0);
-    vec3 ambient_color = vec3(0.2);
-
-    vec3 light1_dir = normalize(vec3( 3.0, 2.0,  1.0));
-    vec3 light2_dir = normalize(vec3(-3.0, 2.0, -1.0));
-
-    vec3 light1_color = vec3(1.0,  0.5, 0.25);
-    vec3 light2_color = vec3(0.25, 0.5, 1.0 );
-
-    vec3 n = normalize(normal);
-
-    vec3 color = (0.5 + 0.5 * dot(n, ambient_dir)) * ambient_color
-        + max(0.0, dot(n, light1_dir)) * light1_color
-        + max(0.0, dot(n, light2_dir)) * light2_color
-        ;
-
-    float gamma = 1.0 / 2.2;
-    out_color = vec4(pow(min(vec3(1.0), color), vec3(gamma)), 1.0);
-}
-)";
 
 GLuint create_shader(GLenum type, const char *source) {
     GLuint result = glCreateShader(type);
@@ -155,18 +108,20 @@ int main() try {
 
     glClearColor(0.1f, 0.1f, 0.2f, 0.f);
 
-    auto vertex_shader = create_shader(GL_VERTEX_SHADER, vertex_shader_source);
-    auto fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_shader_source);
     auto *program = new ProgramAdapter();
 
     std::string project_root = PROJECT_ROOT;
     Renderable bunny = Renderable(program, project_root + "/bunny.obj");
 
+    float time = 0.f;
+
     auto last_frame_start = std::chrono::high_resolution_clock::now();
     auto *keyHandler = new KeyHandler();
-    auto landscape = Landscape(program, [](float x, float y) -> float {
-        return sin(x + y);
+    auto landscape = Landscape(program, [&time](float x, float y) -> float {
+        return 0;
     });
+
+    landscape.setPosition({0, 0, -0.5});
 
     float dt = 0;
     float speed = 1;
@@ -191,7 +146,6 @@ int main() try {
         program->addPosition(forwardVector * -dt * speed);
     }, SDL_KeyCode::SDLK_UP);
 
-    float time = 0.f;
 
     std::map<SDL_Keycode, bool> button_down;
 
@@ -240,8 +194,12 @@ int main() try {
         program->setProjectionMatrix();
         program->setViewMatrix();
 
-        landscape.setRotation({0, 0, time});
-        landscape.setScale({scale, scale, scale});
+        landscape.updateFunction([&time](float x, float y) -> float {
+            return cos(24 * sqrt(x * x + y * y) - 2 * time);
+        });
+
+        //landscape.setRotation({0, 0, time});
+        landscape.setScale({scale, scale, scale * 0.05f});
         landscape.draw();
         SDL_GL_SwapWindow(window);
     }

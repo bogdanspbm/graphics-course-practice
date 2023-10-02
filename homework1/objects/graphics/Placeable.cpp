@@ -55,21 +55,6 @@ Renderable *Placeable::getModel() {
     return this;
 }
 
-void Placeable::createVAO() {
-    Renderable::createVAO();
-}
-
-void Placeable::createVBO() {
-    Renderable::createVBO();
-}
-
-void Placeable::createEBO() {
-    Renderable::createEBO();
-}
-
-void Placeable::detachBuffers() {
-    Renderable::detachBuffers();
-}
 
 std::vector<Vertex> *Placeable::getVertices() {
     return Renderable::getVertices();
@@ -103,5 +88,41 @@ void Placeable::setRotation(Vector3D rotation) {
 
 void Placeable::setScale(Vector3D scale) {
     this->scale = scale;
+}
+
+void Placeable::createVAO() {
+    Renderable::createVAO();
+}
+
+void Placeable::bindVAO() {
+    Renderable::bindVAO();
+}
+
+void Placeable::createVBO() {
+    Renderable::createVBO();
+}
+
+void Placeable::bindVBO() {
+    Renderable::bindVBO();
+}
+
+void Placeable::updateVBO() {
+    Renderable::updateVBO();
+}
+
+void Placeable::createEBO() {
+    Renderable::createEBO();
+}
+
+void Placeable::bindEBO() {
+    Renderable::bindEBO();
+}
+
+void Placeable::updateEBO() {
+    Renderable::updateEBO();
+}
+
+void Placeable::detachBuffers() {
+    Renderable::detachBuffers();
 }
 

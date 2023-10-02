@@ -30,13 +30,23 @@ public:
 
 protected:
 
-    void createVAO();
+    virtual void createVAO();
 
-    void createVBO();
+    virtual void bindVAO();
 
-    void createEBO();
+    virtual void createVBO();
 
-    void detachBuffers();
+    virtual void bindVBO();
+
+    virtual void updateVBO();
+
+    virtual void createEBO();
+
+    virtual void bindEBO();
+
+    virtual void updateEBO();
+
+    virtual void detachBuffers();
 
 public:
 

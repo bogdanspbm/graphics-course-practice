@@ -17,30 +17,13 @@ std::vector<std::uint32_t> *Renderable::getIndices() {
 
 void Renderable::createVAO() {
     glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    bindVAO();
 }
 
 void Renderable::createVBO() {
     glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-
-    // ScreenPosition
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) 0);
-
-    // Normal
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>)));
-
-    // Texture
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>) * 2));
-
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void *) (sizeof(std::array<float, 3>) * 2 + (sizeof(std::array<float, 2>))));
-
+    bindVBO();
+    updateVBO();
 }
 
 void Renderable::createEBO() {
@@ -49,8 +32,8 @@ void Renderable::createEBO() {
     }
 
     glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(std::uint32_t) * indices.size(), indices.data(), GL_STATIC_DRAW);
+    bindEBO();
+    updateEBO();
 }
 
 void Renderable::detachBuffers() {
@@ -87,4 +70,40 @@ Renderable::Renderable() {
 
 }
 
+void Renderable::bindVAO() {
+    glBindVertexArray(vao);
+}
+
+void Renderable::bindVBO() {
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+}
+
+void Renderable::bindEBO() {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+}
+
+void Renderable::updateEBO() {
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(std::uint32_t) * indices.size(), indices.data(), GL_STATIC_DRAW);
+}
+
+void Renderable::updateVBO() {
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+
+    // ScreenPosition
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) 0);
+
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>)));
+
+    // Texture
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>) * 2));
+
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void *) (sizeof(std::array<float, 3>) * 2 + (sizeof(std::array<float, 2>))));
+
+}
 

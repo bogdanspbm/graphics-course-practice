@@ -53,3 +53,13 @@ Vector3D rotateVector(const Vector3D vector, float yaw, float pitch) {
 
     return rotatedVector;
 }
+
+Vector3D linearInterpolation(Vector3D a, Vector3D b, float percentage){
+    percentage = std::clamp(percentage, 0.0f, 1.0f);
+
+    float interpolatedX = a.x + percentage * (b.x - a.x);
+    float interpolatedY = a.y + percentage * (b.y - a.y);
+    float interpolatedZ = a.z + percentage * (b.z - a.z);
+
+    return Vector3D(interpolatedX, interpolatedY, interpolatedZ);
+}

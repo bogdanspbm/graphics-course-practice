@@ -22,22 +22,25 @@ void Landscape::draw() {
 }
 
 void Landscape::generateVertices() {
+    Placeable::getVertices()->clear();
     for (int i = 0; i <= cells; i++) {
         for (int k = 0; k <= cells; k++) {
             Vertex vertex = Vertex();
-            float x = (float) i - (float) cells / 2;
-            float y = (float) k - (float) cells / 2;
-            float z = heightFunction(x, y);
-            vertex.position = {x / cells, y / cells, z / cells};
+            float x = ((float) i - (float) cells / 2);
+            float y = ((float) k - (float) cells / 2);
+            float z = heightFunction(x * scale, y * scale);
+            vertex.position = {x / cells, y / cells, z};
             vertex.normal = positionToNormal(vertex.position);
             vertex.texcoord = {0.f, 0.f};
-            vertex.color = {1.f, 0.f, 0.f};
+            auto colorInterpolation = linearInterpolation(colorA, colorB, z);
+            vertex.color = {colorInterpolation.x, colorInterpolation.y, colorInterpolation.z};
             Placeable::getVertices()->push_back(vertex);
         }
     }
 }
 
 void Landscape::generateIndices() {
+    Placeable::getIndices()->clear();
     for (u_int32_t i = 0; i < cells; i++) {
         for (u_int32_t k = 0; k < cells; k++) {
             auto a = vertexPositionToIndex(i, k);
@@ -71,4 +74,16 @@ void Landscape::setRotation(Vector3D rotation) {
 
 void Landscape::setScale(Vector3D scale) {
     Placeable::setScale(scale);
+}
+
+void Landscape::updateFunction(std::function<float(float, float)> function) {
+    this->heightFunction = function;
+    generateVertices();
+    generateIndices();
+    Placeable::bindVAO();
+    Placeable::bindVBO();
+    Placeable::updateVBO();
+    Placeable::bindEBO();
+    Placeable::updateEBO();
+    Placeable::detachBuffers();
 }

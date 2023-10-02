@@ -18,16 +18,26 @@ protected:
     ProgramAdapter *program;
 
 protected:
-    void createVAO();
-
-    void createVBO();
-
-    void createEBO();
-
-    void detachBuffers();
+    Placeable();
 
 protected:
-    Placeable();
+    void createVAO() override;
+
+    void bindVAO() override;
+
+    void createVBO() override;
+
+    void bindVBO() override;
+
+    void updateVBO() override;
+
+    void createEBO() override;
+
+    void bindEBO() override;
+
+    void updateEBO() override;
+
+    void detachBuffers() override;
 
 public:
 
