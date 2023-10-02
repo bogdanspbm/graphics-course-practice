@@ -6,17 +6,22 @@
 #define PRACTICE4_LANDSCAPE_H
 
 
-#include "Model.h"
+#include "Renderable.h"
 
-class Landscape : Model {
+class Landscape : Renderable {
 private:
     std::function<float(float x, float y)> heightFunction;
     u_int32_t cells = 128;
 
 public:
-    Landscape(std::function<float(float x, float y)> function);
+    Landscape(ProgramAdapter *programAdapter, std::function<float(float x, float y)> function);
 
     void draw();
+
+    void setPosition(Vector3D position);
+
+    void setRotation(Vector3D rotation);
+    void setScale(Vector3D scale);
 
 private:
     void generateVertices();

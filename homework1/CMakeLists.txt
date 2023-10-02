@@ -33,16 +33,18 @@ add_executable(${TARGET_NAME} main.cpp
         objects/input/KeyHandler.h
         structures/Vertex.h
         structures/Vector.h
-        structures/Position.h
+        structures/ScreenPosition.h
         objects/graphics/Model.cpp
         objects/graphics/Model.h
         structures/Vertex.h
-        utils/ObjectUtils.hpp
-        utils/ObjectUtils.cpp
+        utils/ModelUtils.hpp
+        utils/ModelUtils.cpp
         objects/graphics/Landscape.cpp
         objects/graphics/Landscape.h
         utils/MathUtils.cpp
         utils/MathUtils.h
+        objects/graphics/Renderable.cpp
+        objects/graphics/Renderable.h
 )
 target_include_directories(${TARGET_NAME} PUBLIC
         "${SDL2_INCLUDE_DIRS}"

@@ -9,23 +9,27 @@
 #include "vector"
 #include "structures/Vertex.h"
 #include "filesystem"
+#include "objects/opengl/ProgramAdapter.h"
 
 class Model {
 
 protected:
     std::vector<Vertex> vertices;
     std::vector<std::uint32_t> indices;
+    ProgramAdapter *program;
 
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
 
-public:
+protected:
     Model();
 
-    Model(std::filesystem::path const &path);
+public:
+    Model(ProgramAdapter *programAdapter, std::filesystem::path const &path);
 
 protected:
+
     void createVAO();
 
     void createVBO();
@@ -35,6 +39,7 @@ protected:
     void detachBuffers();
 
 public:
+
     std::vector<Vertex> *getVertices();
 
     std::vector<std::uint32_t> *getIndices();

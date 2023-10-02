@@ -5,18 +5,20 @@
 #include "Landscape.h"
 #include "utils/MathUtils.h"
 
-Landscape::Landscape(std::function<float(float, float)> function) {
+Landscape::Landscape(ProgramAdapter *programAdapter, std::function<float(float, float)> function) {
+
+    this->program = programAdapter;
     this->heightFunction = function;
     generateVertices();
     generateIndices();
-    Model::createVAO();
-    Model::createVBO();
-    Model::createEBO();
-    Model::detachBuffers();
+    Renderable::createVAO();
+    Renderable::createVBO();
+    Renderable::createEBO();
+    Renderable::detachBuffers();
 }
 
 void Landscape::draw() {
-    Model::draw();
+    Renderable::draw();
 }
 
 void Landscape::generateVertices() {
@@ -29,7 +31,7 @@ void Landscape::generateVertices() {
             vertex.position = {x / cells, y / cells, z / cells};
             vertex.normal = positionToNormal(vertex.position);
             vertex.texcoord = {0.f, 0.f};
-            vertices.push_back(vertex);
+            Renderable::getVertices()->push_back(vertex);
         }
     }
 }
@@ -43,17 +45,29 @@ void Landscape::generateIndices() {
             auto d = vertexPositionToIndex(i + 1, k);
 
             // Polygon A
-            indices.push_back(a);
-            indices.push_back(b);
-            indices.push_back(c);
+            Renderable::getIndices()->push_back(a);
+            Renderable::getIndices()->push_back(b);
+            Renderable::getIndices()->push_back(c);
             // Polygon B
-            indices.push_back(a);
-            indices.push_back(c);
-            indices.push_back(d);
+            Renderable::getIndices()->push_back(a);
+            Renderable::getIndices()->push_back(c);
+            Renderable::getIndices()->push_back(d);
         }
     }
 }
 
 u_int32_t Landscape::vertexPositionToIndex(u_int32_t x, u_int32_t y) {
     return x + cells * y;
+}
+
+void Landscape::setPosition(Vector3D position) {
+    Renderable::setPosition(position);
+}
+
+void Landscape::setRotation(Vector3D rotation) {
+    Renderable::setRotation(rotation);
+}
+
+void Landscape::setScale(Vector3D scale) {
+    Renderable::setScale(scale);
 }

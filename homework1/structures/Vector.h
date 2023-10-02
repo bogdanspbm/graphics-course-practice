@@ -10,3 +10,7 @@
 struct Vector {
     float x, y, z, w;
 };
+
+struct Vector3D {
+    float x = 0, y = 0, z = 0;
+};

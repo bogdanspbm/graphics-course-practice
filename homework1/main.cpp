@@ -18,6 +18,7 @@
 #include "objects/input/KeyHandler.h"
 #include "objects/graphics/Model.h"
 #include "objects/graphics/Landscape.h"
+#include "objects/opengl/ProgramAdapter.h"
 
 std::string to_string(std::string_view str) {
     return std::string(str.begin(), str.end());
@@ -156,18 +157,14 @@ int main() try {
 
     auto vertex_shader = create_shader(GL_VERTEX_SHADER, vertex_shader_source);
     auto fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_shader_source);
-    auto program = create_program(vertex_shader, fragment_shader);
-
-    GLuint model_location = glGetUniformLocation(program, "model");
-    GLuint view_location = glGetUniformLocation(program, "view");
-    GLuint projection_location = glGetUniformLocation(program, "projection");
+    auto *program = new ProgramAdapter();
 
     std::string project_root = PROJECT_ROOT;
-    Model bunny = Model(project_root + "/bunny.obj");
+    Model bunny = Model(program, project_root + "/bunny.obj");
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
     auto *keyHandler = new KeyHandler();
-    auto landscape = Landscape([](float x, float y) -> float {
+    auto landscape = Landscape(program, [](float x, float y) -> float {
         return sin(x) + 2 * cos(y / 2) - sin(x / 3) * cos(y * 3);
     });
 
@@ -246,14 +243,6 @@ int main() try {
         float aspectRatio = width / height;
         float top = right / aspectRatio;
 
-        float model[16] =
-                {
-                        scale * cos(time), 0.f, scale * -sin(time), x,
-                        0.f, scale, 0.0f, y,
-                        scale * sin(time), 0.0f, scale * cos(time), 0.0f,
-                        0.0f, 0.0f, 0.0f, 1.0f
-                };
-
         float view[16] =
                 {
                         1.f, 0.f, 0.f, 0.f,
@@ -270,12 +259,14 @@ int main() try {
                         0.0f, 0.0f, -1.0f, 0.0f
                 };
 
-        glUseProgram(program);
-        glUniformMatrix4fv(model_location, 1, GL_TRUE, model);
-        glUniformMatrix4fv(view_location, 1, GL_TRUE, view);
-        glUniformMatrix4fv(projection_location, 1, GL_TRUE, projection);
-        landscape.draw();
+        program->useProgram();
+        program->setUniformMatrix4FV("view", view);
+        program->setUniformMatrix4FV("projection", projection);
+        // bunny.draw();
 
+        landscape.setRotation({0, 0, time});
+        landscape.setScale({scale, scale, scale});
+        landscape.draw();
         SDL_GL_SwapWindow(window);
     }
 

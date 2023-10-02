@@ -3,19 +3,8 @@
 //
 
 #include "Model.h"
-#include "utils/ObjectUtils.hpp"
+#include "utils/ModelUtils.hpp"
 
-Model::Model() {
-
-}
-
-Model::Model(std::filesystem::path const &path) {
-    fillModelFromFile(this, path);
-    createVAO();
-    createVBO();
-    createEBO();
-    detachBuffers();
-}
 
 std::vector<Vertex> *Model::getVertices() {
     return &vertices;
@@ -36,7 +25,7 @@ void Model::createVBO() {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
-    // Position
+    // ScreenPosition
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) 0);
 
@@ -79,3 +68,18 @@ void Model::draw() {
 
     glBindVertexArray(0);
 }
+
+Model::Model(ProgramAdapter *programAdapter, const std::filesystem::path &path) {
+    this->program = programAdapter;
+    fillModelFromFile(this, path);
+    createVAO();
+    createVBO();
+    createEBO();
+    detachBuffers();
+}
+
+Model::Model() {
+
+}
+
+

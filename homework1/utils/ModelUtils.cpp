@@ -1,4 +1,4 @@
-#include "ObjectUtils.hpp"
+#include "ModelUtils.hpp"
 
 #include <string>
 #include <sstream>
@@ -134,11 +134,4 @@ void fillModelFromFile(Model *model, std::filesystem::path const &path) {
         }
     }
 
-}
-
-
-Model parseModel(std::filesystem::path const &path) {
-    Model result;
-    fillModelFromFile(&result, path);
-    return result;
 }

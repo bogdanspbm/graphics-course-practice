@@ -7,6 +7,7 @@
 
 #endif //PRACTICE3_POSITION_H
 
-struct Position {
-    int x, y;
+
+struct ScreenPosition {
+    int x = 0, y = 0;
 };

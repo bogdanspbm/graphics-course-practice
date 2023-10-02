@@ -9,7 +9,7 @@
 #include <SDL2/SDL_events.h>
 #include <unordered_map>
 #include <functional>
-#include "structures/Position.h"
+#include "structures/ScreenPosition.h"
 
 struct ButtonEvent {
     std::function<void()> event;
@@ -18,7 +18,7 @@ struct ButtonEvent {
 };
 
 struct MouseEvent {
-    std::function<void(Position position)> event;
+    std::function<void(ScreenPosition position)> event;
     int keyCode;
 };
 
@@ -42,7 +42,7 @@ public:
 
     void bindOnPressEvent(std::function<void()> event, int keyCode);
 
-    void bindOnMouseClickEvent(std::function<void(Position position)> event, int keyCode);
+    void bindOnMouseClickEvent(std::function<void(ScreenPosition position)> event, int keyCode);
 
 private:
 
@@ -50,7 +50,7 @@ private:
 
     void notifyOnPressEvent(int keyCode);
 
-    void notifyOnMouseClickEvent(int keyCode, Position position);
+    void notifyOnMouseClickEvent(int keyCode, ScreenPosition position);
 };
 
 
