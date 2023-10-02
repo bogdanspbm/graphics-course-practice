@@ -36,6 +36,11 @@ void Renderable::createVBO() {
     // Texture
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>) * 2));
+
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void *) (sizeof(std::array<float, 3>) * 2 + (sizeof(std::array<float, 2>))));
+
 }
 
 void Renderable::createEBO() {

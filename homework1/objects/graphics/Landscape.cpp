@@ -31,6 +31,7 @@ void Landscape::generateVertices() {
             vertex.position = {x / cells, y / cells, z / cells};
             vertex.normal = positionToNormal(vertex.position);
             vertex.texcoord = {0.f, 0.f};
+            vertex.color = {1.f, 0.f, 0.f};
             Placeable::getVertices()->push_back(vertex);
         }
     }
