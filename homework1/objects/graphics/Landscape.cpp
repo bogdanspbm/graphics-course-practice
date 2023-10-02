@@ -28,7 +28,7 @@ void Landscape::generateVertices() {
             Vertex vertex = Vertex();
             float x = ((float) i - (float) cells / 2);
             float y = ((float) k - (float) cells / 2);
-            float z = heightFunction(x * scale, y * scale);
+            float z = heightFunction(x * functionScale, y * functionScale);
             vertex.position = {x / cells, y / cells, z};
             vertex.normal = positionToNormal(vertex.position);
             vertex.texcoord = {0.f, 0.f};
@@ -64,6 +64,11 @@ u_int32_t Landscape::vertexPositionToIndex(u_int32_t x, u_int32_t y) {
     return x + cells * y;
 }
 
+void Landscape::setColors(Vector3D colorA, Vector3D colorB) {
+    this->colorA = colorA;
+    this->colorB = colorB;
+}
+
 void Landscape::setPosition(Vector3D position) {
     Placeable::setPosition(position);
 }
@@ -74,6 +79,10 @@ void Landscape::setRotation(Vector3D rotation) {
 
 void Landscape::setScale(Vector3D scale) {
     Placeable::setScale(scale);
+}
+
+void Landscape::setFunctionScale(float functionScale) {
+    this->functionScale = functionScale;
 }
 
 void Landscape::updateFunction(std::function<float(float, float)> function) {

@@ -117,11 +117,29 @@ int main() try {
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
     auto *keyHandler = new KeyHandler();
-    auto landscape = Landscape(program, [&time](float x, float y) -> float {
+    auto landscapeA = new Landscape(program, [&time](float x, float y) -> float {
         return 0;
     });
 
-    landscape.setPosition({0, 0, -0.5});
+    auto landscapeB = new Landscape(program, [&time](float x, float y) -> float {
+        return 0;
+    });
+
+
+    auto landscapeC = new Landscape(program, [&time](float x, float y) -> float {
+        return 0;
+    });
+    float scale = 0.5f;
+
+    landscapeA->setPosition({-0.75, 0, -0.75});
+
+    landscapeB->setFunctionScale(0.05);
+    landscapeB->setPosition({0, 0, -0.75});
+    landscapeB->setColors({0.32, 0.72, 0.1}, {0.98, 0.18, 0.59});
+
+    landscapeC->setPosition({0.75, 0, -0.75});
+    landscapeC->setColors({0.21, 0.81, 0.79}, {0.18, 0.33, 0.92});
+
 
     float dt = 0;
     float speed = 1;
@@ -148,8 +166,6 @@ int main() try {
 
 
     std::map<SDL_Keycode, bool> button_down;
-
-    float scale = 0.5f;
 
     glEnable(GL_DEPTH_TEST);
 
@@ -194,13 +210,25 @@ int main() try {
         program->setProjectionMatrix();
         program->setViewMatrix();
 
-        landscape.updateFunction([&time](float x, float y) -> float {
+        landscapeA->updateFunction([&time](float x, float y) -> float {
             return cos(24 * sqrt(x * x + y * y) - 2 * time);
         });
 
-        //landscape.setRotation({0, 0, time});
-        landscape.setScale({scale, scale, scale * 0.05f});
-        landscape.draw();
+        landscapeB->updateFunction([&time](float x, float y) -> float {
+            return sin(M_PI * 2 * x - sin(1.8 * time)) * cos(M_PI * 2 * y + cos(1.8 * time));
+        });
+
+        landscapeC->updateFunction([&time](float x, float y) -> float {
+            return pow((x * x - y * y) / (x * x + y * y), 2) * cos(6 * M_PI * x * y - 1.8 * time);
+        });
+
+        landscapeA->setScale({scale, scale, scale * 0.05f});
+        landscapeA->draw();
+        landscapeB->setScale({scale, scale, scale * 0.05f});
+        landscapeB->draw();
+        landscapeC->setScale({scale, scale, scale * 0.05f});
+        landscapeC->draw();
+
         SDL_GL_SwapWindow(window);
     }
 
