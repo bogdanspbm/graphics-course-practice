@@ -30,10 +30,8 @@ void Landscape::draw() {
 
     glBindVertexArray(isoLinesVao);
 
-    if (!isoLinesVertices.empty()) {
-        glDrawElements(GL_LINES, isoLinesVertices.size(), GL_UNSIGNED_INT, 0);
-    } else if (!isoLinesVertices.empty()) {
-        glDrawArrays(GL_LINES, 0, isoLinesVertices.size());
+    if (!isoLinesIndices.empty()) {
+        glDrawElements(GL_LINES, isoLinesIndices.size(), GL_UNSIGNED_INT, 0);
     }
 
     glBindVertexArray(0);
@@ -218,6 +216,8 @@ std::vector<Vertex> Landscape::getIsolineVertices(Polygon polygon, float z) {
 
 void Landscape::createIsoLinesVAO() {
     glGenVertexArrays(1, &isoLinesVao);
+
+    //bindVAO();
     bindIsoLinesVAO();
 }
 
