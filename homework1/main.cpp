@@ -112,8 +112,7 @@ int main() try {
     auto *program = new ProgramAdapter();
 
     std::string project_root = PROJECT_ROOT;
-    Renderable bunny = Renderable(program, project_root + "/bunny.obj");
-
+    
     float time = 0.f;
     float scale = 0.5f;
 
