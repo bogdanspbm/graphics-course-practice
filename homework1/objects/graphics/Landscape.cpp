@@ -92,7 +92,5 @@ void Landscape::updateFunction(std::function<float(float, float)> function) {
     Placeable::bindVAO();
     Placeable::bindVBO();
     Placeable::updateVBO();
-    Placeable::bindEBO();
-    Placeable::updateEBO();
     Placeable::detachBuffers();
 }
