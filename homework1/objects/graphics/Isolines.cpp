@@ -2,6 +2,7 @@
 // Created by Bogdan Madzhuga on 01.10.2023.
 //
 
+#include <iostream>
 #include "Isolines.h"
 #include "utils/MathUtils.h"
 
@@ -21,9 +22,15 @@ void Isolines::draw() {
     Placeable::calcModelMatrix(modelMatrix);
     program->setUniformMatrix4FV("model", modelMatrix);
 
+    Placeable::bindVAO();
 
     if (!Placeable::getIndices()->empty()) {
         glDrawElements(GL_LINES, getIndices()->size(), GL_UNSIGNED_INT, 0);
+    }
+
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        std::cerr << "OpenGL Error: " << error << std::endl;
     }
 
 

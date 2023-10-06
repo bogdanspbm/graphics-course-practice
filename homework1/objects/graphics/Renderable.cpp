@@ -82,11 +82,11 @@ void Renderable::updateEBO() {
     if (indices.empty()) {
         return;
     }
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(std::uint32_t) * indices.size(), indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(std::uint32_t) * indices.size(), indices.data(), GL_DYNAMIC_DRAW);
 }
 
 void Renderable::updateVBO() {
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
 
     // Attribute locations (you can define these as constants)
     const GLuint positionLocation = 0;
