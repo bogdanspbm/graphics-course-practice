@@ -11,7 +11,7 @@
 class Landscape : Placeable {
 private:
     std::function<float(float x, float y)> heightFunction;
-    u_int32_t cells = 300;
+    u_int32_t cells = 128;
     float functionScale = 0.01;
 
     Vector3D colorA = {0.98, 0.68, 0.08};
@@ -21,6 +21,31 @@ public:
     Landscape(ProgramAdapter *programAdapter, std::function<float(float x, float y)> function);
 
     void draw();
+
+    void increaseCells() {
+        cells *= 2;
+        generateVertices();
+        generateIndices();
+
+        Placeable::bindVAO();
+        Placeable::bindEBO();
+        Placeable::updateEBO();
+        Placeable::detachBuffers();
+    }
+
+    void decreaseCells() {
+        cells /= 2;
+        if (cells < 16) {
+            cells = 16;
+        }
+        generateVertices();
+        generateIndices();
+
+        Placeable::bindVAO();
+        Placeable::bindEBO();
+        Placeable::updateEBO();
+        Placeable::detachBuffers();
+    }
 
     void setPosition(Vector3D position);
 

@@ -112,7 +112,7 @@ int main() try {
     auto *program = new ProgramAdapter();
 
     std::string project_root = PROJECT_ROOT;
-    
+
     float time = 0.f;
     float scale = 0.5f;
 
@@ -124,48 +124,46 @@ int main() try {
 
     auto isolinesA = new Isolines(landscapeA, program);
 
-    /*auto landscapeB = new Landscape(program, [&time](float x, float y) -> float {
+    auto landscapeB = new Landscape(program, [&time](float x, float y) -> float {
         return 0;
     });
+
+    auto isolinesB = new Isolines(landscapeB, program);
 
 
     auto landscapeC = new Landscape(program, [&time](float x, float y) -> float {
         return 0;
-    });*/
+    });
+
+    auto isolinesC = new Isolines(landscapeC, program);
 
     landscapeA->setPosition({-0.75, 0.35, -0.75});
     isolinesA->setPosition({-0.75, -0.35, -0.75});
-/*
+
     landscapeB->setFunctionScale(0.05);
-    landscapeB->setPosition({0, 0, -0.75});
+    landscapeB->setPosition({0, 0.35, -0.75});
+    isolinesB->setPosition({0, -0.35, -0.75});
     landscapeB->setColors({0.32, 0.72, 0.1}, {0.98, 0.18, 0.59});
 
-    landscapeC->setPosition({0.75, 0, -0.75});
+    landscapeC->setPosition({0.75, 0.35, -0.75});
+    isolinesC->setPosition({0.75, -0.35, -0.75});
     landscapeC->setColors({0.21, 0.81, 0.79}, {0.18, 0.33, 0.92});
-*/
+
 
     float dt = 0;
     float speed = 1;
 
-    keyHandler->bindOnPressedEvent([&dt, program, &speed]() -> void {
-        Vector3D rightVector = program->getRightVector();
-        program->addPosition(rightVector * -dt * speed);
+    keyHandler->bindOnPressEvent([landscapeA, landscapeB, landscapeC]() -> void {
+        landscapeA->decreaseCells();
+        landscapeB->decreaseCells();
+        landscapeC->decreaseCells();
     }, SDL_KeyCode::SDLK_LEFT);
 
-    keyHandler->bindOnPressedEvent([&dt, program, &speed]() -> void {
-        Vector3D rightVector = program->getRightVector();
-        program->addPosition(rightVector * dt * speed);
+    keyHandler->bindOnPressEvent([landscapeA, landscapeB, landscapeC]() -> void {
+        landscapeA->increaseCells();
+        landscapeB->increaseCells();
+        landscapeC->increaseCells();
     }, SDL_KeyCode::SDLK_RIGHT);
-
-    keyHandler->bindOnPressedEvent([&dt, program, &speed]() -> void {
-        Vector3D forwardVector = program->getForwardVector();
-        program->addPosition(forwardVector * dt * speed);
-    }, SDL_KeyCode::SDLK_DOWN);
-
-    keyHandler->bindOnPressedEvent([&dt, &program, &speed]() -> void {
-        Vector3D forwardVector = program->getForwardVector();
-        program->addPosition(forwardVector * -dt * speed);
-    }, SDL_KeyCode::SDLK_UP);
 
 
     std::map<SDL_Keycode, bool> button_down;
@@ -218,14 +216,18 @@ int main() try {
         });
 
         isolinesA->updateFunction();
-/*
+
         landscapeB->updateFunction([&time](float x, float y) -> float {
             return sin(M_PI * 2 * x - sin(1.8 * time)) * cos(M_PI * 2 * y + cos(1.8 * time));
         });
 
+        isolinesB->updateFunction();
+
         landscapeC->updateFunction([&time](float x, float y) -> float {
             return pow((x * x - y * y) / (x * x + y * y), 2) * cos(6 * M_PI * x * y - 1.8 * time);
-        });*/
+        });
+
+        isolinesC->updateFunction();
 
         landscapeA->setScale({scale, scale, scale * 0.05f});
         landscapeA->draw();
@@ -233,11 +235,17 @@ int main() try {
         isolinesA->setScale({scale, scale, scale * 0.05f});
         isolinesA->draw();
 
-        /* landscapeB->setScale({scale, scale, scale * 0.05f});
-         landscapeB->draw();
+        landscapeB->setScale({scale, scale, scale * 0.05f});
+        landscapeB->draw();
 
-         landscapeC->setScale({scale, scale, scale * 0.05f});
-         landscapeC->draw();*/
+        isolinesB->setScale({scale, scale, scale * 0.05f});
+        isolinesB->draw();
+
+        landscapeC->setScale({scale, scale, scale * 0.05f});
+        landscapeC->draw();
+
+        isolinesC->setScale({scale, scale, scale * 0.05f});
+        isolinesC->draw();
 
         SDL_GL_SwapWindow(window);
     }
