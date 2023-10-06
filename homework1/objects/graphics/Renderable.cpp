@@ -28,9 +28,6 @@ void Renderable::createVBO() {
 }
 
 void Renderable::createEBO() {
-    if (indices.empty()) {
-        return;
-    }
 
     glGenBuffers(1, &ebo);
     bindEBO();
@@ -82,6 +79,9 @@ void Renderable::bindEBO() {
 }
 
 void Renderable::updateEBO() {
+    if (indices.empty()) {
+        return;
+    }
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(std::uint32_t) * indices.size(), indices.data(), GL_STATIC_DRAW);
 }
 
