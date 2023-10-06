@@ -88,7 +88,6 @@ void Landscape::setFunctionScale(float functionScale) {
 void Landscape::updateFunction(std::function<float(float, float)> function) {
     this->heightFunction = function;
     generateVertices();
-    generateIndices();
     Placeable::bindVAO();
     Placeable::bindVBO();
     Placeable::updateVBO();

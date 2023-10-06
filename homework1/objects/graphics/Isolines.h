@@ -20,7 +20,7 @@ private:
 public:
     Isolines(Landscape *landscape, ProgramAdapter *programAdapter);
 
-    void draw();
+    void draw() override;
 
     void setPosition(Vector3D position);
 

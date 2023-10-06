@@ -49,9 +49,9 @@ public:
 
     Placeable(ProgramAdapter *programAdapter, std::filesystem::path const &path);
 
-    void draw();
+    void draw() override;
 
-    std::vector<Vertex> *getVertices();
+    std::vector<Vertex> *getVertices() override;
 
     std::vector<std::uint32_t> *getIndices();
 

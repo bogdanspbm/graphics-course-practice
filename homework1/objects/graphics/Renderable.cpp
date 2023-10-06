@@ -89,21 +89,27 @@ void Renderable::updateEBO() {
 void Renderable::updateVBO() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
-    // ScreenPosition
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) 0);
+    // Attribute locations (you can define these as constants)
+    const GLuint positionLocation = 0;
+    const GLuint normalLocation = 1;
+    const GLuint texcoordLocation = 2;
+    const GLuint colorLocation = 3;
 
-    // Normal
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>)));
+    // Vertex attribute pointers
+    // Screen Position (Attribute 0)
+    glEnableVertexAttribArray(positionLocation);
+    glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
 
-    // Texture
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>) * 2));
+    // Normal (Attribute 1)
+    glEnableVertexAttribArray(normalLocation);
+    glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
 
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void *) (sizeof(std::array<float, 3>) * 2 + (sizeof(std::array<float, 2>))));
+    // Texture Coordinates (Attribute 2)
+    glEnableVertexAttribArray(texcoordLocation);
+    glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texcoord));
 
+    // Color (Attribute 3)
+    glEnableVertexAttribArray(colorLocation);
+    glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
 }
 

@@ -21,9 +21,11 @@ void Isolines::draw() {
     Placeable::calcModelMatrix(modelMatrix);
     program->setUniformMatrix4FV("model", modelMatrix);
 
+
     if (!Placeable::getIndices()->empty()) {
-        glDrawElements(GL_LINES, Placeable::getIndices()->size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_LINES, getIndices()->size(), GL_UNSIGNED_INT, 0);
     }
+
 
 }
 
@@ -56,6 +58,9 @@ void Isolines::generateVertices() {
     float isolineH = 0.1f;
     Placeable::getVertices()->clear();
     Placeable::getIndices()->clear();
+
+    std::unordered_map<std::string, int> map;
+
     for (auto polygon: this->getPolygons()) {
         auto flag = this->hasIsoline(polygon, isolineH);
         if (!flag) {
@@ -63,10 +68,17 @@ void Isolines::generateVertices() {
         }
         auto vertices = getIsolineVertices(polygon, isolineH);
         if (vertices.size() == 2) {
-            Placeable::getVertices()->push_back(vertices[0]);
-            Placeable::getVertices()->push_back(vertices[1]);
-            Placeable::getIndices()->push_back(Placeable::getVertices()->size() - 2);
-            Placeable::getIndices()->push_back(Placeable::getVertices()->size() - 1);
+            if (!map.contains(vertices[0].vertexToString())) {
+                Placeable::getVertices()->push_back(vertices[0]);
+                map[vertices[0].vertexToString()] = Placeable::getVertices()->size() - 1;
+            }
+            if (!map.contains(vertices[1].vertexToString())) {
+                Placeable::getVertices()->push_back(vertices[1]);
+                map[vertices[1].vertexToString()] = Placeable::getVertices()->size() - 1;
+            }
+
+            Placeable::getIndices()->push_back(map[vertices[0].vertexToString()]);
+            Placeable::getIndices()->push_back(map[vertices[1].vertexToString()]);
         }
     }
 }
@@ -145,11 +157,13 @@ void Isolines::setFunctionScale(float functionScale) {
 
 void Isolines::updateFunction() {
     generateVertices();
-    generateIndices();
     Placeable::bindVAO();
+
     Placeable::bindVBO();
     Placeable::updateVBO();
+
     Placeable::bindEBO();
     Placeable::updateEBO();
+
     Placeable::detachBuffers();
 }
