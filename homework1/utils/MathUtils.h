@@ -8,7 +8,7 @@
 #include <vector>
 #include "structures/Vector3D.h"
 
-std::array<float, 3> positionToNormal(std::array<float, 3> position);
+Vector3D positionToNormal(Vector3D position);
 
 Vector3D calculateForwardVector(Vector3D rotation);
 

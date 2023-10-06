@@ -11,14 +11,31 @@ Landscape::Landscape(ProgramAdapter *programAdapter, std::function<float(float, 
     this->heightFunction = function;
     generateVertices();
     generateIndices();
-    Placeable::createVAO();
-    Placeable::createVBO();
-    Placeable::createEBO();
-    Placeable::detachBuffers();
+    // Placeable::createVAO();
+    //Placeable::createVBO();
+    //Placeable::createEBO();
+    //Placeable::detachBuffers();
+
+    generateIsoLines();
+    createIsoLinesVAO();
+    createIsoLinesVBO();
+    createIsoLinesEBO();
+    detachIsoLinesBuffers();
 }
 
 void Landscape::draw() {
     Placeable::draw();
+
+
+    glBindVertexArray(isoLinesVao);
+
+    if (!isoLinesVertices.empty()) {
+        glDrawElements(GL_LINE_STRIP, isoLinesVertices.size(), GL_UNSIGNED_INT, 0);
+    } else if (!isoLinesVertices.empty()) {
+        glDrawArrays(GL_LINE_STRIP, 0, isoLinesVertices.size());
+    }
+
+    glBindVertexArray(0);
 }
 
 void Landscape::generateVertices() {
@@ -89,10 +106,178 @@ void Landscape::updateFunction(std::function<float(float, float)> function) {
     this->heightFunction = function;
     generateVertices();
     generateIndices();
-    Placeable::bindVAO();
-    Placeable::bindVBO();
-    Placeable::updateVBO();
-    Placeable::bindEBO();
-    Placeable::updateEBO();
-    Placeable::detachBuffers();
+    //Placeable::bindVAO();
+    //Placeable::bindVBO();
+    //Placeable::updateVBO();
+    //Placeable::bindEBO();
+    //Placeable::updateEBO();
+    //Placeable::detachBuffers();
+
+
+    generateIsoLines();
+    bindIsoLinesVAO();
+    bindIsoLinesVBO();
+    updateIsoLinesVBO();
+    bindIsoLinesEBO();
+    updateIsoLinesEBO();
+    detachIsoLinesBuffers();
+}
+
+void Landscape::generateIsoLines() {
+    float isolineH = 0.1f;
+    isoLinesVertices.clear();
+    isoLinesIndices.clear();
+    for (auto polygon: this->getPolygons()) {
+        auto flag = this->hasIsoline(polygon, isolineH);
+        if (!flag) {
+            continue;
+        }
+        auto vertices = getIsolineVertices(polygon, isolineH);
+        if (vertices.size() == 2) {
+            isoLinesVertices.push_back(vertices[0]);
+            isoLinesVertices.push_back(vertices[1]);
+            isoLinesIndices.push_back(isoLinesVertices.size() - 2);
+            isoLinesIndices.push_back(isoLinesVertices.size() - 1);
+        }
+    }
+}
+
+std::vector<Polygon> Landscape::getPolygons() {
+    std::vector<Polygon> polygons;
+    for (u_int32_t i = 0; i < Placeable::getIndices()->size(); i += 3) {
+        Polygon polygon = Polygon();
+        auto a = (*Placeable::getVertices())[(*Placeable::getIndices())[i]];
+        auto b = (*Placeable::getVertices())[(*Placeable::getIndices())[i + 1]];
+        auto c = (*Placeable::getVertices())[(*Placeable::getIndices())[i + 2]];
+        polygon.vertices = {a, b, c};
+        polygons.push_back(polygon);
+    }
+    return polygons;
+}
+
+bool Landscape::hasIsoline(Polygon polygon, float z) {
+    float a = polygon.vertices[0].position.z - z;
+    float b = polygon.vertices[1].position.z - z;
+    float c = polygon.vertices[2].position.z - z;
+
+    if (a * b <= 0 || a * c <= 0 || c * b <= 0) {
+        return true;
+    }
+
+    return false;
+}
+
+std::vector<Vertex> Landscape::getIsolineVertices(Polygon polygon, float z) {
+    std::vector<Vertex> vertices;
+
+    float a = polygon.vertices[0].position.z - z;
+    float b = polygon.vertices[1].position.z - z;
+    float c = polygon.vertices[2].position.z - z;
+
+    if (a == b && a == 0) {
+        vertices.push_back(polygon.vertices[0]);
+        vertices.push_back(polygon.vertices[1]);
+    } else if (a * b <= 0) {
+        float t = a / (a - b);
+        Vertex v = Vertex();
+        v.position = (polygon.vertices[1].position - polygon.vertices[0].position) * t + polygon.vertices[0].position;
+        vertices.push_back(v);
+    }
+
+    if (a == c && a == 0) {
+        vertices.push_back(polygon.vertices[0]);
+        vertices.push_back(polygon.vertices[2]);
+    }
+    if (a * c <= 0) {
+        float t = a / (a - c);
+        Vertex v = Vertex();
+        v.position = (polygon.vertices[2].position - polygon.vertices[0].position) * t + polygon.vertices[0].position;
+        vertices.push_back(v);
+    }
+
+    if (c == b && b == 0) {
+        vertices.push_back(polygon.vertices[1]);
+        vertices.push_back(polygon.vertices[2]);
+    }
+    if (b * c <= 0) {
+        float t = b / (b - c);
+        Vertex v = Vertex();
+        v.position = (polygon.vertices[2].position - polygon.vertices[1].position) * t + polygon.vertices[1].position;
+        vertices.push_back(v);
+    }
+
+    return vertices;
+}
+
+void Landscape::createIsoLinesVAO() {
+    glGenVertexArrays(1, &isoLinesVao);
+    bindVAO();
+}
+
+void Landscape::bindIsoLinesVAO() {
+    glBindVertexArray(isoLinesVao);
+}
+
+void Landscape::createIsoLinesVBO() {
+    glGenVertexArrays(1, &isoLinesVbo);
+    bindIsoLinesVBO();
+    updateIsoLinesVBO();
+}
+
+void Landscape::bindIsoLinesVBO() {
+    glBindBuffer(GL_ARRAY_BUFFER, isoLinesVbo);
+}
+
+void Landscape::updateIsoLinesVBO() {
+
+    if (isoLinesVertices.empty()) {
+        return;
+    }
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * isoLinesVertices.size(), isoLinesVertices.data(), GL_STATIC_DRAW);
+
+    // ScreenPosition
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) 0);
+
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>)));
+
+    // Texture
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>) * 2));
+
+
+    // Color
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void *) (sizeof(std::array<float, 3>) * 2 + (sizeof(std::array<float, 2>))));
+}
+
+void Landscape::createIsoLinesEBO() {
+    glGenVertexArrays(1, &isoLinesEbo);
+    bindIsoLinesEBO();
+    updateIsoLinesEBO();
+}
+
+void Landscape::bindIsoLinesEBO() {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, isoLinesEbo);
+}
+
+void Landscape::updateIsoLinesEBO() {
+
+    if (isoLinesIndices.empty()) {
+        return;
+    }
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(std::uint32_t) * isoLinesIndices.size(), isoLinesIndices.data(),
+                 GL_STATIC_DRAW);
+
+}
+
+void Landscape::detachIsoLinesBuffers() {
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

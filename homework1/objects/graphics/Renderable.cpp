@@ -39,9 +39,6 @@ void Renderable::createEBO() {
 void Renderable::detachBuffers() {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    if (indices.empty()) {
-        return;
-    }
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -101,6 +98,8 @@ void Renderable::updateVBO() {
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (sizeof(std::array<float, 3>) * 2));
 
+
+    // Color
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                           (void *) (sizeof(std::array<float, 3>) * 2 + (sizeof(std::array<float, 2>))));

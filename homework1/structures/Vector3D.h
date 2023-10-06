@@ -23,6 +23,14 @@ public:
     Vector3D operator*(float scalar) const {
         return Vector3D(x * scalar, y * scalar, z * scalar);
     }
+
+    Vector3D operator+(Vector3D vector) const {
+        return Vector3D(x + vector.x, y * vector.y, z * vector.z);
+    }
+
+    Vector3D operator-(Vector3D vector) const {
+        return Vector3D(x - vector.x, y - vector.y, z - vector.z);
+    }
 };
 
 
