@@ -94,3 +94,11 @@ void Landscape::updateFunction(std::function<float(float, float)> function) {
     Placeable::updateVBO();
     Placeable::detachBuffers();
 }
+
+std::vector<std::uint32_t> *Landscape::getIndices() {
+    return Placeable::getIndices();
+}
+
+std::vector<Vertex> *Landscape::getVertices() {
+    return Placeable::getVertices();
+}

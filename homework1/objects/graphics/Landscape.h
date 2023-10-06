@@ -34,6 +34,10 @@ public:
 
     void updateFunction(std::function<float(float x, float y)> function);
 
+    std::vector<Vertex> *getVertices();
+
+    std::vector<std::uint32_t> *getIndices();
+
 private:
     void generateVertices();
 

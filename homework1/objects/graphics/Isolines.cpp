@@ -5,10 +5,9 @@
 #include "Isolines.h"
 #include "utils/MathUtils.h"
 
-Isolines::Isolines(ProgramAdapter *programAdapter, std::function<float(float, float)> function) {
-
+Isolines::Isolines(Landscape *landscape, ProgramAdapter *programAdapter) {
+    this->landscape = landscape;
     this->program = programAdapter;
-    this->heightFunction = function;
     generateVertices();
     generateIndices();
     Placeable::createVAO();
@@ -18,16 +17,23 @@ Isolines::Isolines(ProgramAdapter *programAdapter, std::function<float(float, fl
 }
 
 void Isolines::draw() {
-    Placeable::draw();
+    float modelMatrix[16];
+    Placeable::calcModelMatrix(modelMatrix);
+    program->setUniformMatrix4FV("model", modelMatrix);
+
+    if (!Placeable::getIndices()->empty()) {
+        glDrawElements(GL_LINES, Placeable::getIndices()->size(), GL_UNSIGNED_INT, 0);
+    }
+
 }
 
 std::vector<Polygon> Isolines::getPolygons() {
     std::vector<Polygon> polygons;
-    for (u_int32_t i = 0; i < Placeable::getIndices()->size(); i += 3) {
+    for (u_int32_t i = 0; i < landscape->getIndices()->size(); i += 3) {
         Polygon polygon = Polygon();
-        auto a = (*Placeable::getVertices())[(*Placeable::getIndices())[i]];
-        auto b = (*Placeable::getVertices())[(*Placeable::getIndices())[i + 1]];
-        auto c = (*Placeable::getVertices())[(*Placeable::getIndices())[i + 2]];
+        auto a = (*landscape->getVertices())[(*landscape->getIndices())[i]];
+        auto b = (*landscape->getVertices())[(*landscape->getIndices())[i + 1]];
+        auto c = (*landscape->getVertices())[(*landscape->getIndices())[i + 2]];
         polygon.vertices = {a, b, c};
         polygons.push_back(polygon);
     }
@@ -47,23 +53,68 @@ bool Isolines::hasIsoline(Polygon polygon, float z) {
 }
 
 void Isolines::generateVertices() {
+    float isolineH = 0.1f;
     Placeable::getVertices()->clear();
     Placeable::getIndices()->clear();
-    for (int i = 0; i <= cells; i++) {
-        for (int k = 0; k <= cells; k++) {
-            Vertex vertex = Vertex();
-            float x = ((float) i - (float) cells / 2);
-            float y = ((float) k - (float) cells / 2);
-            float z = heightFunction(x * functionScale, y * functionScale);
-            vertex.position = {x / cells, y / cells, z};
-            vertex.normal = positionToNormal(vertex.position);
-            vertex.texcoord = {0.f, 0.f};
-            auto colorInterpolation = linearInterpolation(colorA, colorB, z);
-            vertex.color = {colorInterpolation.x, colorInterpolation.y, colorInterpolation.z};
-            Placeable::getVertices()->push_back(vertex);
+    for (auto polygon: this->getPolygons()) {
+        auto flag = this->hasIsoline(polygon, isolineH);
+        if (!flag) {
+            continue;
+        }
+        auto vertices = getIsolineVertices(polygon, isolineH);
+        if (vertices.size() == 2) {
+            Placeable::getVertices()->push_back(vertices[0]);
+            Placeable::getVertices()->push_back(vertices[1]);
+            Placeable::getIndices()->push_back(Placeable::getVertices()->size() - 2);
+            Placeable::getIndices()->push_back(Placeable::getVertices()->size() - 1);
         }
     }
 }
+
+std::vector<Vertex> Isolines::getIsolineVertices(Polygon polygon, float z) {
+    std::vector<Vertex> vertices;
+
+    float a = polygon.vertices[0].position.z - z;
+    float b = polygon.vertices[1].position.z - z;
+    float c = polygon.vertices[2].position.z - z;
+
+    if (a == b && a == 0) {
+        vertices.push_back(polygon.vertices[0]);
+        vertices.push_back(polygon.vertices[1]);
+    } else if (a * b <= 0) {
+        float t = a / (a - b);
+        Vertex v = Vertex();
+        Vector3D direction = (polygon.vertices[1].position - polygon.vertices[0].position);
+        Vector3D offset = direction * t;
+        v.position = offset + polygon.vertices[0].position;
+        vertices.push_back(v);
+    }
+
+    if (a == c && a == 0) {
+        vertices.push_back(polygon.vertices[0]);
+        vertices.push_back(polygon.vertices[2]);
+    }
+    if (a * c <= 0) {
+        float t = a / (a - c);
+        Vertex v = Vertex();
+        v.position = (polygon.vertices[2].position - polygon.vertices[0].position) * t + polygon.vertices[0].position;
+        vertices.push_back(v);
+    }
+
+    if (c == b && b == 0) {
+        vertices.push_back(polygon.vertices[1]);
+        vertices.push_back(polygon.vertices[2]);
+    }
+    if (b * c <= 0) {
+        float t = b / (b - c);
+        Vertex v = Vertex();
+        v.position = (polygon.vertices[2].position - polygon.vertices[1].position) * t + polygon.vertices[1].position;
+        vertices.push_back(v);
+    }
+
+    return vertices;
+}
+
 
 void Isolines::generateIndices() {
 }
@@ -74,7 +125,6 @@ u_int32_t Isolines::vertexPositionToIndex(u_int32_t x, u_int32_t y) {
 
 void Isolines::setColors(Vector3D colorA, Vector3D colorB) {
     this->colorA = colorA;
-    this->colorB = colorB;
 }
 
 void Isolines::setPosition(Vector3D position) {
@@ -93,12 +143,13 @@ void Isolines::setFunctionScale(float functionScale) {
     this->functionScale = functionScale;
 }
 
-void Isolines::updateFunction(std::function<float(float, float)> function) {
-    this->heightFunction = function;
+void Isolines::updateFunction() {
     generateVertices();
     generateIndices();
     Placeable::bindVAO();
     Placeable::bindVBO();
     Placeable::updateVBO();
+    Placeable::bindEBO();
+    Placeable::updateEBO();
     Placeable::detachBuffers();
 }

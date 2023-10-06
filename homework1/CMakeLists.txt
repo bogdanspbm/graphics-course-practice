@@ -48,6 +48,7 @@ add_executable(${TARGET_NAME} main.cpp
         structures/Vector3D.cpp
         structures/Vector3D.h
         structures/Polygon.h
+        objects/graphics/Isolines.h
         objects/graphics/Isolines.cpp
 )
 target_include_directories(${TARGET_NAME} PUBLIC

@@ -21,7 +21,15 @@ public:
     }
 
     Vector3D operator*(float scalar) const {
-        return Vector3D(x * scalar, y * scalar, z * scalar);
+        return Vector3D(this->x * scalar, this->y * scalar, this->z * scalar);
+    }
+
+    Vector3D operator+(Vector3D vector) const {
+        return Vector3D(this->x + vector.x, this->y + vector.y, this->z + vector.z);
+    }
+
+    Vector3D operator-(Vector3D vector) const {
+        return Vector3D(this->x - vector.x, this->y - vector.y, this->z - vector.z);
     }
 };
 

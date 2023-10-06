@@ -57,7 +57,6 @@ public:
 
     Renderable *getModel();
 
-private:
     void calcModelMatrix(float modelMatrix[16]);
 };
 

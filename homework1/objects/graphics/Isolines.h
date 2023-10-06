@@ -2,24 +2,23 @@
 // Created by Bogdan Madzhuga on 01.10.2023.
 //
 
-#ifndef PRACTICE4_LANDSCAPE_H
-#define PRACTICE4_LANDSCAPE_H
-
+#ifndef PRACTICE4_ISOLINES_H
+#define PRACTICE4_ISOLINES_H
 
 #include "Placeable.h"
 #include "structures/Polygon.h"
+#include "Landscape.h"
 
 class Isolines : Placeable {
 private:
-    std::function<float(float x, float y)> heightFunction;
     u_int32_t cells = 300;
     float functionScale = 0.01;
 
-    Vector3D colorA = {0.98, 0.68, 0.08};
-    Vector3D colorB = {0.22, 0.06, 0.52};
+    Vector3D colorA = {1, 1, 1};
+    Landscape *landscape;
 
 public:
-    Isolines(ProgramAdapter *programAdapter, std::function<float(float x, float y)> function);
+    Isolines(Landscape *landscape, ProgramAdapter *programAdapter);
 
     void draw();
 
@@ -33,7 +32,7 @@ public:
 
     void setColors(Vector3D colorA, Vector3D colorB);
 
-    void updateFunction(std::function<float(float x, float y)> function);
+    void updateFunction();
 
 private:
     void generateVertices();
@@ -44,9 +43,11 @@ private:
 
     bool hasIsoline(Polygon polygon, float z);
 
+    std::vector<Vertex> getIsolineVertices(Polygon polygon, float z);
+
 
     u_int32_t vertexPositionToIndex(u_int32_t x, u_int32_t y);
 };
 
 
-#endif //PRACTICE4_LANDSCAPE_H
+#endif //PRACTICE4_ISOLINES_H
