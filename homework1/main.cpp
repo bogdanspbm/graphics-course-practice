@@ -111,7 +111,6 @@ int main() try {
     auto *program = new ProgramAdapter();
 
     std::string project_root = PROJECT_ROOT;
-    Renderable bunny = Renderable(program, project_root + "/bunny.obj");
 
     float time = 0.f;
 
@@ -121,6 +120,8 @@ int main() try {
         return 0;
     });
 
+
+    /*
     auto landscapeB = new Landscape(program, [&time](float x, float y) -> float {
         return 0;
     });
@@ -128,18 +129,20 @@ int main() try {
 
     auto landscapeC = new Landscape(program, [&time](float x, float y) -> float {
         return 0;
-    });
+    });*/
+
     float scale = 0.5f;
 
     landscapeA->setPosition({-0.75, 0, -0.75});
 
-    /*landscapeB->setFunctionScale(0.05);
+    /*
+    landscapeB->setFunctionScale(0.05);
     landscapeB->setPosition({0, 0, -0.75});
     landscapeB->setColors({0.32, 0.72, 0.1}, {0.98, 0.18, 0.59});
 
     landscapeC->setPosition({0.75, 0, -0.75});
     landscapeC->setColors({0.21, 0.81, 0.79}, {0.18, 0.33, 0.92});
-*/
+    */
 
     float dt = 0;
     float speed = 1;
@@ -224,10 +227,10 @@ int main() try {
 
         landscapeA->setScale({scale, scale, scale * 0.05f});
         landscapeA->draw();
-        //landscapeB->setScale({scale, scale, scale * 0.05f});
-        // landscapeB->draw();
-        // landscapeC->setScale({scale, scale, scale * 0.05f});
-        // landscapeC->draw();
+        /*landscapeB->setScale({scale, scale, scale * 0.05f});
+        landscapeB->draw();
+        landscapeC->setScale({scale, scale, scale * 0.05f});
+        landscapeC->draw();*/
 
         SDL_GL_SwapWindow(window);
     }
@@ -235,7 +238,14 @@ int main() try {
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
 }
-catch (std::exception const &e) {
-    std::cerr << e.what() << std::endl;
+catch (
+        std::exception const &e
+) {
+    std::cerr << e.
+
+            what()
+
+              <<
+              std::endl;
     return EXIT_FAILURE;
 }

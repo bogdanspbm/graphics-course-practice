@@ -8,5 +8,5 @@
 #endif //PRACTICE3_VECTOR_H
 
 struct Vector {
-    float x, y, z, w;
+    float x = 0, y = 0, z = 0, w = 0;
 };

@@ -11,10 +11,11 @@ Landscape::Landscape(ProgramAdapter *programAdapter, std::function<float(float, 
     this->heightFunction = function;
     generateVertices();
     generateIndices();
-    // Placeable::createVAO();
-    //Placeable::createVBO();
-    //Placeable::createEBO();
-    //Placeable::detachBuffers();
+
+    Placeable::createVAO();
+    Placeable::createVBO();
+    Placeable::createEBO();
+    Placeable::detachBuffers();
 
     generateIsoLines();
     createIsoLinesVAO();
@@ -24,15 +25,15 @@ Landscape::Landscape(ProgramAdapter *programAdapter, std::function<float(float, 
 }
 
 void Landscape::draw() {
-    Placeable::draw();
 
+    Placeable::draw();
 
     glBindVertexArray(isoLinesVao);
 
     if (!isoLinesVertices.empty()) {
-        glDrawElements(GL_LINE_STRIP, isoLinesVertices.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_LINES, isoLinesVertices.size(), GL_UNSIGNED_INT, 0);
     } else if (!isoLinesVertices.empty()) {
-        glDrawArrays(GL_LINE_STRIP, 0, isoLinesVertices.size());
+        glDrawArrays(GL_LINES, 0, isoLinesVertices.size());
     }
 
     glBindVertexArray(0);
@@ -106,20 +107,24 @@ void Landscape::updateFunction(std::function<float(float, float)> function) {
     this->heightFunction = function;
     generateVertices();
     generateIndices();
-    //Placeable::bindVAO();
-    //Placeable::bindVBO();
-    //Placeable::updateVBO();
-    //Placeable::bindEBO();
-    //Placeable::updateEBO();
-    //Placeable::detachBuffers();
+    Placeable::bindVAO();
+
+    Placeable::bindVBO();
+    Placeable::updateVBO();
+
+    Placeable::detachBuffers();
 
 
     generateIsoLines();
+
     bindIsoLinesVAO();
+
     bindIsoLinesVBO();
     updateIsoLinesVBO();
+
     bindIsoLinesEBO();
     updateIsoLinesEBO();
+
     detachIsoLinesBuffers();
 }
 
@@ -180,7 +185,9 @@ std::vector<Vertex> Landscape::getIsolineVertices(Polygon polygon, float z) {
     } else if (a * b <= 0) {
         float t = a / (a - b);
         Vertex v = Vertex();
-        v.position = (polygon.vertices[1].position - polygon.vertices[0].position) * t + polygon.vertices[0].position;
+        Vector3D direction = (polygon.vertices[1].position - polygon.vertices[0].position);
+        Vector3D offset = direction * t;
+        v.position = offset + polygon.vertices[0].position;
         vertices.push_back(v);
     }
 
@@ -211,14 +218,16 @@ std::vector<Vertex> Landscape::getIsolineVertices(Polygon polygon, float z) {
 
 void Landscape::createIsoLinesVAO() {
     glGenVertexArrays(1, &isoLinesVao);
-    bindVAO();
+    bindIsoLinesVAO();
 }
 
 void Landscape::bindIsoLinesVAO() {
     glBindVertexArray(isoLinesVao);
+    //printf("Bind: %u\n", isoLinesVao);
 }
 
 void Landscape::createIsoLinesVBO() {
+    //printf("Create: %u\n", isoLinesVao);
     glGenVertexArrays(1, &isoLinesVbo);
     bindIsoLinesVBO();
     updateIsoLinesVBO();
@@ -229,6 +238,8 @@ void Landscape::bindIsoLinesVBO() {
 }
 
 void Landscape::updateIsoLinesVBO() {
+
+    //printf("Update: %u\n", isoLinesVao);
 
     if (isoLinesVertices.empty()) {
         return;

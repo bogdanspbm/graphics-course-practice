@@ -22,6 +22,7 @@ void Renderable::createVAO() {
 
 void Renderable::createVBO() {
     glGenBuffers(1, &vbo);
+    //printf("Create: %u\n", vao);
     bindVBO();
     updateVBO();
 }
@@ -69,6 +70,7 @@ Renderable::Renderable() {
 
 void Renderable::bindVAO() {
     glBindVertexArray(vao);
+    //printf("Bind: %u\n", vao);
 }
 
 void Renderable::bindVBO() {
@@ -84,6 +86,8 @@ void Renderable::updateEBO() {
 }
 
 void Renderable::updateVBO() {
+    //printf("Update: %u\n", vao);
+
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
     // ScreenPosition

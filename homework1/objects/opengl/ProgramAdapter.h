@@ -37,6 +37,7 @@ public:
         this->id = createProgram(vertexShader, fragmentShader);
     }
 
+
     void useProgram();
 
     void cleanUniformMatrix4FV(const GLchar *name);
