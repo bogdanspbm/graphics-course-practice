@@ -20,8 +20,8 @@ namespace {
 void fillModelFromFile(Renderable *model, std::filesystem::path const &path) {
     std::ifstream is(path);
 
-    std::vector<std::array<float, 3>> positions;
-    std::vector<std::array<float, 3>> normals;
+    std::vector<Vector3D> positions;
+    std::vector<Vector3D> normals;
     std::vector<std::array<float, 2>> texcoords;
 
     std::map<std::array<std::uint32_t, 3>, std::uint32_t> index_map;
@@ -47,10 +47,10 @@ void fillModelFromFile(Renderable *model, std::filesystem::path const &path) {
 
         if (tag == "v") {
             auto &p = positions.emplace_back();
-            ls >> p[0] >> p[1] >> p[2];
+            ls >> p.x >> p.y >> p.z;
         } else if (tag == "vn") {
             auto &n = normals.emplace_back();
-            ls >> n[0] >> n[1] >> n[2];
+            ls >> n.x >> n.y >> n.z;
         } else if (tag == "vt") {
             auto &t = texcoords.emplace_back();
             ls >> t[0] >> t[1];

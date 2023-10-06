@@ -5,15 +5,15 @@
 #include <array>
 #include "MathUtils.h"
 
-std::array<float, 3> positionToNormal(std::array<float, 3> position) {
-    float length = std::sqrt(position[0] * position[0] + position[1] * position[1] + position[2] * position[2]);
+Vector3D positionToNormal(Vector3D position) {
+    float length = std::sqrt(position.x * position.x + position.y * position.y + position.z * position.z);
     if (length < 1e-6) {
         return {0.0f, 0.0f, 1.0f};
     }
 
-    std::array<float, 3> normal = {
-            -position[1] / length,
-            position[0] / length,
+    Vector3D normal = {
+            -position.y / length,
+            position.x / length,
             0.0f
     };
 
@@ -54,7 +54,7 @@ Vector3D rotateVector(const Vector3D vector, float yaw, float pitch) {
     return rotatedVector;
 }
 
-Vector3D linearInterpolation(Vector3D a, Vector3D b, float percentage){
+Vector3D linearInterpolation(Vector3D a, Vector3D b, float percentage) {
     percentage = std::clamp(percentage, 0.0f, 1.0f);
 
     float interpolatedX = a.x + percentage * (b.x - a.x);

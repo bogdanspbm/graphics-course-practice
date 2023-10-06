@@ -6,12 +6,13 @@
 #define PRACTICE3_VERTEX_H
 
 #include "array"
+#include "Vector3D.h"
 
 struct Vertex {
-    std::array<float, 3> position;
-    std::array<float, 3> normal;
-    std::array<float, 2> texcoord;
-    std::array<float, 3> color;
+    Vector3D position = {0, 0, 0};
+    Vector3D normal = {0, 0, 1};
+    std::array<float, 2> texcoord = {0, 0};
+    Vector3D color = {1, 1, 1};
 };
 
 
