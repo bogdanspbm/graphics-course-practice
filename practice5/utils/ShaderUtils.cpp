@@ -33,13 +33,15 @@ const char fragmentSource[] =
         R"(#version 330 core
         in vec3 normal;
         in vec2 texcoord;
+        uniform sampler2D textureLayer;
         layout (location = 0) out vec4 out_color;
 
 void main()
 {
     float lightness = 0.5 + 0.5 * dot(normalize(normal), normalize(vec3(1.0, 2.0, 3.0)));
+    vec4 textureColor = texture(textureLayer, texcoord);
     vec3 albedo = vec3(texcoord, 0.0);
-    out_color = vec4(lightness * albedo, 1.0);
+    out_color = textureColor * lightness;
 }
 )";
 

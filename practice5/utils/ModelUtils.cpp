@@ -135,3 +135,7 @@ void fillModelFromFile(Renderable *model, std::filesystem::path const &path) {
     }
 
 }
+
+Renderable parseModel(const std::filesystem::path &path) {
+    return Renderable(nullptr, path);
+}

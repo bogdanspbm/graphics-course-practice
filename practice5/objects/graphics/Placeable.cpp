@@ -13,6 +13,10 @@ void Placeable::draw() {
     Renderable::draw();
 }
 
+void Placeable::addTexture(Texture *texture) {
+    Renderable::addTexture(texture);
+}
+
 void Placeable::calcModelMatrix(float modelMatrix[16]) {
     // Identity matrix to start with
     memset(modelMatrix, 0, sizeof(modelMatrix));

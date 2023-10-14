@@ -58,6 +58,8 @@ public:
 
     Renderable *getModel();
 
+    void addTexture(Texture *texture);
+
     void calcModelMatrix(float modelMatrix[16]);
 };
 

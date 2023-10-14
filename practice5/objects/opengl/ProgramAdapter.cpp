@@ -32,6 +32,14 @@ void ProgramAdapter::cleanUniformMatrix4FV(const GLchar *name) {
     this->setUniformMatrix4FV(name, matrix, true);
 }
 
+void ProgramAdapter::bindTexture(Texture *texture) {
+    glBindTexture(GL_TEXTURE_2D, texture->getTextureID());
+    int textureLocation = glGetUniformLocation(this->id, texture->getLayerName().c_str());
+    if (textureLocation != -1) {
+        glUniform1i(textureLocation, 0); // 0 corresponds to GL_TEXTURE0
+    }
+}
+
 void ProgramAdapter::calcProjectionMatrix(float matrix[16]) {
     float right = near * tan(fov / 2.0f);
     float aspectRatio = width / height;

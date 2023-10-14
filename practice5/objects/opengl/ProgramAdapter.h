@@ -10,6 +10,7 @@
 #include <string>
 #include "utils/ShaderUtils.h"
 #include "structures/Vector3D.h"
+#include "objects/graphics/Texture.h"
 
 class ProgramAdapter {
 private:
@@ -60,6 +61,8 @@ public:
     void addRotation(Vector3D offset);
 
     void setFOV(float fov);
+
+    void bindTexture(Texture *texture);
 
     Vector3D getForwardVector();
 

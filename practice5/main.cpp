@@ -36,7 +36,7 @@ void glew_fail(std::string_view message, GLenum error) {
 int main() try {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
         sdl2_fail("SDL_Init: ");
-    
+
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -77,7 +77,9 @@ int main() try {
 
     std::string project_root = PROJECT_ROOT;
     std::string cow_texture_path = project_root + "/cow.png";
+    auto texture = new Texture(cow_texture_path);
     auto cow = new Placeable(program, project_root + "/cow.obj");
+    cow->addTexture(texture);
     cow->setPosition({0, 0, -2});
     cow->setScale({0.5f, 0.5f, 0.5f});
     cow->setRotation({0, 135, 0});

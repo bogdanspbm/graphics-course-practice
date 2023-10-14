@@ -48,7 +48,9 @@ add_executable(${TARGET_NAME} main.cpp libs/stb_image.h libs/stb_image.c  utils/
 		structures/Vector3D.h
 		structures/Polygon.h
 		objects/graphics/Isolines.h
-		objects/graphics/Isolines.cpp)
+		objects/graphics/Isolines.cpp
+		objects/graphics/Texture.cpp
+		objects/graphics/Texture.h)
 target_include_directories(${TARGET_NAME} PUBLIC
 	"${SDL2_INCLUDE_DIRS}"
 	"${GLEW_INCLUDE_DIRS}"

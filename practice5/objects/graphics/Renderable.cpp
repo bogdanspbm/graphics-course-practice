@@ -41,8 +41,15 @@ void Renderable::detachBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void Renderable::addTexture(Texture *texture) {
+    textures.push_back(texture);
+
+}
+
 void Renderable::draw() {
-    glBindVertexArray(vao);
+    bindVAO();
+
+    bindTextures();
 
     if (!indices.empty()) {
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -50,7 +57,7 @@ void Renderable::draw() {
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
     }
 
-    glBindVertexArray(0);
+    detachBuffers();
 }
 
 Renderable::Renderable(ProgramAdapter *programAdapter, const std::filesystem::path &path) {
@@ -110,5 +117,12 @@ void Renderable::updateVBO() {
     // Color (Attribute 3)
     glEnableVertexAttribArray(colorLocation);
     glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, color));
+}
+
+void Renderable::bindTextures() {
+    for (int i = 0; i < textures.size(); i++) {
+        Texture *texture = textures[i];
+        program->bindTexture(texture);
+    }
 }
 

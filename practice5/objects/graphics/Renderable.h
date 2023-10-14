@@ -10,12 +10,15 @@
 #include "structures/Vertex.h"
 #include "filesystem"
 #include "objects/opengl/ProgramAdapter.h"
+#include "Texture.h"
 
 class Renderable {
 
 protected:
     std::vector<Vertex> vertices;
     std::vector<std::uint32_t> indices;
+    std::vector<Texture *> textures;
+
     ProgramAdapter *program;
 
     GLuint vao;
@@ -38,6 +41,8 @@ protected:
 
     virtual void bindVBO();
 
+    virtual void bindTextures();
+
     virtual void updateVBO();
 
     virtual void createEBO();
@@ -47,6 +52,8 @@ protected:
     virtual void updateEBO();
 
     virtual void detachBuffers();
+
+    virtual void addTexture(Texture *texture);
 
 public:
 
