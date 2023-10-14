@@ -32,77 +32,11 @@ void glew_fail(std::string_view message, GLenum error) {
     throw std::runtime_error(to_string(message) + reinterpret_cast<const char *>(glewGetErrorString(error)));
 }
 
-const char vertex_shader_source[] =
-        R"(#version 330 core
-
-uniform mat4 transform;
-uniform mat4 projection;
-
-layout (location = 0) in vec3 in_position;
-layout (location = 1) in vec3 in_normal;
-
-out vec3 normal;
-
-void main()
-{
-    gl_Position = projection * transform * vec4(in_position, 1.0);
-    normal = mat3(transform) * in_normal;
-}
-)";
-
-const char fragment_shader_source[] =
-        R"(#version 330 core
-
-in vec3 normal;
-
-layout (location = 0) out vec4 out_color;
-
-void main()
-{
-    float lightness = 0.5 + 0.5 * dot(normalize(normal), normalize(vec3(1.0, 2.0, 3.0)));
-    vec3 albedo = vec3(1.0);
-    out_color = vec4(lightness * albedo, 1.0);
-}
-)";
-
-GLuint create_shader(GLenum type, const char *source) {
-    GLuint result = glCreateShader(type);
-    glShaderSource(result, 1, &source, nullptr);
-    glCompileShader(result);
-    GLint status;
-    glGetShaderiv(result, GL_COMPILE_STATUS, &status);
-    if (status != GL_TRUE) {
-        GLint info_log_length;
-        glGetShaderiv(result, GL_INFO_LOG_LENGTH, &info_log_length);
-        std::string info_log(info_log_length, '\0');
-        glGetShaderInfoLog(result, info_log.size(), nullptr, info_log.data());
-        throw std::runtime_error("Shader compilation failed: " + info_log);
-    }
-    return result;
-}
-
-GLuint create_program(GLuint vertex_shader, GLuint fragment_shader) {
-    GLuint result = glCreateProgram();
-    glAttachShader(result, vertex_shader);
-    glAttachShader(result, fragment_shader);
-    glLinkProgram(result);
-
-    GLint status;
-    glGetProgramiv(result, GL_LINK_STATUS, &status);
-    if (status != GL_TRUE) {
-        GLint info_log_length;
-        glGetProgramiv(result, GL_INFO_LOG_LENGTH, &info_log_length);
-        std::string info_log(info_log_length, '\0');
-        glGetProgramInfoLog(result, info_log.size(), nullptr, info_log.data());
-        throw std::runtime_error("Program linkage failed: " + info_log);
-    }
-
-    return result;
-}
 
 int main() try {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
         sdl2_fail("SDL_Init: ");
+    
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -146,6 +80,7 @@ int main() try {
     auto cow = new Placeable(program, project_root + "/cow.obj");
     cow->setPosition({0, 0, -2});
     cow->setScale({0.5f, 0.5f, 0.5f});
+    cow->setRotation({0, 135, 0});
 
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
