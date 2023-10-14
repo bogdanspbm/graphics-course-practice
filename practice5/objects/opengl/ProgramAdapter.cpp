@@ -152,3 +152,10 @@ Vector3D ProgramAdapter::getForwardVector() {
 Vector3D ProgramAdapter::getRightVector() {
     return calculateRightVector(rotation);
 }
+
+void ProgramAdapter::setTime(float time) {
+    int timeLocation = glGetUniformLocation(this->id, "time");
+    if (timeLocation != -1) {
+        glUniform1f(timeLocation, time);
+    }
+}

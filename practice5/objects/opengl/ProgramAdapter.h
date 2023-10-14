@@ -62,6 +62,8 @@ public:
 
     void setFOV(float fov);
 
+    void setTime(float time);
+
     void bindTexture(Texture *texture);
 
     Vector3D getForwardVector();

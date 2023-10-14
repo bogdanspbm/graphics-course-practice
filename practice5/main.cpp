@@ -127,6 +127,7 @@ int main() try {
         glEnable(GL_DEPTH_TEST);
 
         program->useProgram();
+        program->setTime(time);
         cow->draw();
 
         SDL_GL_SwapWindow(window);
