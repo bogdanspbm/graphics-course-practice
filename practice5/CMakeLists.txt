@@ -24,7 +24,31 @@ set(TARGET_NAME "${PROJECT_NAME}")
 
 set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(${TARGET_NAME} main.cpp obj_parser.hpp obj_parser.cpp stb_image.h stb_image.c)
+add_executable(${TARGET_NAME} main.cpp libs/stb_image.h libs/stb_image.c  utils/ShaderUtils.cpp
+		utils/ShaderUtils.h
+		objects/opengl/ProgramAdapter.cpp
+		objects/opengl/ProgramAdapter.h
+		objects/input/KeyHandler.cpp
+		objects/input/KeyHandler.h
+		structures/Vertex.h
+		structures/Vector.h
+		structures/ScreenPosition.h
+		objects/graphics/Renderable.cpp
+		objects/graphics/Renderable.h
+		structures/Vertex.h
+		utils/ModelUtils.hpp
+		utils/ModelUtils.cpp
+		objects/graphics/Landscape.cpp
+		objects/graphics/Landscape.h
+		utils/MathUtils.cpp
+		utils/MathUtils.h
+		objects/graphics/Placeable.cpp
+		objects/graphics/Placeable.h
+		structures/Vector3D.cpp
+		structures/Vector3D.h
+		structures/Polygon.h
+		objects/graphics/Isolines.h
+		objects/graphics/Isolines.cpp)
 target_include_directories(${TARGET_NAME} PUBLIC
 	"${SDL2_INCLUDE_DIRS}"
 	"${GLEW_INCLUDE_DIRS}"
