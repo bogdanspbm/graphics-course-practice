@@ -17,6 +17,8 @@ ScreenView::ScreenView(Vector2F position, Vector2F size) {
     glGenVertexArrays(1, &vao);
 
     centerLocationID = glGetUniformLocation(id, "center");
+    vertexFilterLocationID = glGetUniformLocation(id, "vertexFilter");
+    fragmentFilterLocationID = glGetUniformLocation(id, "fragmentFilter");
     sizeLocationID = glGetUniformLocation(id, "size");
 }
 
@@ -30,6 +32,8 @@ void ScreenView::draw(SDL_Window *window) {
     glUseProgram(id);
     glUniform2f(centerLocationID, position.x, position.y);
     glUniform2f(sizeLocationID, size.x, size.y);
+    glUniform1i(fragmentFilterLocationID, filterID);
+    glUniform1i(vertexFilterLocationID, filterID);
     glBindVertexArray(vao);
 
     bindTexture();
@@ -57,4 +61,8 @@ void ScreenView::setTexture(Texture *texture) {
 
 void ScreenView::setPosition(Vector2F position) {
     this->position = position;
+}
+
+void ScreenView::setFilterID(int id) {
+    this->filterID = id;
 }

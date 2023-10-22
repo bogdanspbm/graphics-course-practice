@@ -156,6 +156,7 @@ int main() try {
         program->useProgram();
         cow->draw();
         screenView->setPosition(Vector2F{-0.5f, -0.5f});
+        screenView->setFilterID(1);
         screenView->draw(window);
 
 
@@ -164,6 +165,7 @@ int main() try {
         program->useProgram();
         cow->draw();
         screenView->setPosition(Vector2F{0.5f, -0.5f});
+        screenView->setFilterID(2);
         screenView->draw(window);
 
         program->setClearColor(Vector4F{0, 0, 0, 1});
@@ -171,6 +173,7 @@ int main() try {
         program->useProgram();
         cow->draw();
         screenView->setPosition(Vector2F{-0.5f, 0.5f});
+        screenView->setFilterID(3);
         screenView->draw(window);
 
 
@@ -179,6 +182,7 @@ int main() try {
         program->useProgram();
         cow->draw();
         screenView->setPosition(Vector2F{0.5f, 0.5f});
+        screenView->setFilterID(0);
         screenView->draw(window);
 
 
