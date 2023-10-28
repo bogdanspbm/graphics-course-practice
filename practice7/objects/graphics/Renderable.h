@@ -55,6 +55,8 @@ protected:
 
     virtual void addTexture(Texture *texture);
 
+    virtual void setTexture(Texture *texture, int index);
+
     virtual void setProgram(ProgramAdapter *program);
 
 public:

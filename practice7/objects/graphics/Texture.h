@@ -18,8 +18,8 @@ private:
     GLuint textureID;
 
     Vector3F albedo = Vector3F(0.7f, 0.5f, 0.3f);
-    float roughness = 0.1f;
-    float glossiness = 0.5f;
+    float roughness = 0.3f;
+    float glossiness = 5.f;
 
 public:
     int width = 1024, height = 1024, numChannels = 3;

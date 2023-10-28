@@ -45,31 +45,27 @@ const char fragmentSource[] =
 
         layout (location = 0) out vec4 out_color;
 
-vec3 getDiffuse(vec3 direction) {
+vec3 diffuse(vec3 direction) {
     return albedo * max(0.0, dot(normal, direction));
 }
 
-vec3 getSpecular(vec3 direction, vec3 reflected) {
-    return glossiness * albedo * pow(max(0.0, dot(reflected, view_direction)), roughness);
+vec3 specular(vec3 direction) {
+    float power = 1.0 / (roughness * roughness) - 1.0;
+	vec3 normalized_view = normalize(view_direction);
+	vec3 reflected = reflect(-direction, normal);
+
+    return glossiness * albedo * pow(max(0.0, dot(reflected, normalized_view)), power);
 }
 
 void main()
 {
-    // Get the direction from the fragment point to the light source
-    vec3 light_direction = normalize(sun_direction);
+    vec3 ambient = albedo * ambient_light;
 
-    // Compute the reflected light direction
-    vec3 reflected_light_direction = reflect(-light_direction, normal);
+    vec3 sun_extra = (diffuse(sun_direction) + specular(sun_direction)) * sun_color;
 
-    // Compute the diffuse and specular components
-    vec3 diffuse_color = getDiffuse(light_direction);
-    vec3 specular_color = getSpecular(light_direction, reflected_light_direction);
+    vec3 color = ambient + sun_extra;
 
-    // Compute the final color by combining the diffuse and specular colors
-    vec3 final_color = diffuse_color + specular_color + ambient_light * albedo;
-
-    // Set the final color as the output
-    out_color = vec4(final_color, 1);
+    out_color = vec4(color, 0.5);
 }
 )";
 

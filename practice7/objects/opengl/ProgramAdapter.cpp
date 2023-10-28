@@ -17,7 +17,7 @@ void ProgramAdapter::useProgram() {
     setProjectionMatrix();
     setViewMatrix();
     setLight();
-    setUniformVector3F("view_direction", rotation);
+    setUniformVector3F("view_direction", getForwardVector());
 }
 
 void ProgramAdapter::setUniformMatrix4FV(const GLchar *name, GLfloat *value, bool transpose) {

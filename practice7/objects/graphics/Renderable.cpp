@@ -130,3 +130,15 @@ void Renderable::setProgram(ProgramAdapter *program) {
     this->program = program;
 }
 
+void Renderable::setTexture(Texture *texture, int index) {
+
+    if(textures.size() <= index){
+        textures.push_back(texture);
+        return;
+    }
+
+    auto it = textures.begin();
+    std::advance(it, index);
+    textures.insert(it, texture);
+}
+
