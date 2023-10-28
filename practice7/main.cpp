@@ -22,14 +22,9 @@
 #define GLM_FORCE_SWIZZLE
 #define GLM_ENABLE_EXPERIMENTAL
 
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/scalar_constants.hpp>
-#include <glm/gtx/string_cast.hpp>
+#include "objects/opengl/ProgramAdapter.h"
+#include "objects/graphics/Placeable.h"
 
-#include "obj_parser.hpp"
 
 std::string to_string(std::string_view str) {
     return std::string(str.begin(), str.end());
@@ -158,39 +153,16 @@ int main() try {
 
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
-    auto vertex_shader = create_shader(GL_VERTEX_SHADER, vertex_shader_source);
-    auto fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_shader_source);
-    auto program = create_program(vertex_shader, fragment_shader);
-
-    GLuint model_location = glGetUniformLocation(program, "model");
-    GLuint view_location = glGetUniformLocation(program, "view");
-    GLuint projection_location = glGetUniformLocation(program, "projection");
-    GLuint camera_position_location = glGetUniformLocation(program, "camera_position");
-    GLuint albedo_location = glGetUniformLocation(program, "albedo");
-    GLuint ambient_light_location = glGetUniformLocation(program, "ambient_light");
+    auto program = new ProgramAdapter();
 
     std::string project_root = PROJECT_ROOT;
     std::string suzanne_model_path = project_root + "/suzanne.obj";
-    obj_data suzanne = parse_obj(suzanne_model_path);
-
-    GLuint suzanne_vao, suzanne_vbo, suzanne_ebo;
-    glGenVertexArrays(1, &suzanne_vao);
-    glBindVertexArray(suzanne_vao);
-
-    glGenBuffers(1, &suzanne_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, suzanne_vbo);
-    glBufferData(GL_ARRAY_BUFFER, suzanne.vertices.size() * sizeof(suzanne.vertices[0]), suzanne.vertices.data(),
-                 GL_STATIC_DRAW);
-
-    glGenBuffers(1, &suzanne_ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suzanne_ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, suzanne.indices.size() * sizeof(suzanne.indices[0]), suzanne.indices.data(),
-                 GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(obj_data::vertex), (void *) (0));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(obj_data::vertex), (void *) (12));
+    auto suzanne = new Placeable(program, suzanne_model_path);
+    auto texture = new Texture();
+    suzanne->addTexture(texture);
+    suzanne->setPosition({0, 0, -1.5});
+    suzanne->setScale({0.5f, 0.5f, 0.5f});
+    suzanne->setRotation({0, 45, 0});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -259,31 +231,9 @@ int main() try {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 
-        float near = 0.1f;
-        float far = 100.f;
 
-        glm::mat4 model(1.f);
-
-        glm::mat4 view(1.f);
-        view = glm::translate(view, {0.f, 0.f, -camera_distance});
-        view = glm::rotate(view, camera_angle, {0.f, 1.f, 0.f});
-        view = glm::translate(view, {-camera_x, 0.f, 0.f});
-
-        float aspect = (float)height / (float)width;
-        glm::mat4 projection = glm::perspective(glm::pi<float>() / 3.f, (width * 1.f) / height, near, far);
-
-        glm::vec3 camera_position = (glm::inverse(view) * glm::vec4(0.f, 0.f, 0.f, 1.f)).xyz();
-
-        glUseProgram(program);
-        glUniformMatrix4fv(model_location, 1, GL_FALSE, reinterpret_cast<float *>(&model));
-        glUniformMatrix4fv(view_location, 1, GL_FALSE, reinterpret_cast<float *>(&view));
-        glUniformMatrix4fv(projection_location, 1, GL_FALSE, reinterpret_cast<float *>(&projection));
-        glUniform3fv(camera_position_location, 1, (float *) (&camera_position));
-        glUniform3f(albedo_location, 0.7f, 0.4f, 0.2f);
-        glUniform3f(ambient_light_location, 0.2f, 0.2f, 0.2f);
-
-        glBindVertexArray(suzanne_vao);
-        glDrawElements(GL_TRIANGLES, suzanne.indices.size(), GL_UNSIGNED_INT, nullptr);
+        program->useProgram();
+        suzanne->draw();
 
         SDL_GL_SwapWindow(window);
     }
