@@ -55,7 +55,7 @@ int main() try {
     SDL_Window *window = SDL_CreateWindow("Graphics course practice 7",
                                           SDL_WINDOWPOS_CENTERED,
                                           SDL_WINDOWPOS_CENTERED,
-                                          800, 600,
+                                          1920, 1080,
                                           SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
 
     if (!window)
@@ -77,9 +77,9 @@ int main() try {
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
     auto program = new ProgramAdapter();
-    program->addPointLight(PointLight{Vector3F(0.5, 0, -1), Vector3F(0.5, 0.7, 0.1), Vector3F(1, 0, 0.1)});
-    program->addPointLight(PointLight{Vector3F(-0.5, 0.3, -2), Vector3F(0.8, 0.2, 0.3), Vector3F(1, 0, 0.1)});
-    program->addPointLight(PointLight{Vector3F(0, -0.3, -0.5), Vector3F(0.1, 0.1, 0.9), Vector3F(1, 0, 0.1)});
+    program->addPointLight(PointLight{Vector3F(0.5, 0, -0.75), Vector3F(0.1, 0.7, 0.1), Vector3F(1, 0, 0.1)});
+    program->addPointLight(PointLight{Vector3F(-0.5, 0.3, -0.75), Vector3F(0.8, 0.2, 0.3), Vector3F(1, 0, 0.1)});
+    program->addPointLight(PointLight{Vector3F(0, -0.3, -0.75), Vector3F(0.1, 0.1, 0.9), Vector3F(1, 0, 0.1)});
 
     std::string project_root = PROJECT_ROOT;
     std::string suzanne_model_path = project_root + "/suzanne.obj";
@@ -87,8 +87,8 @@ int main() try {
     auto texture = new Texture();
     suzanne->addTexture(texture);
     suzanne->setPosition({0, 0, -1.5});
-    suzanne->setScale({0.5f, 0.5f, 0.5f});
-    suzanne->setRotation({0, 45, 0});
+    suzanne->setScale({0.35f, 0.35f, 0.35f});
+    suzanne->setRotation({0, 35, 0});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -159,6 +159,22 @@ int main() try {
 
 
         program->useProgram();
+        texture->setGlossiness(2.0);
+        texture->setRoughness(0.5);
+        suzanne->setPosition({-1, 0, -1.5});
+        suzanne->setRotation({0, 0, 0});
+        suzanne->draw();
+
+        texture->setGlossiness(1.0);
+        texture->setRoughness(0.5);
+        suzanne->setPosition({0, 0, -1.5});
+        suzanne->setRotation({0, 0.5, 0});
+        suzanne->draw();
+
+        texture->setGlossiness(0.1);
+        texture->setRoughness(0.8);
+        suzanne->setPosition({1, 0, -1.5});
+        suzanne->setRotation({0, 1, 0});
         suzanne->draw();
 
         SDL_GL_SwapWindow(window);

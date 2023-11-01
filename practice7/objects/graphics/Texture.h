@@ -41,6 +41,9 @@ public:
     float getGlossiness();
 
     float getRoughness();
+
+    float setRoughness(float value);
+    float setGlossiness(float value);
 };
 
 

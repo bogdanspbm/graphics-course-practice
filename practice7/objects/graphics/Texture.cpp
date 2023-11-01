@@ -63,3 +63,12 @@ float Texture::getGlossiness() {
 float Texture::getRoughness() {
     return roughness;
 }
+
+
+float Texture::setRoughness(float value) {
+    this->roughness = value;
+}
+
+float Texture::setGlossiness(float value) {
+    this->glossiness = value;
+}
