@@ -7,11 +7,12 @@
 
 
 #include <GL/glew.h>
-#include <string>
 #include "utils/ShaderUtils.h"
 #include "structures/Vector3F.h"
 #include "objects/graphics/Texture.h"
 #include "FrameBuffer.h"
+#include <string>
+#include "structures/PointLight.h"
 
 class ProgramAdapter {
 private:
@@ -24,6 +25,8 @@ private:
     Vector3F ambientLight = Vector3F(0.1f, 0.1f, 0.1f);
     Vector3F sunLightColor = Vector3F(0.8f, 0.5f, 0.8f);
     Vector3F sunDirection = Vector3F(0.4, 0.6, 0.4);
+
+    std::vector<PointLight> lightPoints;
 
     // Camera Transform
     Vector3F position = Vector3F();
@@ -54,9 +57,11 @@ public:
     }
 
     void setAmbientLight(Vector3F light);
+
     void setSunLight(Vector3F color, Vector3F direction);
 
     void setUniformVector3F(const GLchar *name, Vector3F vector);
+
     void setUniformFloat(const GLchar *name, float value);
 
     void setLight();
@@ -96,6 +101,10 @@ public:
     void setClearColor(Vector4F clearColor);
 
     Texture *getTexture();
+
+    void addPointLight(PointLight point);
+
+    void bindPointLights();
 
 protected:
     void calcProjectionMatrix(float matrix[16]);

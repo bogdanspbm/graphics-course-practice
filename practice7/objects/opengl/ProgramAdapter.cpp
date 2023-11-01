@@ -17,7 +17,9 @@ void ProgramAdapter::useProgram() {
     setProjectionMatrix();
     setViewMatrix();
     setLight();
+    bindPointLights();
     setUniformVector3F("view_direction", getForwardVector());
+    setUniformVector3F("view_position", this->position);
 }
 
 void ProgramAdapter::setUniformMatrix4FV(const GLchar *name, GLfloat *value, bool transpose) {
@@ -224,5 +226,19 @@ void ProgramAdapter::setUniformFloat(const GLchar *name, float value) {
         // throw std::invalid_argument(TAG + ": Can't find uniform location: " + name);
     } else {
         glUniform1f(uniformLocationID, value);
+    }
+}
+
+void ProgramAdapter::addPointLight(PointLight point) {
+    lightPoints.push_back(point);
+}
+
+void ProgramAdapter::bindPointLights() {
+    for (int i = 0; i < lightPoints.size(); i++) {
+        PointLight light = lightPoints[i];
+        std::string itemName = "pointLights[" + std::to_string(i) + "]";
+        setUniformVector3F((itemName + ".position").c_str(), light.position);
+        setUniformVector3F((itemName + ".color").c_str(), light.color);
+        setUniformVector3F((itemName + ".attenuation").c_str(), light.attenuation);
     }
 }

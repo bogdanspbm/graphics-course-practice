@@ -59,8 +59,7 @@ add_executable(${TARGET_NAME} main.cpp libs/stb_image.h libs/stb_image.c utils/S
 		objects/graphics/basic/Plane.h
 		objects/opengl/ScreenView.cpp
 		objects/opengl/ScreenView.h
-		objects/graphics/LightPoint.cpp
-		objects/graphics/LightPoint.h
+        structures/PointLight.h
 )
 target_include_directories(${TARGET_NAME} PUBLIC
 	"${SDL2_INCLUDE_DIRS}"

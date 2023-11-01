@@ -40,33 +40,58 @@ const char fragmentSource[] =
         uniform vec3 sun_color;
         uniform vec3 sun_direction;
         uniform vec3 view_direction;
+        uniform vec3 view_position;
         uniform float roughness;
         uniform float glossiness;
 
+        struct PointLight {
+            vec3 position;
+            vec3 color;
+            vec3 attenuation;
+        };
+
+        #define NR_POINT_LIGHTS 16
+        uniform PointLight pointLights[NR_POINT_LIGHTS];
+
         layout (location = 0) out vec4 out_color;
 
-vec3 diffuse(vec3 direction) {
-    return albedo * max(0.0, dot(normal, direction));
-}
+        vec3 diffuse(vec3 direction) {
+            return albedo * max(0.0, dot(normal, direction));
+        }
 
-vec3 specular(vec3 direction) {
-    float power = 1.0 / (roughness * roughness) - 1.0;
-	vec3 normalized_view = normalize(view_direction);
-	vec3 reflected = reflect(-direction, normal);
+        vec3 specular(vec3 direction) {
+            float power = 1.0 / (roughness * roughness) - 1.0;
+            vec3 normalized_view = normalize(view_direction);
+            vec3 reflected = reflect(-direction, normal);
 
-    return glossiness * albedo * pow(max(0.0, dot(reflected, normalized_view)), power);
-}
+            return glossiness * albedo * pow(max(0.0, dot(reflected, normalized_view)), power);
+        }
 
-void main()
-{
-    vec3 ambient = albedo * ambient_light;
+        vec3 CalcPointLight(PointLight light)
+        {
+            vec3 point_light_dir = light.position - view_position;
 
-    vec3 sun_extra = (diffuse(sun_direction) + specular(sun_direction)) * sun_color;
+            float attenuation = dot(light.attenuation, vec3(1.0, length(point_light_dir), length(point_light_dir) * length(point_light_dir)));
 
-    vec3 color = ambient + sun_extra;
+            vec3 point_light_extra = (diffuse(normalize(point_light_dir)) + specular(normalize(point_light_dir))) * light.color * attenuation;
 
-    out_color = vec4(color, 0.5);
-}
+            return point_light_extra;
+        }
+
+        void main()
+        {
+            vec3 ambient = albedo * ambient_light;
+
+            vec3 sun_extra = (diffuse(sun_direction) + specular(sun_direction)) * sun_color;
+
+            vec3 color = ambient + sun_extra;
+
+            for(int i = 0; i < NR_POINT_LIGHTS; i++){
+                    color += CalcPointLight(pointLights[i]);
+            }
+
+            out_color = vec4(color, 0.5);
+        }
 )";
 
 // create_program

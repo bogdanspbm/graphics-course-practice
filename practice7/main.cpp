@@ -38,83 +38,6 @@ void glew_fail(std::string_view message, GLenum error) {
     throw std::runtime_error(to_string(message) + reinterpret_cast<const char *>(glewGetErrorString(error)));
 }
 
-const char vertex_shader_source[] =
-        R"(#version 330 core
-
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-
-layout (location = 0) in vec3 in_position;
-layout (location = 1) in vec3 in_normal;
-
-out vec3 position;
-out vec3 normal;
-
-void main()
-{
-    position = (model * vec4(in_position, 1.0)).xyz;
-    gl_Position = projection * view * vec4(position, 1.0);
-    normal = normalize(mat3(model) * in_normal);
-}
-)";
-
-const char fragment_shader_source[] =
-        R"(#version 330 core
-
-uniform vec3 camera_position;
-
-uniform vec3 albedo;
-
-uniform vec3 ambient_light;
-
-in vec3 position;
-in vec3 normal;
-
-layout (location = 0) out vec4 out_color;
-
-void main()
-{
-    vec3 ambient = albedo * ambient_light;
-    vec3 color = ambient;
-    out_color = vec4(color, 1.0);
-}
-)";
-
-GLuint create_shader(GLenum type, const char *source) {
-    GLuint result = glCreateShader(type);
-    glShaderSource(result, 1, &source, nullptr);
-    glCompileShader(result);
-    GLint status;
-    glGetShaderiv(result, GL_COMPILE_STATUS, &status);
-    if (status != GL_TRUE) {
-        GLint info_log_length;
-        glGetShaderiv(result, GL_INFO_LOG_LENGTH, &info_log_length);
-        std::string info_log(info_log_length, '\0');
-        glGetShaderInfoLog(result, info_log.size(), nullptr, info_log.data());
-        throw std::runtime_error("Shader compilation failed: " + info_log);
-    }
-    return result;
-}
-
-GLuint create_program(GLuint vertex_shader, GLuint fragment_shader) {
-    GLuint result = glCreateProgram();
-    glAttachShader(result, vertex_shader);
-    glAttachShader(result, fragment_shader);
-    glLinkProgram(result);
-
-    GLint status;
-    glGetProgramiv(result, GL_LINK_STATUS, &status);
-    if (status != GL_TRUE) {
-        GLint info_log_length;
-        glGetProgramiv(result, GL_INFO_LOG_LENGTH, &info_log_length);
-        std::string info_log(info_log_length, '\0');
-        glGetProgramInfoLog(result, info_log.size(), nullptr, info_log.data());
-        throw std::runtime_error("Program linkage failed: " + info_log);
-    }
-
-    return result;
-}
 
 int main() try {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -154,6 +77,9 @@ int main() try {
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
     auto program = new ProgramAdapter();
+    program->addPointLight(PointLight{Vector3F(0.5, 0, -1), Vector3F(0.5, 0.7, 0.1), Vector3F(1, 0, 0.1)});
+    program->addPointLight(PointLight{Vector3F(-0.5, 0.3, -2), Vector3F(0.8, 0.2, 0.3), Vector3F(1, 0, 0.1)});
+    program->addPointLight(PointLight{Vector3F(0, -0.3, -0.5), Vector3F(0.1, 0.1, 0.9), Vector3F(1, 0, 0.1)});
 
     std::string project_root = PROJECT_ROOT;
     std::string suzanne_model_path = project_root + "/suzanne.obj";
