@@ -12,6 +12,7 @@
 #include "objects/graphics/Texture.h"
 #include "FrameBuffer.h"
 #include <string>
+#include <SDL2/SDL_video.h>
 #include "structures/PointLight.h"
 
 class ProgramAdapter {
@@ -70,7 +71,7 @@ public:
 
     void setFrameBuffer(int width, int height);
 
-    void useProgram();
+    void useProgram(SDL_Window *window);
 
     void cleanUniformMatrix4FV(const GLchar *name);
 

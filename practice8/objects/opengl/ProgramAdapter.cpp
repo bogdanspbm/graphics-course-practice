@@ -5,8 +5,11 @@
 #include "ProgramAdapter.h"
 #include "utils/MathUtils.h"
 
-void ProgramAdapter::useProgram() {
+void ProgramAdapter::useProgram(SDL_Window *window) {
     glUseProgram(this->id);
+    int windowWidth, windowHeight;
+    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+    glViewport(0, 0, windowWidth, windowHeight);
 
     if (frameBuffer != nullptr) {
         frameBuffer->bindFrameBuffer();

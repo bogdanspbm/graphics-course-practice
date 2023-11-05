@@ -30,6 +30,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include "objects/opengl/ProgramAdapter.h"
 #include "objects/graphics/Placeable.h"
+#include "objects/opengl/ScreenView.h"
 
 
 std::string to_string(std::string_view str)
@@ -86,7 +87,13 @@ try
 
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
+    auto shadowProgram = new ProgramAdapter();
+    shadowProgram->setFrameBuffer(width, height);
+
     auto program = new ProgramAdapter();
+    auto screenView = new ScreenView(Vector2F{-0.5f, -0.5f}, Vector2F{0.5f, 0.5f});
+    screenView->setTexture(shadowProgram->getTexture());
+
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/buddha.obj";
@@ -157,8 +164,13 @@ try
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 
-        program->useProgram();
+        shadowProgram->useProgram(window);
         scene->draw();
+
+        program->useProgram(window);
+        scene->draw();
+
+        screenView->draw(window);
 
         SDL_GL_SwapWindow(window);
     }
