@@ -104,7 +104,7 @@ const char fragmentSource[] =
             vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
             shadowTextCoord = shadowTextCoord * 0.5 + 0.5;
             vec4 depthValue = texture(shadow_map, shadowTextCoord.xy);
-            float isVisible = (depth < depthValue.r) ? 1.0 : 0.0;;
+            float isVisible = (depth < depthValue.r + 0.01) ? 1.0 : 0.0;;
 
             if(isVisible > 0.5){
                 //out_color = depthValue;
