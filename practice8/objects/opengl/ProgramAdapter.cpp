@@ -4,6 +4,8 @@
 
 #include "ProgramAdapter.h"
 #include "utils/MathUtils.h"
+#include "glm/fwd.hpp"
+#include "glm/ext/matrix_transform.hpp"
 
 void ProgramAdapter::useProgram(SDL_Window *window) {
     glUseProgram(this->id);
@@ -130,39 +132,22 @@ void ProgramAdapter::setLight() {
 
 void ProgramAdapter::calcViewMatrix(float *matrix) {
     memset(matrix, 0, sizeof(float) * 16);
-    matrix[0] = 1.0f;
-    matrix[5] = 1.0f;
-    matrix[10] = 1.0f;
-    matrix[15] = 1.0f;
 
-    // Apply translation (camera position)
-    matrix[3] = -position.x;
-    matrix[7] = -position.y;
-    matrix[11] = -position.z;
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
+                               * glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
+                               * glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
-    // Apply rotation (camera rotation) - Assuming rotation is in degrees
-    float radX = rotation.x * M_PI / 180.0f;
-    float radY = rotation.y * M_PI / 180.0f;
-    float radZ = rotation.z * M_PI / 180.0f;
+    // Create a translation matrix based on the position vector
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, -position.y, -position.z));
 
-    float cosX = cosf(radX);
-    float sinX = sinf(radX);
-    float cosY = cosf(radY);
-    float sinY = sinf(radY);
-    float cosZ = cosf(radZ);
-    float sinZ = sinf(radZ);
+    // Calculate the view matrix by combining the rotation and translation matrices
+    glm::mat4 viewMatrix = translationMatrix * rotationMatrix;
 
-    matrix[0] = cosY * cosZ;
-    matrix[1] = cosX * sinZ + sinX * sinY * cosZ;
-    matrix[2] = sinX * sinZ - cosX * sinY * cosZ;
+    // Transpose the view matrix to obtain the column-major format
+    glm::mat4 transposedViewMatrix = glm::transpose(viewMatrix);
 
-    matrix[4] = -cosY * sinZ;
-    matrix[5] = cosX * cosZ - sinX * sinY * sinZ;
-    matrix[6] = sinX * cosZ + cosX * sinY * sinZ;
-
-    matrix[8] = sinY;
-    matrix[9] = -sinX * cosY;
-    matrix[10] = cosX * cosY;
+    // Copy the transposed view matrix to the output array
+    memcpy(matrix, &transposedViewMatrix[0][0], sizeof(float) * 16);
 }
 
 void ProgramAdapter::setResolution(float width, float height) {
