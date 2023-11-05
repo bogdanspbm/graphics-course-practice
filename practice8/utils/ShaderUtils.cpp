@@ -26,13 +26,14 @@ out vec3 shadowTextCoord;
 
 void main()
 {
-    vec4 shadowPosition =  projection * view * model  * vec4(in_position, 1.0);
+    vec4 shadowPosition =  projection*  view * model  * vec4(in_position, 1.0);
     gl_Position = projection * view * model * vec4(in_position, 1.0);
     normal = normalize(mat3(model) * in_normal);
     fragColor = in_color;
     texcoord = in_texcoord;
 
-    shadowTextCoord = 0.5 * (gl_Position.xyz + 1);
+    shadowTextCoord = 0.5 * shadowPosition.xyz + 0.5;
+    shadowTextCoord.z = (shadowPosition.z - near) / (far - near);
 }
 )";
 
@@ -99,7 +100,7 @@ const char fragmentSource[] =
                     color += CalcPointLight(pointLights[i]);
             }
 
-            vec4 depthValue = texture(shadow_map, shadowTextCoord.xy);
+            vec4 depthValue = texture(shadow_map, shadowTextCoord.xy );
             float isVisible = (shadowTextCoord.z <= depthValue.r) ? 1.0 : 0.0;;
 
             if(true){
@@ -110,6 +111,7 @@ const char fragmentSource[] =
             } else {
                 out_color = vec4(color * 0.5, 0.5);
             }
+
 
             out_color = vec4(vec3(shadowTextCoord.x),1);
         }
