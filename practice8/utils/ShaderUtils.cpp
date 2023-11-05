@@ -22,26 +22,27 @@ layout (location = 3) in vec3 in_color;
 out vec3 fragColor;
 out vec3 normal;
 out vec2 texcoord;
-out vec3 shadowTextCoord;
+out vec4 shadowPosition;
+out float depth;
 
 void main()
 {
-    vec4 shadowPosition =  projection*  view * model  * vec4(in_position, 1.0);
+    shadowPosition =  projection *  sun_view * model  * vec4(in_position, 1.0);
     gl_Position = projection * view * model * vec4(in_position, 1.0);
     normal = normalize(mat3(model) * in_normal);
     fragColor = in_color;
     texcoord = in_texcoord;
-
-    shadowTextCoord = 0.5 * shadowPosition.xyz + 0.5;
-    shadowTextCoord.z = (shadowPosition.z - near) / (far - near);
+    depth = (shadowPosition.z - near)/(far-near);
 }
 )";
 
 const char fragmentSource[] =
         R"(#version 330 core
         in vec3 normal;
-        in vec3 shadowTextCoord;
+        in vec3 fragColor;
+        in vec4 shadowPosition;
         in vec2 texcoord;
+        in float depth;
 
         uniform sampler2D shadow_map;
         uniform sampler2D textureLayer;
@@ -100,20 +101,20 @@ const char fragmentSource[] =
                     color += CalcPointLight(pointLights[i]);
             }
 
-            vec4 depthValue = texture(shadow_map, shadowTextCoord.xy );
-            float isVisible = (shadowTextCoord.z <= depthValue.r) ? 1.0 : 0.0;;
+            vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
+            shadowTextCoord = shadowTextCoord * 0.5 + 0.5;
+            vec4 depthValue = texture(shadow_map, shadowTextCoord.xy);
+            float isVisible = (depth < depthValue.r) ? 1.0 : 0.0;;
 
-            if(true){
+            if(isVisible > 0.5){
                 //out_color = depthValue;
                 //out_color = vec4(vec3(shadowTextCoord.z),1);
                 //out_color = depth;
-                out_color = depthValue;
+                  out_color = vec4(color, 0.5);
             } else {
                 out_color = vec4(color * 0.5, 0.5);
             }
 
-
-            out_color = vec4(vec3(shadowTextCoord.x),1);
         }
 )";
 

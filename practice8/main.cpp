@@ -91,8 +91,8 @@ try {
 
     auto program = new ProgramAdapter();
     program->setLightAdapter(shadowProgram);
-    program->setRotation(Vector3F(45, -45, 0));
-    program->setPosition(Vector3F(1,1,1));
+    //program->setRotation(Vector3F(45, -45, 0));
+    //program->setPosition(Vector3F(1,1,1));
 
     auto screenView = new ScreenView(Vector2F{0.75f, 0.75f}, Vector2F{0.25f, 0.25f});
     screenView->setTexture(shadowProgram->getTexture());
