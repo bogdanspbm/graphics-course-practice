@@ -12,7 +12,7 @@ FrameBuffer::FrameBuffer(int width, int height) {
 }
 
 void FrameBuffer::generateFrameBuffer() {
-    texture = new Texture();
+    texture = new Texture(width, height);
     glGenRenderbuffers(1, &depthRenderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
@@ -31,9 +31,11 @@ void FrameBuffer::generateFrameBuffer() {
 
 void FrameBuffer::bindFrameBuffer() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    glViewport(0, 0, width, height );
+
     glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, width / 2 - width / 6, height / 2);
 }
 
 Texture *FrameBuffer::getTexture() {

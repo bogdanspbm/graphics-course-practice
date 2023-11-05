@@ -85,12 +85,14 @@ try {
 
    // auto shadowProgram = new ProgramAdapter();
     auto shadowProgram = new ProgramAdapter(createShadowFragmentShader(), createShadowVertexShader());
-    shadowProgram->setFrameBuffer(width, height);
+    shadowProgram->setFrameBuffer(width * 2, height * 2);
     shadowProgram->setRotation(Vector3F(-45, 45, 10));
     shadowProgram->setPosition(Vector3F(1,1,1));
 
     auto program = new ProgramAdapter();
     program->setLightAdapter(shadowProgram);
+    //program->setRotation(Vector3F(-45, 45, 10));
+    //program->setPosition(Vector3F(1,1,1));
 
     auto screenView = new ScreenView(Vector2F{0.75f, 0.75f}, Vector2F{0.25f, 0.25f});
     screenView->setTexture(shadowProgram->getTexture());

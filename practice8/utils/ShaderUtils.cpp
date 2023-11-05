@@ -110,10 +110,10 @@ const char fragmentSource[] =
             float isVisible = (currentDepth <= depthValue.x) ? 1.0 : 0.0;;
 
             if(isVisible > 0.5){
-                //out_color = depthValue;
+                out_color = depthValue;
                 //out_color = vec4(vec3(shadowTextCoord.z),1);
                 //out_color = depth;
-                out_color = vec4(color, 0.5);
+                //out_color = vec4(color, 0.5);
             } else {
                 out_color = vec4(color * 0.5, 0.5);
             }

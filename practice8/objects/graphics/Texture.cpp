@@ -12,6 +12,20 @@ Texture::Texture() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+Texture::Texture(int width, int height) {
+    glGenTextures(1, &textureID);
+
+    this->width = width;
+    this->height = height;
+
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 Texture::Texture(const std::filesystem::path &path) {
     bindable = true;
     imageData = stbi_load(path.c_str(), &width, &height, &numChannels, 0);

@@ -29,6 +29,7 @@ public:
 
 public:
     Texture(std::filesystem::path const &path);
+    Texture(int width, int height);
 
     Texture();
 
