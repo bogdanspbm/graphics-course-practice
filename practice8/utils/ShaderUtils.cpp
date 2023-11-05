@@ -23,7 +23,6 @@ out vec3 fragColor;
 out vec3 normal;
 out vec2 texcoord;
 out vec3 shadowTextCoord;
-out float currentDepth;
 
 void main()
 {
@@ -33,11 +32,10 @@ void main()
     fragColor = in_color;
     texcoord = in_texcoord;
 
-    shadowTextCoord = 0.5 + 0.5 * (gl_Position.xyz);
-    currentDepth = (shadowTextCoord.z - near) / (far - near);
-    shadowTextCoord.z = currentDepth;
+    shadowTextCoord = 0.5 + 0.5 * (shadowPosition.xyz);
+    shadowTextCoord.z = (shadowTextCoord.z - near) / (far - near);
     //float mapDepth = depthValue.x;
-    //isVisible = (currentDepth <= mapDepth) ? 1.0 : 0.0;
+    //isVisible = (currentDepth < mapDepth) ? 1.0 : 0.0;
     //depth = depthValue;
 }
 )";
@@ -46,7 +44,6 @@ const char fragmentSource[] =
         R"(#version 330 core
         in vec3 normal;
         in vec3 shadowTextCoord;
-        in float currentDepth;
         in vec2 texcoord;
 
         uniform sampler2D shadow_map;
@@ -107,13 +104,13 @@ const char fragmentSource[] =
             }
 
             vec4 depthValue = texture(shadow_map, shadowTextCoord.xy);
-            float isVisible = (currentDepth <= depthValue.x) ? 1.0 : 0.0;;
+            float isVisible = (shadowTextCoord.z <= depthValue.r) ? 1.0 : 0.0;;
 
             if(isVisible > 0.5){
-                out_color = depthValue;
+                //out_color = depthValue;
                 //out_color = vec4(vec3(shadowTextCoord.z),1);
                 //out_color = depth;
-                //out_color = vec4(color, 0.5);
+                out_color = vec4(color, 0.5);
             } else {
                 out_color = vec4(color * 0.5, 0.5);
             }
