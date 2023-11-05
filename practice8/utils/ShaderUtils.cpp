@@ -94,6 +94,69 @@ const char fragmentSource[] =
         }
 )";
 
+const char shadowVertexSource[] =
+        R"(#version 330 core
+        uniform mat4 model;
+        uniform mat4 view;
+        uniform mat4 projection;
+
+        uniform float far;
+        uniform float near;
+
+        layout (location = 0) in vec3 in_position;
+        layout (location = 1) in vec3 in_normal;
+        layout (location = 2) in vec2 in_texcoord;
+        layout (location = 3) in vec3 in_color;
+
+        out vec3 fragColor;
+        out vec3 normal;
+        out vec2 texcoord;
+
+        void main()
+        {
+            gl_Position = projection * view * model * vec4(in_position, 1.0);
+            normal = normalize(mat3(model) * in_normal);
+            float depth = gl_Position.z; // Retrieve the depth value
+            depth = (depth - near) / (far - near);
+
+            fragColor = vec3(depth);
+            texcoord = in_texcoord;
+        }
+)";
+
+const char shadowFragmentSource[] =
+        R"(#version 330 core
+        in vec3 fragColor;
+        in vec3 normal;
+        in vec2 texcoord;
+
+        uniform sampler2D textureLayer;
+        uniform vec3 albedo;
+        uniform vec3 ambient_light;
+        uniform vec3 sun_color;
+        uniform vec3 sun_direction;
+        uniform vec3 view_direction;
+        uniform vec3 view_position;
+        uniform float roughness;
+        uniform float glossiness;
+
+        struct PointLight {
+            vec3 position;
+            vec3 color;
+            vec3 attenuation;
+        };
+
+        #define NR_POINT_LIGHTS 16
+        uniform PointLight pointLights[NR_POINT_LIGHTS];
+
+        layout (location = 0) out vec4 out_color;
+
+        void main()
+        {
+            out_color = vec4(fragColor, 1.0);
+        }
+)";
+
 // create_program
 GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
     // Create Program
@@ -171,6 +234,14 @@ GLuint createFragmentShader() {
 
 GLuint createFragmentShader(const char *shaderSource) {
     return createShader(GL_FRAGMENT_SHADER, shaderSource);
+}
+
+GLuint createShadowFragmentShader() {
+    return createShader(GL_FRAGMENT_SHADER, shadowFragmentSource);
+}
+
+GLuint createShadowVertexShader() {
+    return createShader(GL_VERTEX_SHADER, shadowVertexSource);
 }
 
 

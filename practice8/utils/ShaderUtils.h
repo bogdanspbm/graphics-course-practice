@@ -21,4 +21,8 @@ GLuint createFragmentShader(const char *shaderSource);
 
 GLuint createVertexShader(const char *shaderSource);
 
+GLuint createShadowFragmentShader();
+
+GLuint createShadowVertexShader();
+
 #endif //PRACTICE1_SHADERUTILS_H

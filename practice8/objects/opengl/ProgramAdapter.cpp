@@ -23,6 +23,8 @@ void ProgramAdapter::useProgram(SDL_Window *window) {
     bindPointLights();
     setUniformVector3F("view_direction", getForwardVector());
     setUniformVector3F("view_position", this->position);
+    setUniformFloat("near", near);
+    setUniformFloat("far", far);
 }
 
 void ProgramAdapter::setUniformMatrix4FV(const GLchar *name, GLfloat *value, bool transpose) {
@@ -106,7 +108,7 @@ void ProgramAdapter::setProjectionMatrix() {
 void ProgramAdapter::setViewMatrix() {
     float view[16];
     calcViewMatrix(view);
-    setUniformMatrix4FV("view", view, false);
+    setUniformMatrix4FV("view", view, true);
 }
 
 void ProgramAdapter::setLight() {
@@ -167,11 +169,11 @@ void ProgramAdapter::addPosition(Vector3F offset) {
     this->position.z += offset.z;
 }
 
-void ProgramAdapter::setRotation(Vector3F position) {
+void ProgramAdapter::setRotation(Vector3F rotation) {
     this->rotation = rotation;
 }
 
-void ProgramAdapter::addRotation(Vector3F offset) {
+void ProgramAdapter::addRotation(Vector3F rotation) {
     this->rotation.x += rotation.x;
     this->rotation.y += rotation.y;
     this->rotation.z += rotation.z;

@@ -39,7 +39,7 @@ private:
 
     // Projection Params
     float near = 0.001f;
-    float far = 1000.0f;
+    float far = 5.0f;
     float fov = 90;
 
 public:
@@ -87,9 +87,9 @@ public:
 
     void addPosition(Vector3F offset);
 
-    void setRotation(Vector3F position);
+    void setRotation(Vector3F rotation);
 
-    void addRotation(Vector3F offset);
+    void addRotation(Vector3F rotation);
 
     void setFOV(float fov);
 

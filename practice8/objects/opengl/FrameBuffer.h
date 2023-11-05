@@ -63,7 +63,7 @@ private:
     GLuint depthRenderbuffer;
     GLuint framebuffer;
 
-    Vector4F clearColor = Vector4F{0.2f, 0.4f, 0.2f, 0.f};
+    Vector4F clearColor = Vector4F{1.0f, 1.0f, 1.0f, 0.f};
 
     int width = 800, height = 400;
 public:
