@@ -14,8 +14,6 @@ uniform mat4 view;
 uniform float far;
 uniform float near;
 
-uniform sampler2D shadow_map;
-
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_normal;
 layout (location = 2) in vec2 in_texcoord;
@@ -24,8 +22,8 @@ layout (location = 3) in vec3 in_color;
 out vec3 fragColor;
 out vec3 normal;
 out vec2 texcoord;
-out float isVisible;
-out vec4 depth;
+out vec3 shadowTextCoord;
+out float currentDepth;
 
 void main()
 {
@@ -35,22 +33,23 @@ void main()
     fragColor = in_color;
     texcoord = in_texcoord;
 
-    vec3 shadowTextCoord = 0.5 + 0.5 * (gl_Position.xyz);
-    vec4 depthValue = texture(shadow_map, shadowTextCoord.xy);
-    float currentDepth = (shadowTextCoord.z - near) / (far - near);
-    float mapDepth = depthValue.x;
-    isVisible = (currentDepth <= mapDepth) ? 1.0 : 0.0;
-    depth = depthValue;
+    shadowTextCoord = 0.5 + 0.5 * (gl_Position.xyz);
+    currentDepth = (shadowTextCoord.z - near) / (far - near);
+    shadowTextCoord.z = currentDepth;
+    //float mapDepth = depthValue.x;
+    //isVisible = (currentDepth <= mapDepth) ? 1.0 : 0.0;
+    //depth = depthValue;
 }
 )";
 
 const char fragmentSource[] =
         R"(#version 330 core
         in vec3 normal;
-        in float isVisible;
-        in vec4 depth;
+        in vec3 shadowTextCoord;
+        in float currentDepth;
         in vec2 texcoord;
 
+        uniform sampler2D shadow_map;
         uniform sampler2D textureLayer;
         uniform vec3 albedo;
         uniform vec3 ambient_light;
@@ -107,9 +106,14 @@ const char fragmentSource[] =
                     color += CalcPointLight(pointLights[i]);
             }
 
-            if(isVisible < 0.5){
-                out_color = depth;
-               // out_color = vec4(color, 0.5);
+            vec4 depthValue = texture(shadow_map, shadowTextCoord.xy);
+            float isVisible = (currentDepth <= depthValue.x) ? 1.0 : 0.0;;
+
+            if(isVisible > 0.5){
+                //out_color = depthValue;
+                //out_color = vec4(vec3(shadowTextCoord.z),1);
+                //out_color = depth;
+                out_color = vec4(color, 0.5);
             } else {
                 out_color = vec4(color * 0.5, 0.5);
             }

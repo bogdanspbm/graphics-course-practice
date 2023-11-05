@@ -99,9 +99,11 @@ try {
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/buddha.obj";
+    std::string cow_text_path = project_root + "/cow.png";
 
     auto scene = new Placeable(program, scene_path);
     auto texture = new Texture();
+    auto cowTexture = new Texture(cow_text_path);
     scene->addTexture(texture);
     scene->setPosition({0, -0.5, -1.5});
     scene->setScale({0.75f, 0.75f, 0.75f});
@@ -109,7 +111,7 @@ try {
 
 
      program->setShadowMap(shadowProgram->getTexture());
-    //program->setShadowMap(cowTexture);
+     //program->setShadowMap(cowTexture);
     //screenView->setTexture(cowTexture);
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();

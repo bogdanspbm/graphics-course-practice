@@ -13,6 +13,7 @@ Texture::Texture() {
 }
 
 Texture::Texture(const std::filesystem::path &path) {
+    bindable = true;
     imageData = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
 
     if (imageData == nullptr) {

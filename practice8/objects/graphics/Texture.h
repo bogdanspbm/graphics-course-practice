@@ -21,6 +21,8 @@ private:
     float roughness = 0.3f;
     float glossiness = 5.f;
 
+    bool bindable = false;
+
 public:
     int width = 1024, height = 1024, numChannels = 3;
 
@@ -42,7 +44,12 @@ public:
 
     float getRoughness();
 
+    bool isBindable() {
+        return bindable;
+    }
+
     float setRoughness(float value);
+
     float setGlossiness(float value);
 };
 

@@ -60,12 +60,16 @@ void ProgramAdapter::cleanUniformMatrix4FV(const GLchar *name) {
 }
 
 void ProgramAdapter::bindTexture(Texture *texture) {
-    glBindTexture(GL_TEXTURE_2D, texture->getTextureID());
 
-    int textureLocation = glGetUniformLocation(this->id, texture->getLayerName().c_str());
+    if (texture->isBindable()) {
 
-    if (textureLocation != -1) {
-        glUniform1i(textureLocation, 0); // 0 corresponds to GL_TEXTURE0
+        glBindTexture(GL_TEXTURE_2D, texture->getTextureID());
+
+        int textureLocation = glGetUniformLocation(this->id, texture->getLayerName().c_str());
+
+        if (textureLocation != -1) {
+            glUniform1i(textureLocation, 0); // 0 corresponds to GL_TEXTURE0
+        }
     }
 
     setUniformVector3F("albedo", texture->getAlbedo());
