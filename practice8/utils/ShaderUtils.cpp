@@ -8,8 +8,9 @@ const char vertexSource[] =
         R"(#version 330 core
 
 uniform mat4 model;
-uniform mat4 view;
+uniform mat4 sun_view;
 uniform mat4 projection;
+uniform mat4 view;
 
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_normal;
@@ -18,10 +19,12 @@ layout (location = 3) in vec3 in_color;
 
 out vec3 fragColor;
 out vec3 normal;
+out vec4 shadowPosition;
 out vec2 texcoord;
 
 void main()
 {
+    //shadowPosition =  projection * sun_view * model * vec4(in_position, 1.0);
     gl_Position = projection * view * model * vec4(in_position, 1.0);
     normal = normalize(mat3(model) * in_normal);
     fragColor = in_color;
@@ -32,8 +35,10 @@ void main()
 const char fragmentSource[] =
         R"(#version 330 core
         in vec3 normal;
+        in vec4 shadowPosition;
         in vec2 texcoord;
 
+        uniform sampler2D shadowMap;
         uniform sampler2D textureLayer;
         uniform vec3 albedo;
         uniform vec3 ambient_light;

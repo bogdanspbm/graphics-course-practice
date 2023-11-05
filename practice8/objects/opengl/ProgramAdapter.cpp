@@ -115,6 +115,12 @@ void ProgramAdapter::setLight() {
     setUniformVector3F("ambient_light", ambientLight);
     setUniformVector3F("sun_color", sunLightColor);
     setUniformVector3F("sun_direction", sunDirection);
+
+    if (this->lightAdapter != nullptr) {
+        float sunView[16];
+        this->lightAdapter->calcViewMatrix(sunView);
+        setUniformMatrix4FV("sun_view", sunView, true);
+    }
 }
 
 void ProgramAdapter::calcViewMatrix(float *matrix) {
@@ -246,4 +252,9 @@ void ProgramAdapter::bindPointLights() {
         setUniformVector3F((itemName + ".color").c_str(), light.color);
         setUniformVector3F((itemName + ".attenuation").c_str(), light.attenuation);
     }
+}
+
+
+void ProgramAdapter::setLightAdapter(ProgramAdapter *adapter) {
+    this->lightAdapter = adapter;
 }

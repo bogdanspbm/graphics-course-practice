@@ -22,6 +22,8 @@ private:
     FrameBuffer *frameBuffer;
     GLuint id;
 
+    ProgramAdapter* lightAdapter;
+
     // Light
     Vector3F ambientLight = Vector3F(0.1f, 0.1f, 0.1f);
     Vector3F sunLightColor = Vector3F(0.8f, 0.5f, 0.8f);
@@ -107,7 +109,9 @@ public:
 
     void bindPointLights();
 
-protected:
+    void setLightAdapter(ProgramAdapter* adapter);
+
+
     void calcProjectionMatrix(float matrix[16]);
 
     void calcViewMatrix(float matrix[16]);

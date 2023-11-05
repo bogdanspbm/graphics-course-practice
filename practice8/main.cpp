@@ -90,6 +90,7 @@ try {
     shadowProgram->setPosition(Vector3F(1,1,1));
 
     auto program = new ProgramAdapter();
+    program->setLightAdapter(shadowProgram);
 
     auto screenView = new ScreenView(Vector2F{-0.5f, -0.5f}, Vector2F{0.5f, 0.5f});
     screenView->setTexture(shadowProgram->getTexture());
