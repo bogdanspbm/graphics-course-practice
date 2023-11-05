@@ -92,18 +92,25 @@ try {
     auto program = new ProgramAdapter();
     program->setLightAdapter(shadowProgram);
 
-    auto screenView = new ScreenView(Vector2F{-0.5f, -0.5f}, Vector2F{0.5f, 0.5f});
+    auto screenView = new ScreenView(Vector2F{0.75f, 0.75f}, Vector2F{0.25f, 0.25f});
     screenView->setTexture(shadowProgram->getTexture());
+
 
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/buddha.obj";
+
     auto scene = new Placeable(program, scene_path);
     auto texture = new Texture();
     scene->addTexture(texture);
     scene->setPosition({0, -0.5, -1.5});
     scene->setScale({0.75f, 0.75f, 0.75f});
     scene->setRotation({0, 180, 0});
+
+
+     program->setShadowMap(shadowProgram->getTexture());
+    //program->setShadowMap(cowTexture);
+    //screenView->setTexture(cowTexture);
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -163,10 +170,11 @@ try {
         glEnable(GL_CULL_FACE);
 
         shadowProgram->useProgram(window);
-        scene->draw();
+        scene->draw(shadowProgram);
 
+        glClearColor(0.8f, 0.8f, 1.f, 0.f);
         program->useProgram(window);
-        scene->draw();
+        scene->draw(program);
 
         screenView->draw(window);
 

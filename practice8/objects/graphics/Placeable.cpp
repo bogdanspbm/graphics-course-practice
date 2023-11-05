@@ -13,6 +13,14 @@ void Placeable::draw() {
     Renderable::draw();
 }
 
+void Placeable::draw(ProgramAdapter* adapter) {
+    program = adapter;
+    float modelMatrix[16];
+    this->calcModelMatrix(modelMatrix);
+    program->setUniformMatrix4FV("model", modelMatrix, true);
+    Renderable::draw();
+}
+
 void Placeable::addTexture(Texture *texture) {
     Renderable::addTexture(texture);
 }

@@ -21,6 +21,7 @@ void ProgramAdapter::useProgram(SDL_Window *window) {
     setViewMatrix();
     setLight();
     bindPointLights();
+    bindShadowMap();
     setUniformVector3F("view_direction", getForwardVector());
     setUniformVector3F("view_position", this->position);
     setUniformFloat("near", near);
@@ -257,4 +258,22 @@ void ProgramAdapter::bindPointLights() {
 
 void ProgramAdapter::setLightAdapter(ProgramAdapter *adapter) {
     this->lightAdapter = adapter;
+}
+
+void ProgramAdapter::setShadowMap(Texture *shadowMap) {
+    this->shadowMap = shadowMap;
+}
+
+void ProgramAdapter::bindShadowMap() {
+    if (shadowMap == nullptr) {
+        return;
+    }
+    glBindTexture(GL_TEXTURE_2D, shadowMap->getTextureID());
+
+    int textureLocation = glGetUniformLocation(this->id, "shadow_map");
+
+    if (textureLocation != -1) {
+        glUniform1i(textureLocation, 0); // 0 corresponds to GL_TEXTURE0
+    }
+
 }

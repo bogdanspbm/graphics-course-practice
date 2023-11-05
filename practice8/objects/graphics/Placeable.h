@@ -31,6 +31,8 @@ public:
 
     void draw() override;
 
+    void draw(ProgramAdapter *adapter);
+
 protected:
     void createVAO() override;
 

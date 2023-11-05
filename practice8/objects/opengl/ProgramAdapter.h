@@ -22,7 +22,8 @@ private:
     FrameBuffer *frameBuffer;
     GLuint id;
 
-    ProgramAdapter* lightAdapter;
+    ProgramAdapter *lightAdapter;
+    Texture *shadowMap;
 
     // Light
     Vector3F ambientLight = Vector3F(0.1f, 0.1f, 0.1f);
@@ -109,8 +110,11 @@ public:
 
     void bindPointLights();
 
-    void setLightAdapter(ProgramAdapter* adapter);
+    void setLightAdapter(ProgramAdapter *adapter);
 
+    void setShadowMap(Texture *shadowMap);
+
+    void bindShadowMap();
 
     void calcProjectionMatrix(float matrix[16]);
 

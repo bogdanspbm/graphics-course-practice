@@ -11,6 +11,10 @@ uniform mat4 model;
 uniform mat4 sun_view;
 uniform mat4 projection;
 uniform mat4 view;
+uniform float far;
+uniform float near;
+
+uniform sampler2D shadow_map;
 
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_normal;
@@ -19,26 +23,34 @@ layout (location = 3) in vec3 in_color;
 
 out vec3 fragColor;
 out vec3 normal;
-out vec4 shadowPosition;
 out vec2 texcoord;
+out float isVisible;
+out vec4 depth;
 
 void main()
 {
-    //shadowPosition =  projection * sun_view * model * vec4(in_position, 1.0);
+    vec4 shadowPosition =  projection * sun_view * model * vec4(in_position, 1.0);
     gl_Position = projection * view * model * vec4(in_position, 1.0);
     normal = normalize(mat3(model) * in_normal);
     fragColor = in_color;
     texcoord = in_texcoord;
+
+    vec3 shadowTextCoord = 0.5 + 0.5 * (gl_Position.xyz);
+    vec4 depthValue = texture(shadow_map, shadowTextCoord.xy);
+    float currentDepth = (shadowTextCoord.z - near) / (far - near);
+    float mapDepth = depthValue.x;
+    isVisible = (currentDepth <= mapDepth) ? 1.0 : 0.0;
+    depth = depthValue;
 }
 )";
 
 const char fragmentSource[] =
         R"(#version 330 core
         in vec3 normal;
-        in vec4 shadowPosition;
+        in float isVisible;
+        in vec4 depth;
         in vec2 texcoord;
 
-        uniform sampler2D shadowMap;
         uniform sampler2D textureLayer;
         uniform vec3 albedo;
         uniform vec3 ambient_light;
@@ -95,7 +107,12 @@ const char fragmentSource[] =
                     color += CalcPointLight(pointLights[i]);
             }
 
-            out_color = vec4(color, 0.5);
+            if(isVisible < 0.5){
+                out_color = depth;
+               // out_color = vec4(color, 0.5);
+            } else {
+                out_color = vec4(color * 0.5, 0.5);
+            }
         }
 )";
 
@@ -132,28 +149,6 @@ const char shadowVertexSource[] =
 const char shadowFragmentSource[] =
         R"(#version 330 core
         in vec3 fragColor;
-        in vec3 normal;
-        in vec2 texcoord;
-
-        uniform sampler2D textureLayer;
-        uniform vec3 albedo;
-        uniform vec3 ambient_light;
-        uniform vec3 sun_color;
-        uniform vec3 sun_direction;
-        uniform vec3 view_direction;
-        uniform vec3 view_position;
-        uniform float roughness;
-        uniform float glossiness;
-
-        struct PointLight {
-            vec3 position;
-            vec3 color;
-            vec3 attenuation;
-        };
-
-        #define NR_POINT_LIGHTS 16
-        uniform PointLight pointLights[NR_POINT_LIGHTS];
-
         layout (location = 0) out vec4 out_color;
 
         void main()
