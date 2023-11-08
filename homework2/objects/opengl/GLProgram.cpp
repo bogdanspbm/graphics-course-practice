@@ -23,6 +23,17 @@ bool GLProgram::setUniformMatrix4FV(const GLchar *name, GLfloat *value, bool tra
     return true;
 }
 
+bool GLProgram::setUniformVector2F(const GLchar *name, glm::vec2 vector) {
+    GLint uniformLocationID = glGetUniformLocation(programID, name);
+
+    if (uniformLocationID == -1) {
+        return false;
+    }
+
+    glUniform2f(uniformLocationID, vector.x, vector.y);
+    return true;
+}
+
 bool GLProgram::setUniformVector3F(const GLchar *name, glm::vec3 vector) {
     GLint uniformLocationID = glGetUniformLocation(programID, name);
 
@@ -59,5 +70,20 @@ void GLProgram::setProjectionMatrix() {
 
 GLuint GLProgram::getProgramID() {
     return programID;
+}
+
+bool GLProgram::setUniformInt(const GLchar *name, int value) {
+    GLint uniformLocationID = glGetUniformLocation(programID, name);
+
+    if (uniformLocationID == -1) {
+        return false;
+    }
+
+    glUniform1i(uniformLocationID, value);
+    return true;
+}
+
+FrameBuffer *GLProgram::getFrameBuffer() {
+    return frameBuffer;
 }
 

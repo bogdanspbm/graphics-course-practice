@@ -55,6 +55,10 @@ add_executable(${TARGET_NAME} main.cpp
 		objects/graphics/light/Ambient.h
 		objects/graphics/light/structures/PointLight.h
 		utils/MathUtils.h
+		objects/graphics/renderable/ScreenView.cpp
+		objects/graphics/renderable/ScreenView.h
+		objects/opengl/FrameBuffer.cpp
+		objects/opengl/FrameBuffer.h
 
 )
 target_include_directories(${TARGET_NAME} PUBLIC

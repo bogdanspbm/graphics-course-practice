@@ -11,6 +11,8 @@
 #include "Camera.h"
 #include "objects/graphics/light/Sun.h"
 #include "objects/graphics/light/Ambient.h"
+#include "glm/vec2.hpp"
+#include "FrameBuffer.h"
 
 class GLProgram {
 private:
@@ -25,6 +27,8 @@ private:
 
     SDL_Window *window;
 
+    FrameBuffer *frameBuffer;
+
 public:
     GLProgram(SDL_Window *window, ProgramType type) {
         this->window = window;
@@ -32,6 +36,10 @@ public:
         this->camera = new Camera(type);
         programID = createProgram(createVertexShader(type), createFragmentShader(type));
         GLProgram::programs[type] = this;
+
+        if (type == SHADOW) {
+            this->frameBuffer = new FrameBuffer(2048, 2048);
+        }
     }
 
     // Camera
@@ -73,6 +81,12 @@ public:
         SDL_GetWindowSize(window, camera->getWidth(), camera->getHeight());
         glViewport(0, 0, *camera->getWidth(), *camera->getHeight());
 
+        if (frameBuffer != nullptr) {
+            frameBuffer->bindFrameBuffer();
+        } else {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
         setViewMatrix();
         setProjectionMatrix();
 
@@ -83,6 +97,10 @@ public:
 
     bool setUniformFloat(const GLchar *name, float value);
 
+    bool setUniformInt(const GLchar *name, int value);
+
+    bool setUniformVector2F(const GLchar *name, glm::vec2 vector);
+
     bool setUniformVector3F(const GLchar *name, glm::vec3 vector);
 
     bool setUniformMatrix4FV(const GLchar *name, GLfloat *value, bool transpose);
@@ -90,6 +108,8 @@ public:
 public:
     // Getters
     Camera *getCamera();
+
+    FrameBuffer *getFrameBuffer();
 
     GLuint getProgramID();
 };
