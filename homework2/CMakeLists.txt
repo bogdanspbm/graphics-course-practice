@@ -46,6 +46,7 @@ add_executable(${TARGET_NAME} main.cpp
 		libs/stb_image.h
 		objects/graphics/Material.cpp
 		objects/graphics/Material.h
+		libs/stb_image.c
 
 )
 target_include_directories(${TARGET_NAME} PUBLIC
