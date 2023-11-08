@@ -47,6 +47,7 @@ add_executable(${TARGET_NAME} main.cpp
 		objects/graphics/Material.cpp
 		objects/graphics/Material.h
 		libs/stb_image.c
+		enums/GLTextureType.h
 
 )
 target_include_directories(${TARGET_NAME} PUBLIC

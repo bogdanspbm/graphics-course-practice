@@ -8,6 +8,7 @@
 #include <map>
 #include <filesystem>
 #include "libs/stb_image.h"
+#include "enums/GLTextureType.h"
 #include <GL/glew.h>
 
 class Texture {
@@ -20,20 +21,22 @@ private:
 
     unsigned char *imageData;
     GLuint textureID;
+    TextureType textureType;
 
     Texture(std::filesystem::path const &path);
+    Texture(std::filesystem::path const &path, TextureType textureType);
 
 public:
     Texture();
 
     Texture(int width, int height);
 
-    static Texture *getTexture(std::filesystem::path const &path) {
+    static Texture *getTexture(std::filesystem::path const &path, TextureType type) {
         if (cachedTextures.contains(path)) {
             return cachedTextures[path];
         }
 
-        Texture *texture = new Texture(path);
+        Texture *texture = new Texture(path, type);
         cachedTextures[path] = texture;
         return texture;
     }
@@ -44,7 +47,7 @@ public:
 
     GLuint getTextureID();
 
-    void bindTexture(int textureLayer);
+    void bindTexture();
 
 };
 

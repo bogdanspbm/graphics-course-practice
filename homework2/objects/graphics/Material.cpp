@@ -8,7 +8,7 @@
 void Material::bindMaterial() {
     for (int i = 0; i < textures.size(); i++) {
         auto texture = textures[i];
-        texture->bindTexture(i + GL_TEXTURE0);
+        texture->bindTexture();
     }
 
     GLProgram::getGLProgram()->setUniformVector3F("albedo", albedo);
