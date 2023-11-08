@@ -1,0 +1,87 @@
+
+#ifndef HOMEWORK2_GLPROGRAM_H
+#define HOMEWORK2_GLPROGRAM_H
+
+#include <map>
+#include <GL/glew.h>
+#include <SDL2/SDL_video.h>
+#include "utils/ShaderUtils.h"
+#include "glm/vec3.hpp"
+#include "enums/GLProgramType.h"
+#include "Camera.h"
+
+class GLProgram {
+private:
+
+    // Program Identification
+    static std::map<ProgramType, GLProgram *> programs;
+    static GLuint currentProgramID;
+    static ProgramType currentProgramType;
+
+    GLuint programID;
+    ProgramType type;
+
+    SDL_Window *window;
+
+public:
+    GLProgram(SDL_Window *window, ProgramType type) {
+        this->window = window;
+        this->type = type;
+        programID = createProgram(createVertexShader(type), createFragmentShader(type));
+        GLProgram::programs[type] = this;
+    }
+
+    // Camera
+    Camera *camera = new Camera();
+
+public:
+    static void createGLPrograms(SDL_Window *window) {
+        new GLProgram(window, MAIN);
+        new GLProgram(window, SHADOW);
+        new GLProgram(window, VIEW);
+    }
+
+    static GLProgram *getGLProgram(ProgramType type) {
+        if (GLProgram::programs.contains(type)) {
+            return GLProgram::programs[type];
+        }
+
+        return nullptr;
+    }
+
+    static GLProgram *getGLProgram() {
+        return getGLProgram(GLProgram::currentProgramType);
+    }
+
+private:
+    // Methods
+
+    void setViewMatrix();
+
+    void setProjectionMatrix();
+
+public:
+    // Methods
+    void useProgram() {
+        GLProgram::currentProgramType = type;
+        GLProgram::currentProgramID = programID;
+        glUseProgram(programID);
+
+        SDL_GetWindowSize(window, camera->getWidth(), camera->getHeight());
+        glViewport(0, 0, *camera->getWidth(), *camera->getHeight());
+
+        setViewMatrix();
+        setProjectionMatrix();
+    }
+
+    bool setUniformVector3F(const GLchar *name, glm::vec3 vector);
+
+    bool setUniformMatrix4FV(const GLchar *name, GLfloat *value, bool transpose);
+
+public:
+    // Getters
+    Camera *getCamera();
+};
+
+
+#endif //HOMEWORK2_GLPROGRAM_H

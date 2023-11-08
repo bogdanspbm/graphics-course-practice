@@ -12,12 +12,10 @@
 #include <string_view>
 #include <stdexcept>
 #include <iostream>
-#include <chrono>
 #include <vector>
 #include <map>
 #include <cmath>
-#include <fstream>
-#include <sstream>
+
 
 #define GLM_FORCE_SWIZZLE
 #define GLM_ENABLE_EXPERIMENTAL
@@ -28,9 +26,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "objects/opengl/ProgramAdapter.h"
-#include "objects/graphics/Placeable.h"
-#include "objects/opengl/ScreenView.h"
+#include "objects/opengl/GLProgram.h"
 
 
 std::string to_string(std::string_view str) {
@@ -83,38 +79,7 @@ try {
 
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
-   // auto shadowProgram = new ProgramAdapter();
-    auto shadowProgram = new ProgramAdapter(createShadowFragmentShader(), createShadowVertexShader());
-    shadowProgram->setFrameBuffer(width * 2, height * 2);
-    shadowProgram->setRotation(Vector3F(45, -45, 0));
-    shadowProgram->setPosition(Vector3F(1,1,1));
-
-    auto program = new ProgramAdapter();
-    program->setLightAdapter(shadowProgram);
-    //program->setRotation(Vector3F(45, -45, 0));
-    //program->setPosition(Vector3F(1,1,1));
-
-    auto screenView = new ScreenView(Vector2F{0.75f, 0.75f}, Vector2F{0.25f, 0.25f});
-    screenView->setTexture(shadowProgram->getTexture());
-
-
-
-    std::string project_root = PROJECT_ROOT;
-    std::string scene_path = project_root + "/buddha.obj";
-    std::string cow_text_path = project_root + "/cow.png";
-
-    auto scene = new Placeable(program, scene_path);
-    auto texture = new Texture();
-    auto cowTexture = new Texture(cow_text_path);
-    scene->addTexture(texture);
-    scene->setPosition({0, -0.5, -1.5});
-    scene->setScale({0.75f, 0.75f, 0.75f});
-    scene->setRotation({0, 180, 0});
-
-
-     program->setShadowMap(shadowProgram->getTexture());
-     //program->setShadowMap(cowTexture);
-    //screenView->setTexture(cowTexture);
+    GLProgram::createGLPrograms(window);
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -172,15 +137,6 @@ try {
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-
-        shadowProgram->useProgram(window);
-        scene->draw(shadowProgram);
-
-        glClearColor(0.8f, 0.8f, 1.f, 0.f);
-        program->useProgram(window);
-        scene->draw(program);
-
-        screenView->draw(window);
 
         SDL_GL_SwapWindow(window);
     }

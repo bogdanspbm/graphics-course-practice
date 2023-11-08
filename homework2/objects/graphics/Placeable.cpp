@@ -1,32 +1,29 @@
 //
-// Created by Bogdan Madzhuga on 02.10.2023.
+// Created by Bogdan Madzhuga on 08.11.2023.
 //
 
 #include "Placeable.h"
-#include "utils/ModelUtils.hpp"
-
 
 void Placeable::draw() {
     float modelMatrix[16];
     this->calcModelMatrix(modelMatrix);
-    program->setUniformMatrix4FV("model", modelMatrix, true);
-    Renderable::draw();
+    GLProgram::getGLProgram()->setUniformMatrix4FV("model", modelMatrix, true);
+    this->renderable->draw();
 }
 
-void Placeable::draw(ProgramAdapter* adapter) {
-    program = adapter;
-    float modelMatrix[16];
-    this->calcModelMatrix(modelMatrix);
-    program->setUniformMatrix4FV("model", modelMatrix, true);
-    Renderable::draw();
+void Placeable::setPosition(glm::vec3 position) {
+    this->position = position;
 }
 
-void Placeable::addTexture(Texture *texture) {
-    Renderable::addTexture(texture);
+void Placeable::setRotation(glm::vec3 rotation) {
+    this->rotation = rotation;
 }
 
-void Placeable::calcModelMatrix(float modelMatrix[16]) {
-    // Identity matrix to start with
+void Placeable::setScale(glm::vec3 scale) {
+    this->scale = scale;
+}
+
+void Placeable::calcModelMatrix(float modelMatrix[16]){
     memset(modelMatrix, 0, sizeof(modelMatrix));
     modelMatrix[0] = 1.0f;
     modelMatrix[5] = 1.0f;
@@ -62,84 +59,3 @@ void Placeable::calcModelMatrix(float modelMatrix[16]) {
     modelMatrix[9] = (-sinX * cosY) * scale.y;
     modelMatrix[10] = (cosX * cosY) * scale.z;
 }
-
-Renderable *Placeable::getModel() {
-    return this;
-}
-
-
-std::vector<Vertex> *Placeable::getVertices() {
-    return Renderable::getVertices();
-}
-
-std::vector<std::uint32_t> *Placeable::getIndices() {
-    return Renderable::getIndices();
-}
-
-Placeable::Placeable(ProgramAdapter *programAdapter, const std::filesystem::path &path) : Renderable(programAdapter,
-                                                                                                     path) {
-    this->program = programAdapter;
-    fillModelFromFile(this, path);
-    createVAO();
-    createVBO();
-    createEBO();
-    detachBuffers();
-}
-
-Placeable::Placeable() {
-
-}
-
-void Placeable::setPosition(Vector3F position) {
-    this->position = position;
-}
-
-void Placeable::setRotation(Vector3F rotation) {
-    this->rotation = rotation;
-}
-
-void Placeable::setScale(Vector3F scale) {
-    this->scale = scale;
-}
-
-void Placeable::createVAO() {
-    Renderable::createVAO();
-}
-
-void Placeable::bindVAO() {
-    Renderable::bindVAO();
-}
-
-void Placeable::createVBO() {
-    Renderable::createVBO();
-}
-
-void Placeable::bindVBO() {
-    Renderable::bindVBO();
-}
-
-void Placeable::updateVBO() {
-    Renderable::updateVBO();
-}
-
-void Placeable::createEBO() {
-    Renderable::createEBO();
-}
-
-void Placeable::bindEBO() {
-    Renderable::bindEBO();
-}
-
-void Placeable::updateEBO() {
-    Renderable::updateEBO();
-}
-
-void Placeable::detachBuffers() {
-    Renderable::detachBuffers();
-}
-
-void Placeable::setProgram(ProgramAdapter *program) {
-    this->program = program;
-    Renderable::setProgram(program);
-}
-

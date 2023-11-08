@@ -1,72 +1,77 @@
 //
-// Created by Bogdan Madzhuga on 30.09.2023.
+// Created by Bogdan Madzhuga on 08.11.2023.
 //
 
-#ifndef PRACTICE4_MODEL_H
-#define PRACTICE4_MODEL_H
+#ifndef HOMEWORK2_RENDERABLE_H
+#define HOMEWORK2_RENDERABLE_H
+
 
 #include <GL/glew.h>
-#include "vector"
-#include "structures/Vertex.h"
+#include <vector>
 #include "filesystem"
-#include "objects/opengl/ProgramAdapter.h"
-#include "Texture.h"
+#include "structures/Vertex.h"
+#include <map>
 
 class Renderable {
 
-protected:
+private:
+
+    static std::map<std::string, Renderable *> cachedRenderable;
+
+    // Identifier
+    std::string path = "";
+
     std::vector<Vertex> vertices;
     std::vector<std::uint32_t> indices;
-    std::vector<Texture *> textures;
-
-    ProgramAdapter *program;
 
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
 
-protected:
-    Renderable();
+    Renderable(std::filesystem::path const &path);
 
 public:
-    Renderable(ProgramAdapter *programAdapter, std::filesystem::path const &path);
+    static Renderable *getRenderable(std::filesystem::path const &path) {
+        if (cachedRenderable.contains(path)) {
+            return cachedRenderable[path];
+        }
 
-protected:
-
-    virtual void createVAO();
-
-    virtual void bindVAO();
-
-    virtual void createVBO();
-
-    virtual void bindVBO();
-
-    virtual void bindTextures();
-
-    virtual void updateVBO();
-
-    virtual void createEBO();
-
-    virtual void bindEBO();
-
-    virtual void updateEBO();
-
-    virtual void detachBuffers();
-
-    virtual void addTexture(Texture *texture);
-
-    virtual void setTexture(Texture *texture, int index);
-
-    virtual void setProgram(ProgramAdapter *program);
+        Renderable *renderable = new Renderable(path);
+        cachedRenderable[path] = renderable;
+        return renderable;
+    }
 
 public:
+    // Methods
+    virtual void draw() final;
 
-    virtual std::vector<Vertex> *getVertices();
+    virtual void createVAO() final;
 
-    std::vector<std::uint32_t> *getIndices();
+    virtual void bindVAO() final;
 
-    virtual void draw();
+    virtual void createVBO() final;
+
+    virtual void bindVBO() final;
+
+    virtual void bindTextures() final;
+
+    virtual void updateVBO() final;
+
+    virtual void createEBO() final;
+
+    virtual void bindEBO() final;
+
+    virtual void updateEBO() final;
+
+    virtual void detachBuffers() final;
+
+public:
+    // Getters
+    virtual std::vector<Vertex> *getVertices() final;
+
+    virtual std::vector<std::uint32_t> *getIndices() final;
+
 };
 
 
-#endif //PRACTICE4_MODEL_H
+#endif //HOMEWORK2_RENDERABLE_H

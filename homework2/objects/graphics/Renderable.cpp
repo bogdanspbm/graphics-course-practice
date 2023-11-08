@@ -1,19 +1,27 @@
 //
-// Created by Bogdan Madzhuga on 30.09.2023.
+// Created by Bogdan Madzhuga on 08.11.2023.
 //
 
 #include "Renderable.h"
-#include "utils/ModelUtils.hpp"
-
+#include "utils/ObjectUtils.h"
 
 std::vector<Vertex> *Renderable::getVertices() {
-    return &vertices;
+    return &this->vertices;
 }
 
 std::vector<std::uint32_t> *Renderable::getIndices() {
-    return &indices;
+    return &this->indices;
 }
 
+
+Renderable::Renderable(const std::filesystem::path &path) {
+    this->path = path;
+    fillRenderableFromFile(this, path);
+    createVAO();
+    createVBO();
+    createEBO();
+    detachBuffers();
+}
 
 void Renderable::createVAO() {
     glGenVertexArrays(1, &vao);
@@ -41,11 +49,6 @@ void Renderable::detachBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Renderable::addTexture(Texture *texture) {
-    textures.push_back(texture);
-
-}
-
 void Renderable::draw() {
     bindVAO();
 
@@ -58,19 +61,6 @@ void Renderable::draw() {
     }
 
     detachBuffers();
-}
-
-Renderable::Renderable(ProgramAdapter *programAdapter, const std::filesystem::path &path) {
-    this->program = programAdapter;
-    fillModelFromFile(this, path);
-    createVAO();
-    createVBO();
-    createEBO();
-    detachBuffers();
-}
-
-Renderable::Renderable() {
-
 }
 
 void Renderable::bindVAO() {
@@ -101,44 +91,19 @@ void Renderable::updateVBO() {
     const GLuint texcoordLocation = 2;
     const GLuint colorLocation = 3;
 
-    // Vertex attribute pointers
-    // Screen Position (Attribute 0)
     glEnableVertexAttribArray(positionLocation);
     glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, position));
 
-    // Normal (Attribute 1)
     glEnableVertexAttribArray(normalLocation);
     glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
 
-    // Texture Coordinates (Attribute 2)
     glEnableVertexAttribArray(texcoordLocation);
-    glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, texcoord));
+    glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, textCoord));
 
-    // Color (Attribute 3)
     glEnableVertexAttribArray(colorLocation);
     glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, color));
 }
 
 void Renderable::bindTextures() {
-    for (int i = 0; i < textures.size(); i++) {
-        Texture *texture = textures[i];
-        program->bindTexture(texture);
-    }
-}
-
-void Renderable::setProgram(ProgramAdapter *program) {
-    this->program = program;
-}
-
-void Renderable::setTexture(Texture *texture, int index) {
-
-    if(textures.size() <= index){
-        textures.push_back(texture);
-        return;
-    }
-
-    auto it = textures.begin();
-    std::advance(it, index);
-    textures.insert(it, texture);
 }
 

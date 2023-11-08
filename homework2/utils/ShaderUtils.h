@@ -2,10 +2,11 @@
 // Created by Bogdan Madzhuga on 05.09.2023.
 //
 
-#ifndef PRACTICE1_SHADERUTILS_H
-#define PRACTICE1_SHADERUTILS_H
+#ifndef HOMEWORK2_SHADERUTILS_H
+#define HOMEWORK2_SHADERUTILS_H
 
 #include <GL/glew.h>
+#include "enums/GLProgramType.h"
 
 GLuint createProgram(GLuint vertexShader, GLuint fragmentShader);
 
@@ -13,16 +14,9 @@ GLuint createShader(GLenum shaderType,
                     const char *shaderSource);
 
 
-GLuint createFragmentShader();
+GLuint createFragmentShader(ProgramType type);
 
-GLuint createVertexShader();
+GLuint createVertexShader(ProgramType type);
 
-GLuint createFragmentShader(const char *shaderSource);
 
-GLuint createVertexShader(const char *shaderSource);
-
-GLuint createShadowFragmentShader();
-
-GLuint createShadowVertexShader();
-
-#endif //PRACTICE1_SHADERUTILS_H
+#endif //HOMEWORK2_SHADERUTILS_H

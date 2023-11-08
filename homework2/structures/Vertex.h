@@ -7,14 +7,15 @@
 
 #include "array"
 #include "string"
-#include "Vector3F.h"
+#include "glm/vec3.hpp"
+#include "glm/vec2.hpp"
 
 class Vertex {
 public:
-    Vector3F position = {0, 0, 0};
-    Vector3F normal = {0, 0, 1};
-    std::array<float, 2> texcoord = {0, 0};
-    Vector3F color = {1, 1, 1};
+    glm::vec3 position = {0, 0, 0};
+    glm::vec3 normal = {0, 0, 1};
+    glm::vec2 textCoord = {0, 0};
+    glm::vec3 color = {1, 1, 1};
 
     std::string vertexToString() {
         return "(" + std::to_string(position.x) + ", " +

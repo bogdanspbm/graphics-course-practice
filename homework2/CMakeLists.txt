@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/modules")
 
-find_package(OpenGL REQUIRED)
+find_package(opengl REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(SDL2 REQUIRED)
 
@@ -26,40 +26,23 @@ set(TARGET_NAME "${PROJECT_NAME}")
 
 set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(${TARGET_NAME} main.cpp libs/stb_image.h libs/stb_image.c utils/ShaderUtils.cpp
-		utils/ShaderUtils.h
-		objects/opengl/ProgramAdapter.cpp
-		objects/opengl/ProgramAdapter.h
-		objects/input/KeyHandler.cpp
-		objects/input/KeyHandler.h
-		structures/Vertex.h
-		structures/Vector4F.h
-		structures/Vector2I.h
+add_executable(${TARGET_NAME} main.cpp libs/stb_image.h libs/stb_image.c
+		objects/opengl/GLProgram.cpp
+		utils/ShaderUtils.cpp
+		utils/shaders/ScreenViewShader.h
+		utils/shaders/MainShaders.h
+		utils/shaders/ShadowShader.h
+		objects/opengl/Camera.cpp
+		objects/opengl/Camera.h
 		objects/graphics/Renderable.cpp
 		objects/graphics/Renderable.h
 		structures/Vertex.h
-		utils/ModelUtils.hpp
-		utils/ModelUtils.cpp
-		objects/graphics/Landscape.cpp
-		objects/graphics/Landscape.h
-		utils/MathUtils.cpp
-		utils/MathUtils.h
 		objects/graphics/Placeable.cpp
 		objects/graphics/Placeable.h
-		structures/Vector3F.cpp
-		structures/Vector3F.h
-		structures/Polygon.h
-		objects/graphics/Isolines.h
-		objects/graphics/Isolines.cpp
-		objects/graphics/Texture.cpp
-		objects/graphics/Texture.h
-		objects/opengl/FrameBuffer.cpp
-		objects/opengl/FrameBuffer.h
-		objects/graphics/basic/Plane.cpp
-		objects/graphics/basic/Plane.h
-		objects/opengl/ScreenView.cpp
-		objects/opengl/ScreenView.h
-        structures/PointLight.h)
+		enums/GLProgramType.h
+		utils/ObjectUtils.h
+
+)
 target_include_directories(${TARGET_NAME} PUBLIC
 	"${SDL2_INCLUDE_DIRS}"
 	"${GLEW_INCLUDE_DIRS}"

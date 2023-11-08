@@ -1,72 +1,43 @@
 //
-// Created by Bogdan Madzhuga on 02.10.2023.
+// Created by Bogdan Madzhuga on 08.11.2023.
 //
 
-#ifndef HOMEWORK1_PLACEABLE_H
-#define HOMEWORK1_PLACEABLE_H
+#ifndef HOMEWORK2_PLACEABLE_H
+#define HOMEWORK2_PLACEABLE_H
 
-
+#include <string>
+#include <filesystem>
+#include "objects/opengl/GLProgram.h"
 #include "Renderable.h"
-#include "objects/opengl/ProgramAdapter.h"
 
-class Placeable : Renderable {
+
+class Placeable {
 private:
-    Vector3F position = Vector3F();
-    Vector3F rotation = Vector3F();
-    Vector3F scale = Vector3F();
-protected:
-    ProgramAdapter *program;
 
-protected:
-    Placeable();
+    glm::vec3 position = {0, 0, 0};
+    glm::vec3 rotation = {0, 0, 0};
+    glm::vec3 scale = {1, 1, 1};
 
-public:
-    Placeable(ProgramAdapter *programAdapter, std::filesystem::path const &path);
-
-    virtual void setPosition(Vector3F position);
-
-    virtual void setRotation(Vector3F rotation);
-
-    virtual void setScale(Vector3F scale);
-
-    void draw() override;
-
-    void draw(ProgramAdapter *adapter);
-
-protected:
-    void createVAO() override;
-
-    void bindVAO() override;
-
-    void createVBO() override;
-
-    void bindVBO() override;
-
-    void updateVBO() override;
-
-    void createEBO() override;
-
-    void bindEBO() override;
-
-    void updateEBO() override;
-
-    void detachBuffers() override;
-
-    void setProgram(ProgramAdapter *program);
+    // Identifier
+    std::string path = "";
+    Renderable *renderable;
 
 public:
+    Placeable(std::filesystem::path const &path);
 
-    std::vector<Vertex> *getVertices() override;
-
-    std::vector<std::uint32_t> *getIndices();
-
-    Renderable *getModel();
-
-    void addTexture(Texture *texture);
-
+private:
     void calcModelMatrix(float modelMatrix[16]);
 
+public:
+    // Methods
+    void draw();
+
+    virtual void setPosition(glm::vec3 position);
+
+    virtual void setRotation(glm::vec3 rotation);
+
+    virtual void setScale(glm::vec3 scale);
 };
 
 
-#endif //HOMEWORK1_PLACEABLE_H
+#endif //HOMEWORK2_PLACEABLE_H
