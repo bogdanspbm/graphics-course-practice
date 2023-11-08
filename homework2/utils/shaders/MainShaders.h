@@ -47,16 +47,18 @@ const char mainFragmentSource[] =
         in vec2 texcoord;
         in float depth;
 
+        uniform float roughness;
+        uniform float glossiness;
+        uniform sampler2D textures;
+
         uniform sampler2D shadow_map;
-        uniform sampler2D textureLayer;
+
         uniform vec3 albedo;
         uniform vec3 ambient_light;
         uniform vec3 sun_color;
         uniform vec3 sun_direction;
         uniform vec3 view_direction;
         uniform vec3 view_position;
-        uniform float roughness;
-        uniform float glossiness;
 
         struct PointLight {
             vec3 position;
@@ -94,6 +96,9 @@ const char mainFragmentSource[] =
 
         void main()
         {
+
+            vec4 textureColor = texture(textures, texcoord);
+
             vec3 ambient = albedo * ambient_light;
 
             vec3 sun_extra = (diffuse(sun_direction) + specular(sun_direction)) * sun_color;
@@ -117,6 +122,8 @@ const char mainFragmentSource[] =
             } else {
                 out_color = vec4(color * 0.5, 0.5);
             }
+
+            out_color = textureColor;
 
         }
 )";

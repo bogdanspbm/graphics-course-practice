@@ -74,7 +74,7 @@ GLuint Texture::getTextureID() {
 void Texture::bindTexture(int textureLayer) {
     glBindTexture(GL_TEXTURE_2D, getTextureID());
 
-    int textureLocation = glGetUniformLocation(GLProgram::getGLProgram()->getProgramID(), "texture");
+    int textureLocation = glGetUniformLocation(GLProgram::getGLProgram()->getProgramID(), "textures");
 
     if (textureLocation != -1) {
         glUniform1i(textureLocation, textureLayer); // 0 corresponds to GL_TEXTURE0
