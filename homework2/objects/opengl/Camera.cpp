@@ -78,6 +78,8 @@ void Camera::calcProjectionMatrix(float matrix[16]) {
 }
 
 void Camera::bindView() {
+    GLProgram::getGLProgram()->setUniformFloat("far", far);
+    GLProgram::getGLProgram()->setUniformFloat("near", near);
     GLProgram::getGLProgram()->setUniformVector3F("inputViewDirection", calculateForwardVector(getRotation()));
     GLProgram::getGLProgram()->setUniformVector3F("inputViewPosition", getLocation());
 }

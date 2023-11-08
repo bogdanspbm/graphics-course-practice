@@ -22,18 +22,14 @@ const char shadowVertexSource[] =
         layout (location = 3) in vec3 in_color;
 
         out vec3 fragColor;
-        out vec3 normal;
-        out vec2 texcoord;
 
         void main()
         {
             gl_Position = projection * view * model * vec4(in_position, 1.0);
-            normal = normalize(mat3(model) * in_normal);
             float depth = gl_Position.z; // Retrieve the depth value
             depth = (depth - near) / (far - near);
 
             fragColor = vec3(depth);
-            texcoord = in_texcoord;
         }
 )";
 

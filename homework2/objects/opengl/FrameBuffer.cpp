@@ -31,7 +31,7 @@ void FrameBuffer::generateFrameBuffer() {
 void FrameBuffer::bindFrameBuffer() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, width / 2, height / 2);
 
     glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

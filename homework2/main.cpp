@@ -28,6 +28,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include "objects/opengl/GLProgram.h"
 #include "objects/graphics/renderable/Placeable.h"
+#include "objects/graphics/renderable/ScreenView.h"
 
 
 std::string to_string(std::string_view str) {
@@ -83,6 +84,8 @@ try {
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
     GLProgram::createGLPrograms(window);
+
+    auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
     Ambient::getAmbient()->setColor({0.82, 0.80, 0.79});
     Sun::getSun()->setColor({0.62, 0.60, 0.59});
@@ -148,8 +151,15 @@ try {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
+        GLProgram::getGLProgram(SHADOW)->useProgram();
+        cowObject->draw();
+
         GLProgram::getGLProgram(MAIN)->useProgram();
         cowObject->draw();
+
+        glClearColor(0.8f, 0.8f, 1.f, 0.f);
+
+        screenView->draw();
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
