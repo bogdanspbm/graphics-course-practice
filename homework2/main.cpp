@@ -89,7 +89,7 @@ try {
 
     Ambient::getAmbient()->setColor({0.82, 0.80, 0.79});
     Sun::getSun()->setColor({0.62, 0.60, 0.59});
-    Sun::getSun()->setDirection({0, -2, -1});
+    Sun::getSun()->setDirection({0, 1, 1});
 
     auto cowObject = new Placeable(project_root + "/models/cow.obj");
     cowObject->getMaterial()->addTexture(Texture::getTexture(project_root + "/models/cow.png", DEFAULT));

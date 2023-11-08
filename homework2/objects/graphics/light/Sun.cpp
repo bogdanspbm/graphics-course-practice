@@ -12,6 +12,6 @@ Sun::Sun() {
 }
 
 void Sun::bindLight() {
-    GLProgram::getGLProgram()->setUniformVector3F("inputSunColor", light.color);
-    GLProgram::getGLProgram()->setUniformVector3F("inputSunDirection", light.direction);
+    GLProgram::getGLProgram()->setUniformVector3F("inputSunColor", glm::normalize(light.color));
+    GLProgram::getGLProgram()->setUniformVector3F("inputSunDirection", glm::normalize(light.direction));
 }
