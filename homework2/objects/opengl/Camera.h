@@ -20,7 +20,7 @@ private:
 
     // Projection Params
     float near = 0.001f;
-    float far = 5.0f;
+    float far = 15.0f;
     float fov = 90;
 
     // Program Type

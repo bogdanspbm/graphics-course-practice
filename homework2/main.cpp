@@ -89,12 +89,13 @@ try {
 
     Ambient::getAmbient()->setColor({0.82, 0.80, 0.79});
     Sun::getSun()->setColor({0.62, 0.60, 0.59});
+    Sun::getSun()->setDirection({0, -2, -1});
 
     auto cowObject = new Placeable(project_root + "/models/cow.obj");
     cowObject->getMaterial()->addTexture(Texture::getTexture(project_root + "/models/cow.png", DEFAULT));
     cowObject->getMaterial()->addTexture(Texture::getTexture(project_root + "/models/cow_normal.png", NORMAL_MAP));
-    cowObject->setPosition({0, 0, -2});
-    cowObject->setScale({0.5, 0.5, 0.5});
+    cowObject->setPosition({0, 0, -1});
+    cowObject->setScale({0.25, 0.25, 0.25});
     cowObject->setRotation({0, 135, 0});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();

@@ -15,6 +15,9 @@ Camera::Camera(ProgramType type) {
 }
 
 const glm::vec3 &Camera::getLocation() const {
+    if (type == SHADOW) {
+        return Sun::getSun()->getLocation();
+    }
     return location;
 }
 
@@ -37,11 +40,13 @@ void Camera::setRotation(const glm::vec3 &rotation) {
 void Camera::calcViewMatrix(float *matrix) {
     memset(matrix, 0, sizeof(float) * 16);
 
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(getRotation().x), glm::vec3(1.0f, 0.0f, 0.0f))
-                               * glm::rotate(glm::mat4(1.0f), glm::radians(getRotation().y), glm::vec3(0.0f, 1.0f, 0.0f))
-                               * glm::rotate(glm::mat4(1.0f), glm::radians(getRotation().z), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::vec3 rotation = getRotation();
 
-    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-location.x, -location.y, -location.z));
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
+                               * glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
+                               * glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-getLocation().x, -getLocation().y, -getLocation().z));
 
     glm::mat4 viewMatrix = translationMatrix * rotationMatrix;
 

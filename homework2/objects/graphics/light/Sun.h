@@ -7,11 +7,14 @@
 
 
 #include "objects/graphics/light/structures/DirectionLight.h"
+#include "utils/MathUtils.h"
+#include "glm/geometric.hpp"
 
 class Sun {
 private:
     static Sun *instance;
     DirectionLight light = DirectionLight{};
+    float height = 2;
 
 public:
     Sun();
@@ -28,11 +31,16 @@ public:
     }
 
     void setDirection(glm::vec3 direction) {
-        light.direction = direction;
+        light.direction = glm::normalize(direction);
     }
 
     glm::vec3 getRotation() {
-        return light.direction;
+        glm::vec3 rotation = directionToRotation(light.direction);
+        return rotation;
+    }
+
+    glm::vec3 getLocation() {
+        return {0, 0, height};
     }
 
     void bindLight();
