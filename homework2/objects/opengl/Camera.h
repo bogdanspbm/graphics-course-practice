@@ -7,6 +7,7 @@
 
 
 #include "glm/vec3.hpp"
+#include "enums/GLProgramType.h"
 
 class Camera {
 
@@ -22,7 +23,12 @@ private:
     float far = 5.0f;
     float fov = 90;
 
+    // Program Type
+    ProgramType type;
+
 public:
+    Camera(ProgramType type);
+
     const glm::vec3 &getLocation() const;
 
     void setLocation(const glm::vec3 &location);
@@ -34,6 +40,8 @@ public:
     void calcViewMatrix(float *matrix);
 
     void calcProjectionMatrix(float *matrix);
+
+    void bindView();
 
     int *getWidth() {
         return &width;

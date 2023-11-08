@@ -10,7 +10,7 @@
 #include <vector>
 #include "filesystem"
 #include "structures/Vertex.h"
-#include "Material.h"
+#include "objects/graphics/textures/Material.h"
 #include <map>
 
 class Renderable {

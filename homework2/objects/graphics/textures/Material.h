@@ -6,7 +6,7 @@
 #define HOMEWORK2_MATERIAL_H
 
 #include <vector>
-#include "Texture.h"
+#include "objects/graphics/textures/Texture.h"
 #include "glm/vec3.hpp"
 
 

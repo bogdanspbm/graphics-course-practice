@@ -9,6 +9,8 @@
 #include "glm/vec3.hpp"
 #include "enums/GLProgramType.h"
 #include "Camera.h"
+#include "objects/graphics/light/Sun.h"
+#include "objects/graphics/light/Ambient.h"
 
 class GLProgram {
 private:
@@ -27,12 +29,13 @@ public:
     GLProgram(SDL_Window *window, ProgramType type) {
         this->window = window;
         this->type = type;
+        this->camera = new Camera(type);
         programID = createProgram(createVertexShader(type), createFragmentShader(type));
         GLProgram::programs[type] = this;
     }
 
     // Camera
-    Camera *camera = new Camera();
+    Camera *camera;
 
 public:
     static void createGLPrograms(SDL_Window *window) {
@@ -72,6 +75,10 @@ public:
 
         setViewMatrix();
         setProjectionMatrix();
+
+        camera->bindView();
+        Sun::getSun()->bindLight();
+        Ambient::getAmbient()->bindLight();
     }
 
     bool setUniformFloat(const GLchar *name, float value);

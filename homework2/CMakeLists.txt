@@ -34,20 +34,27 @@ add_executable(${TARGET_NAME} main.cpp
 		utils/shaders/ShadowShader.h
 		objects/opengl/Camera.cpp
 		objects/opengl/Camera.h
-		objects/graphics/Renderable.cpp
-		objects/graphics/Renderable.h
+		objects/graphics/renderable/Renderable.cpp
+		objects/graphics/renderable/Renderable.h
 		structures/Vertex.h
-		objects/graphics/Placeable.cpp
-		objects/graphics/Placeable.h
+		objects/graphics/renderable/Placeable.cpp
+		objects/graphics/renderable/Placeable.h
 		enums/GLProgramType.h
 		utils/ObjectUtils.h
-		objects/graphics/Texture.cpp
-		objects/graphics/Texture.h
+		objects/graphics/textures/Texture.cpp
+		objects/graphics/textures/Texture.h
 		libs/stb_image.h
-		objects/graphics/Material.cpp
-		objects/graphics/Material.h
+		objects/graphics/textures/Material.cpp
+		objects/graphics/textures/Material.h
 		libs/stb_image.c
 		enums/GLTextureType.h
+		objects/graphics/light/structures/DirectionLight.h
+		objects/graphics/light/Sun.cpp
+		objects/graphics/light/Sun.h
+		objects/graphics/light/Ambient.cpp
+		objects/graphics/light/Ambient.h
+		objects/graphics/light/structures/PointLight.h
+		utils/MathUtils.h
 
 )
 target_include_directories(${TARGET_NAME} PUBLIC

@@ -6,6 +6,13 @@
 #include "Camera.h"
 #include "glm/fwd.hpp"
 #include "glm/ext/matrix_transform.hpp"
+#include "objects/graphics/light/Sun.h"
+#include "GLProgram.h"
+#include "utils/MathUtils.h"
+
+Camera::Camera(ProgramType type) {
+    this->type = type;
+}
 
 const glm::vec3 &Camera::getLocation() const {
     return location;
@@ -16,6 +23,9 @@ void Camera::setLocation(const glm::vec3 &location) {
 }
 
 const glm::vec3 &Camera::getRotation() const {
+    if (type == SHADOW) {
+        return Sun::getSun()->getRotation();
+    }
     return rotation;
 }
 
@@ -24,13 +34,12 @@ void Camera::setRotation(const glm::vec3 &rotation) {
 }
 
 
-
 void Camera::calcViewMatrix(float *matrix) {
     memset(matrix, 0, sizeof(float) * 16);
 
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
-                               * glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
-                               * glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(getRotation().x), glm::vec3(1.0f, 0.0f, 0.0f))
+                               * glm::rotate(glm::mat4(1.0f), glm::radians(getRotation().y), glm::vec3(0.0f, 1.0f, 0.0f))
+                               * glm::rotate(glm::mat4(1.0f), glm::radians(getRotation().z), glm::vec3(0.0f, 0.0f, 1.0f));
 
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-location.x, -location.y, -location.z));
 
@@ -66,4 +75,9 @@ void Camera::calcProjectionMatrix(float matrix[16]) {
     matrix[13] = 0.f;
     matrix[14] = -1.f;
     matrix[15] = 0.f;
+}
+
+void Camera::bindView() {
+    GLProgram::getGLProgram()->setUniformVector3F("inputViewDirection", calculateForwardVector(getRotation()));
+    GLProgram::getGLProgram()->setUniformVector3F("inputViewPosition", getLocation());
 }

@@ -27,7 +27,7 @@
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include "objects/opengl/GLProgram.h"
-#include "objects/graphics/Placeable.h"
+#include "objects/graphics/renderable/Placeable.h"
 
 
 std::string to_string(std::string_view str) {
@@ -83,12 +83,16 @@ try {
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
     GLProgram::createGLPrograms(window);
+
+    Ambient::getAmbient()->setColor({0.82, 0.80, 0.79});
+    Sun::getSun()->setColor({0.62, 0.60, 0.59});
+
     auto cowObject = new Placeable(project_root + "/models/cow.obj");
     cowObject->getMaterial()->addTexture(Texture::getTexture(project_root + "/models/cow.png", DEFAULT));
     cowObject->getMaterial()->addTexture(Texture::getTexture(project_root + "/models/cow_normal.png", NORMAL_MAP));
     cowObject->setPosition({0, 0, -2});
     cowObject->setScale({0.5, 0.5, 0.5});
-    cowObject->setRotation({0,135,0});
+    cowObject->setRotation({0, 135, 0});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 

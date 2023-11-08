@@ -12,7 +12,7 @@
 #include <map>
 #include "glm/vec3.hpp"
 #include "glm/vec2.hpp"
-#include "objects/graphics/Renderable.h"
+#include "objects/graphics/renderable/Renderable.h"
 
 namespace {
 
