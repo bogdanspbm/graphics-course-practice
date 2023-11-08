@@ -84,6 +84,7 @@ try {
 
     GLProgram::createGLPrograms(window);
     auto cowObject = new Placeable(project_root + "/models/cow.obj");
+    cowObject->getMaterial()->addTexture(Texture::getTexture(project_root + "/models/cow.png"));
     cowObject->setPosition({0, 0, -2});
     cowObject->setScale({0.5, 0.5, 0.5});
 

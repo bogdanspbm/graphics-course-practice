@@ -63,3 +63,7 @@ void Placeable::calcModelMatrix(float modelMatrix[16]){
 Placeable::Placeable(const std::filesystem::path &path) {
     this->renderable = Renderable::getRenderable(path);
 }
+
+Material *Placeable::getMaterial() {
+    return this->renderable->getMaterial();
+}

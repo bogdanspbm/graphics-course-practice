@@ -37,6 +37,8 @@ public:
     virtual void setRotation(glm::vec3 rotation);
 
     virtual void setScale(glm::vec3 scale);
+
+    virtual Material *getMaterial() final;
 };
 
 

@@ -10,6 +10,7 @@
 #include <vector>
 #include "filesystem"
 #include "structures/Vertex.h"
+#include "Material.h"
 #include <map>
 
 class Renderable {
@@ -23,6 +24,8 @@ private:
 
     std::vector<Vertex> vertices;
     std::vector<std::uint32_t> indices;
+
+    Material *material = new Material();
 
     GLuint vao;
     GLuint vbo;
@@ -53,8 +56,6 @@ public:
 
     virtual void bindVBO() final;
 
-    virtual void bindTextures() final;
-
     virtual void updateVBO() final;
 
     virtual void createEBO() final;
@@ -70,6 +71,8 @@ public:
     virtual std::vector<Vertex> *getVertices() final;
 
     virtual std::vector<std::uint32_t> *getIndices() final;
+
+    virtual Material *getMaterial() final;
 
 };
 

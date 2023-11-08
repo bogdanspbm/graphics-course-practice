@@ -74,6 +74,8 @@ public:
         setProjectionMatrix();
     }
 
+    bool setUniformFloat(const GLchar *name, float value);
+
     bool setUniformVector3F(const GLchar *name, glm::vec3 vector);
 
     bool setUniformMatrix4FV(const GLchar *name, GLfloat *value, bool transpose);
@@ -81,6 +83,8 @@ public:
 public:
     // Getters
     Camera *getCamera();
+
+    GLuint getProgramID();
 };
 
 

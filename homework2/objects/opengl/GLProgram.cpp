@@ -34,6 +34,17 @@ bool GLProgram::setUniformVector3F(const GLchar *name, glm::vec3 vector) {
     return true;
 }
 
+bool GLProgram::setUniformFloat(const GLchar *name, float value) {
+    GLint uniformLocationID = glGetUniformLocation(programID, name);
+
+    if (uniformLocationID == -1) {
+        return false;
+    }
+
+    glUniform1f(uniformLocationID, value);
+    return true;
+}
+
 void GLProgram::setViewMatrix() {
     float view[16];
     camera->calcViewMatrix(view);
@@ -44,5 +55,9 @@ void GLProgram::setProjectionMatrix() {
     float projection[16];
     camera->calcProjectionMatrix(projection);
     setUniformMatrix4FV("projection", projection, true);
+}
+
+GLuint GLProgram::getProgramID() {
+    return programID;
 }
 

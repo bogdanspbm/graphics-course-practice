@@ -26,7 +26,7 @@ set(TARGET_NAME "${PROJECT_NAME}")
 
 set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(${TARGET_NAME} main.cpp libs/stb_image.h libs/stb_image.c
+add_executable(${TARGET_NAME} main.cpp
 		objects/opengl/GLProgram.cpp
 		utils/ShaderUtils.cpp
 		utils/shaders/ScreenViewShader.h
@@ -41,6 +41,11 @@ add_executable(${TARGET_NAME} main.cpp libs/stb_image.h libs/stb_image.c
 		objects/graphics/Placeable.h
 		enums/GLProgramType.h
 		utils/ObjectUtils.h
+		objects/graphics/Texture.cpp
+		objects/graphics/Texture.h
+		libs/stb_image.h
+		objects/graphics/Material.cpp
+		objects/graphics/Material.h
 
 )
 target_include_directories(${TARGET_NAME} PUBLIC

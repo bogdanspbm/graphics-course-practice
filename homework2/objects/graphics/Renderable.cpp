@@ -15,6 +15,9 @@ std::vector<std::uint32_t> *Renderable::getIndices() {
     return &this->indices;
 }
 
+Material *Renderable::getMaterial() {
+    return material;
+}
 
 Renderable::Renderable(const std::filesystem::path &path) {
     this->path = path;
@@ -54,7 +57,7 @@ void Renderable::detachBuffers() {
 void Renderable::draw() {
     bindVAO();
 
-    bindTextures();
+    material->bindMaterial();
 
     if (!indices.empty()) {
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -100,12 +103,10 @@ void Renderable::updateVBO() {
     glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
 
     glEnableVertexAttribArray(texcoordLocation);
-    glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, textCoord));
+    glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void *) offsetof(Vertex, textCoord));
 
     glEnableVertexAttribArray(colorLocation);
     glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, color));
-}
-
-void Renderable::bindTextures() {
 }
 
