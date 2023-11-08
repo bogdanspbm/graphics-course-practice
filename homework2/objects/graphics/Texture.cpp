@@ -71,12 +71,15 @@ GLuint Texture::getTextureID() {
     return textureID;
 }
 
-void Texture::bindTexture(int textureLayer) {
+void Texture::bindTexture(int textureUnit) {
+    glActiveTexture(textureUnit);
     glBindTexture(GL_TEXTURE_2D, getTextureID());
 
-    int textureLocation = glGetUniformLocation(GLProgram::getGLProgram()->getProgramID(), "textures");
+    // Get the uniform location for the specific texture unit
+    std::string uniformName = "texture" + std::to_string(textureUnit - GL_TEXTURE0);
+    int textureLocation = glGetUniformLocation(GLProgram::getGLProgram()->getProgramID(), uniformName.c_str());
 
     if (textureLocation != -1) {
-        glUniform1i(textureLocation, textureLayer); // 0 corresponds to GL_TEXTURE0
+        glUniform1i(textureLocation, textureUnit - GL_TEXTURE0); // Set the uniform to the texture unit offset from GL_TEXTURE0
     }
 }

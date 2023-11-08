@@ -49,7 +49,9 @@ const char mainFragmentSource[] =
 
         uniform float roughness;
         uniform float glossiness;
-        uniform sampler2D textures;
+
+        uniform sampler2D texture0;
+        uniform sampler2D texture1;
 
         uniform sampler2D shadow_map;
 
@@ -97,7 +99,7 @@ const char mainFragmentSource[] =
         void main()
         {
 
-            vec4 textureColor = texture(textures, texcoord);
+            vec4 textureColor = texture(texture0, texcoord);
 
             vec3 ambient = albedo * ambient_light;
 
