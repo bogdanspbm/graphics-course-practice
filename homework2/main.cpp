@@ -27,6 +27,7 @@
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include "objects/opengl/GLProgram.h"
+#include "objects/graphics/Placeable.h"
 
 
 std::string to_string(std::string_view str) {
@@ -45,6 +46,8 @@ int main()
 try {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
         sdl2_fail("SDL_Init: ");
+
+    std::string project_root = PROJECT_ROOT;
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -80,6 +83,9 @@ try {
     glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
     GLProgram::createGLPrograms(window);
+    auto cowObject = new Placeable(project_root + "/models/cow.obj");
+    cowObject->setPosition({0, 0, -2});
+    cowObject->setScale({0.5, 0.5, 0.5});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -134,6 +140,9 @@ try {
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.8f, 0.8f, 1.f, 0.f);
+
+        GLProgram::getGLProgram(MAIN)->useProgram();
+        cowObject->draw();
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);

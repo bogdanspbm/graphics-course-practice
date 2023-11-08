@@ -5,6 +5,8 @@
 #include "Renderable.h"
 #include "utils/ObjectUtils.h"
 
+std::map<std::string, Renderable *> Renderable::cachedRenderable;
+
 std::vector<Vertex> *Renderable::getVertices() {
     return &this->vertices;
 }

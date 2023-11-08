@@ -59,3 +59,7 @@ void Placeable::calcModelMatrix(float modelMatrix[16]){
     modelMatrix[9] = (-sinX * cosY) * scale.y;
     modelMatrix[10] = (cosX * cosY) * scale.z;
 }
+
+Placeable::Placeable(const std::filesystem::path &path) {
+    this->renderable = Renderable::getRenderable(path);
+}
