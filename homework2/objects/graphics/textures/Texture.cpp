@@ -10,6 +10,8 @@ std::map<std::string, Texture *> Texture::cachedTextures;
 Texture::Texture() {
     glGenTextures(1, &textureID);
 
+    this->textureType = SHADOW_MAP;
+
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -22,6 +24,8 @@ Texture::Texture(int width, int height) {
 
     this->width = width;
     this->height = height;
+
+    this->textureType = SHADOW_MAP;
 
     glGenTextures(1, &textureID);
 
@@ -116,4 +120,8 @@ void Texture::bindTexture() {
         glUniform1i(textureLocation,
                     textureUnit - GL_TEXTURE0); // Set the uniform to the texture unit offset from GL_TEXTURE0
     }
+}
+
+void Texture::setTextureType(TextureType type) {
+    this->textureType = type;
 }

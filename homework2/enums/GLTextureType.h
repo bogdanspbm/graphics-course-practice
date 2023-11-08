@@ -11,7 +11,8 @@ enum TextureType{
     DEFAULT,
     NORMAL_MAP,
     GLOSS_MAP,
-    ROUGH_MAP
+    ROUGH_MAP,
+    SHADOW_MAP
 };
 
 static int getTextureUnit(TextureType type){
@@ -24,6 +25,8 @@ static int getTextureUnit(TextureType type){
             return 2 + GL_TEXTURE0;
         case ROUGH_MAP:
             return 3 + GL_TEXTURE0;
+        case SHADOW_MAP:
+            return 31 + GL_TEXTURE0;
     }
 
     return 0 + GL_TEXTURE0;

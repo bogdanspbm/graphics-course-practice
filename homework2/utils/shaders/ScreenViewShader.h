@@ -38,7 +38,7 @@ const char screenViewFragmentSource[] =
 
 in vec2 texCoord;
 uniform int fragmentFilter;
-uniform sampler2D texture0;
+uniform sampler2D texture31;
 
 layout (location = 0) out vec4 out_color;
 
@@ -57,19 +57,19 @@ void main(){
      }
 
     if (fragmentFilter == 3) { // Gaussian blur filter
-        vec2 texelSize = 1.0 / textureSize(texture0, 0); // Calculate the size of one texel
+        vec2 texelSize = 1.0 / textureSize(texture31, 0); // Calculate the size of one texel
         vec4 blurColor = vec4(0.0);
 
         for (int i = -kernelSize; i <= kernelSize; ++i) {
             for (int j = -kernelSize; j <= kernelSize; ++j) {
                 float weight = gaussian(float(i), sigma) * gaussian(float(j), sigma);
-                blurColor += texture(texture0, distTexCoord + vec2(float(i), float(j)) * texelSize) * weight;
+                blurColor += texture(texture31, distTexCoord + vec2(float(i), float(j)) * texelSize) * weight;
             }
         }
 
         out_color = blurColor;
     } else { // Other filters (1 and 2)
-        vec4 screenColor = texture(texture0, distTexCoord);
+        vec4 screenColor = texture(texture31, distTexCoord);
 
         if (fragmentFilter == 1) {
             screenColor = floor(screenColor * 4.0) / 3.0;

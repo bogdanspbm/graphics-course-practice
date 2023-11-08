@@ -49,6 +49,8 @@ public:
 
     void bindTexture();
 
+    void setTextureType(TextureType type);
+
 };
 
 
