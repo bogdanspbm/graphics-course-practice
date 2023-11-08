@@ -88,6 +88,7 @@ try {
     cowObject->getMaterial()->addTexture(Texture::getTexture(project_root + "/models/cow_normal.png"));
     cowObject->setPosition({0, 0, -2});
     cowObject->setScale({0.5, 0.5, 0.5});
+    cowObject->setRotation({0,135,0});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 

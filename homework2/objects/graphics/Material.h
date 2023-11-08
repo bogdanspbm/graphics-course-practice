@@ -13,9 +13,9 @@
 class Material {
 private:
     std::vector<Texture *> textures;
-    glm::vec3 albedo = {1, 1, 1};
-    float roughness = 1.f;
-    float glossiness = 1.f;
+    glm::vec3 albedo = {0.6, 0.6, 0.6};
+    float roughness = 0.1f;
+    float glossiness = 0.5f;
 
 public:
     // Methods

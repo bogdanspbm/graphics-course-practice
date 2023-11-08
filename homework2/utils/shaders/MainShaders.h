@@ -23,8 +23,8 @@ layout (location = 2) in vec2 in_texcoord;
 layout (location = 3) in vec3 in_color;
 
 out vec3 fragColor;
-out vec3 normal;
-out vec2 texcoord;
+out vec3 inputNormal;
+out vec2 texCoord;
 out vec4 shadowPosition;
 out float depth;
 
@@ -32,19 +32,19 @@ void main()
 {
     shadowPosition =  projection *  sun_view * model  * vec4(in_position, 1.0);
     gl_Position = projection * view * model * vec4(in_position, 1.0);
-    normal = normalize(mat3(model) * in_normal);
+    inputNormal = normalize(mat3(model) * in_normal);
     fragColor = in_color;
-    texcoord = in_texcoord;
+    texCoord = in_texcoord;
     depth = (shadowPosition.z - near)/(far-near);
 }
 )";
 
 const char mainFragmentSource[] =
         R"(#version 330 core
-        in vec3 normal;
+        in vec3 inputNormal;
         in vec3 fragColor;
         in vec4 shadowPosition;
-        in vec2 texcoord;
+        in vec2 texCoord;
         in float depth;
 
         uniform float roughness;
@@ -56,11 +56,11 @@ const char mainFragmentSource[] =
         uniform sampler2D shadow_map;
 
         uniform vec3 albedo;
-        uniform vec3 ambient_light;
-        uniform vec3 sun_color;
-        uniform vec3 sun_direction;
-        uniform vec3 view_direction;
-        uniform vec3 view_position;
+        uniform vec3 inputAmbientLight;
+        uniform vec3 inputSunColor;
+        uniform vec3 inputSunDirection;
+        uniform vec3 inputViewDirection;
+        uniform vec3 inputViewPosition;
 
         struct PointLight {
             vec3 position;
@@ -73,25 +73,31 @@ const char mainFragmentSource[] =
 
         layout (location = 0) out vec4 out_color;
 
-        vec3 diffuse(vec3 direction) {
+        vec3 diffuse(vec3 direction, vec3 normal) {
             return albedo * max(0.0, dot(normal, direction));
         }
 
-        vec3 specular(vec3 direction) {
+        vec3 specular(vec3 direction, vec3 normal) {
             float power = 1.0 / (roughness * roughness) - 1.0;
-            vec3 normalized_view = normalize(view_direction);
+
+            vec3 viewDirection  =  inputViewDirection;
+            if(viewDirection == vec3(0)){
+                viewDirection = vec3(0,0,-1);
+            }
+
+            vec3 normalizedViewDirection = normalize(viewDirection);
             vec3 reflected = reflect(-direction, normal);
 
-            return glossiness * albedo * pow(max(0.0, dot(reflected, normalized_view)), power);
+            return glossiness * albedo * pow(max(0.0, dot(reflected, normalizedViewDirection)), power);
         }
 
-        vec3 CalcPointLight(PointLight light)
+        vec3 CalcPointLight(PointLight light, vec3 normal)
         {
-            vec3 point_light_dir = light.position - view_position;
+            vec3 point_light_dir = light.position - inputViewPosition;
 
             float attenuation = dot(light.attenuation, vec3(1.0, length(point_light_dir), length(point_light_dir) * length(point_light_dir)));
 
-            vec3 point_light_extra = (diffuse(normalize(point_light_dir)) + specular(normalize(point_light_dir))) * light.color * attenuation;
+            vec3 point_light_extra = (diffuse(normalize(point_light_dir),normal) + specular(normalize(point_light_dir),normal)) * light.color * attenuation;
 
             return point_light_extra;
         }
@@ -99,17 +105,42 @@ const char mainFragmentSource[] =
         void main()
         {
 
-            vec4 textureColor = texture(texture0, texcoord);
+            vec4 textureColor = texture(texture0, texCoord);
 
-            vec3 ambient = albedo * ambient_light;
+            vec3 normalMapColor = texture(texture1, texCoord).xyz * 2.0 - 1.0;
+            vec3 perturbedNormal = normalize(inputNormal + normalMapColor);
 
-            vec3 sun_extra = (diffuse(sun_direction) + specular(sun_direction)) * sun_color;
+            vec3 defaultColor = textureColor.xyz;
 
-            vec3 color = ambient + sun_extra;
-
-            for(int i = 0; i < NR_POINT_LIGHTS; i++){
-                    color += CalcPointLight(pointLights[i]);
+            if(defaultColor == vec3(0)){
+                defaultColor = albedo;
             }
+
+            vec3 ambientLight = inputAmbientLight;
+
+            if(ambientLight == vec3(0)){
+                ambientLight = vec3(0.8);
+            }
+
+            vec3 ambient = defaultColor * ambientLight;
+
+            vec3 sunColor = inputSunColor;
+            if(sunColor == vec3(0)){
+                sunColor = vec3(0.8);
+            }
+
+            vec3 sunDirection = inputSunDirection;
+            if(sunDirection == vec3(0)){
+                sunDirection = vec3(0,0.8,0.6);
+            }
+
+            vec3 sunExtra = (diffuse(sunDirection, perturbedNormal) + specular(sunDirection, perturbedNormal)) * sunColor;
+
+            vec3 color = ambient + sunExtra;
+
+            //for(int i = 0; i < NR_POINT_LIGHTS; i++){
+            //        color += CalcPointLight(pointLights[i],perturbedNormal);
+            //}
 
             vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
             shadowTextCoord = shadowTextCoord * 0.5 + 0.5;
@@ -117,15 +148,12 @@ const char mainFragmentSource[] =
             float isVisible = (depth < depthValue.r + 0.01) ? 1.0 : 0.0;;
 
             if(isVisible > 0.5){
-                //out_color = depthValue;
-                //out_color = vec4(vec3(shadowTextCoord.z),1);
-                //out_color = depth;
                   out_color = vec4(color, 0.5);
             } else {
                 out_color = vec4(color * 0.5, 0.5);
             }
 
-            out_color = textureColor;
+            out_color = vec4(color,1);
 
         }
 )";
