@@ -93,9 +93,9 @@ try {
     Sun::getSun()->setDirection({0, 1, 1});
 
     auto renderList = loadRenderableListFromFile(project_root + "/sponza/sponza.obj");
-    std::vector<Placeable*> objectList;
+    std::vector<Placeable *> objectList;
 
-    for(auto renderable : renderList){
+    for (auto renderable: renderList) {
         objectList.push_back(new Placeable(renderable));
     }
 
@@ -165,18 +165,16 @@ try {
         glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
-        /*for(auto object : objectList){
-           object->draw();
-       }*/
+        for (int i = 0; i < objectList.size(); i++) {
+            objectList[i]->draw();
+        }
 
         cowObject->draw();
 
         GLProgram::getGLProgram(MAIN)->useProgram();
-        /*for(auto object : objectList){
-           object->draw();
-       }*/
-
-        objectList[1]->draw();
+        for (int i = 0; i < objectList.size(); i++) {
+            objectList[i]->draw();
+        }
 
         cowObject->draw();
 
