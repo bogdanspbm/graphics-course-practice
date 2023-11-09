@@ -20,9 +20,7 @@ uniform float near;
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_normal;
 layout (location = 2) in vec2 in_texcoord;
-layout (location = 3) in vec3 in_color;
 
-out vec3 fragColor;
 out vec3 inputNormal;
 out vec2 texCoord;
 out vec4 shadowPosition;
@@ -33,7 +31,6 @@ void main()
     shadowPosition =  projection *  sun_view * model  * vec4(in_position, 1.0);
     gl_Position = projection * view * model * vec4(in_position, 1.0);
     inputNormal = normalize(mat3(model) * in_normal);
-    fragColor = in_color;
     texCoord = in_texcoord;
     depth = (shadowPosition.z - near)/(far-near);
 }
@@ -42,7 +39,6 @@ void main()
 const char mainFragmentSource[] =
         R"(#version 330 core
         in vec3 inputNormal;
-        in vec3 fragColor;
         in vec4 shadowPosition;
         in vec2 texCoord;
         in float depth;
@@ -50,20 +46,18 @@ const char mainFragmentSource[] =
         uniform float roughness;
         uniform float glossiness;
 
-        uniform int texturesCount;
-
-        uniform sampler2D texture0;
-        uniform sampler2D texture1;
-        uniform sampler2D texture2;
-        uniform sampler2D texture3;
-        uniform sampler2D texture4;
-        uniform sampler2D texture5;
-        uniform sampler2D texture6;
-        uniform sampler2D texture7;
+        uniform sampler2D texture0; // ALBEDO
+        uniform sampler2D texture1; // NORMAL
+        uniform sampler2D texture2; // GLOSS
+        uniform sampler2D texture3; // ROUGH
+        uniform sampler2D texture4; // ALPHA
+        uniform sampler2D texture5; // SPECULAR
+        uniform sampler2D texture6; // BUMP_MAP
+        uniform sampler2D texture7; // DISPLACEMENT_MAP
         uniform sampler2D texture8;
         uniform sampler2D texture9;
 
-        uniform sampler2D shadow_map;
+        uniform sampler2D texture31; // SHADOW_MAP
 
         uniform vec3 inputAlbedo;
         uniform vec3 inputAmbientLight;
@@ -122,7 +116,7 @@ const char mainFragmentSource[] =
 
             vec3 defaultColor = textureColor.xyz;
 
-            if(texturesCount == 0){
+            if(textureColor.xyz == vec3(0)){
                 defaultColor = inputAlbedo;
             }
 
@@ -154,7 +148,7 @@ const char mainFragmentSource[] =
 
             vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
             shadowTextCoord = shadowTextCoord * 0.5 + 0.5;
-            vec4 depthValue = texture(shadow_map, shadowTextCoord.xy);
+            vec4 depthValue = texture(texture31, shadowTextCoord.xy);
             float isVisible = (depth < depthValue.r + 0.01) ? 1.0 : 0.0;;
 
             if(isVisible > 0.5){

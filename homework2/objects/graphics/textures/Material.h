@@ -37,6 +37,8 @@ public:
     // Methods
     void bindMaterial();
 
+    void clearTextures();
+
     void addTexture(Texture *texture);
 
     void setTexture(int index, Texture *texture);

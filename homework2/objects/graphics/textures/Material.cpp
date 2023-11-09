@@ -8,17 +8,13 @@
 std::map<std::string, Material *> Material::cachedMaterials;
 
 void Material::bindMaterial() {
-
-    if (textures.empty()) {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+    clearTextures();
 
     for (int i = 0; i < textures.size(); i++) {
         auto texture = textures[i];
         texture->bindTexture();
     }
 
-    GLProgram::getGLProgram()->setUniformInt("texturesCount", textures.size());
     GLProgram::getGLProgram()->setUniformVector3F("inputAlbedo", albedo);
     GLProgram::getGLProgram()->setUniformFloat("roughness", roughness);
     GLProgram::getGLProgram()->setUniformFloat("glossiness", glossiness);
@@ -46,4 +42,13 @@ void Material::setGlossiness(float glossiness) {
 
 void Material::setOpacity(float opacity) {
     Material::opacity = opacity;
+}
+
+void Material::clearTextures() {
+    for (int i = 0; i < TextureType::SHADOW_MAP; i++) {
+        TextureType type = static_cast<TextureType>(i);
+        Texture *texture = new Texture();
+        texture->setTextureType(type);
+        texture->bindTexture();
+    }
 }

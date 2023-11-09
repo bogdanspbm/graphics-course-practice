@@ -117,8 +117,7 @@ void Texture::bindTexture() {
     int textureLocation = glGetUniformLocation(GLProgram::getGLProgram()->getProgramID(), uniformName.c_str());
 
     if (textureLocation != -1) {
-        glUniform1i(textureLocation,
-                    textureUnit - GL_TEXTURE0); // Set the uniform to the texture unit offset from GL_TEXTURE0
+        glUniform1i(textureLocation, textureUnit - GL_TEXTURE0); // Set the uniform to the texture unit offset from GL_TEXTURE0
     }
 }
 
