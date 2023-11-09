@@ -118,3 +118,6 @@ void Renderable::generateBuffers() {
     detachBuffers();
 }
 
+void Renderable::setMaterialName(std::string name) {
+    this->materialName = name;
+}

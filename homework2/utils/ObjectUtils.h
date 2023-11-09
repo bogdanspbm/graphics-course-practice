@@ -179,18 +179,21 @@ inline std::vector<Renderable *> loadRenderableListFromFile(std::filesystem::pat
                 std::string objectName;
                 ls >> objectName;
 
-                if (model != nullptr && model->getIndices()->size() != 0 ) {
+                if (model != nullptr && model->getIndices()->size() != 0) {
                     model->generateBuffers();
                     output.push_back(model);
                 }
 
-                //positions.clear();
-                //normals.clear();
-                //textCoords.clear();
-                //index_map.clear();
                 model = Renderable::getRenderableByName(objectName);
             }
 
+            continue;
+        }
+
+        if (tag == "usemtl") {
+            std::string materialName;
+            ls >> materialName;
+            model->setMaterialName(materialName);
             continue;
         }
 

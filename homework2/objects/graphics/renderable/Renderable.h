@@ -22,6 +22,7 @@ private:
     // Identifier
     std::string path = "";
     std::string name = "";
+    std::string materialName = "";
 
     std::vector<Vertex> vertices;
     std::vector<std::uint32_t> indices;
@@ -33,6 +34,7 @@ private:
     GLuint ebo;
 
     Renderable(std::filesystem::path const &path);
+
     Renderable();
 
 public:
@@ -89,6 +91,8 @@ public:
     virtual std::vector<std::uint32_t> *getIndices() final;
 
     virtual Material *getMaterial() final;
+
+    virtual void setMaterialName(std::string name);
 
 };
 
