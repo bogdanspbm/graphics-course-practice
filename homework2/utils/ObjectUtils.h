@@ -185,6 +185,7 @@ inline std::vector<Renderable *> loadRenderableListFromFile(std::filesystem::pat
                 }
 
                 model = Renderable::getRenderableByName(objectName);
+                model->setPath(path);
             }
 
             continue;
@@ -284,6 +285,145 @@ inline std::vector<Renderable *> loadRenderableListFromFile(std::filesystem::pat
                 model->getIndices()->push_back(vertices[i + 1]);
             }
         }
+    }
+
+    return output;
+}
+
+inline std::vector<Material *> loadMaterialListFromFile(std::filesystem::path const &path) {
+    std::ifstream is(path);
+
+    std::vector<Material *> output;
+
+    Material *material = nullptr;
+
+
+    std::string line;
+    std::size_t line_count = 0;
+
+    auto fail = [&](auto const &... args) {
+        throw std::runtime_error(to_string("Error parsing OBJ data, line ", line_count, ": ", args...));
+    };
+
+    while (std::getline(is >> std::ws, line)) {
+        ++line_count;
+
+        if (line.empty()) continue;
+
+        std::istringstream ls(std::move(line));
+
+        std::string tag;
+        ls >> tag;
+
+        if (tag == "#") {
+            continue;
+        }
+
+        if (tag == "newmtl") {
+            std::string materialName;
+            ls >> materialName;
+
+            if (material != nullptr) {
+                output.push_back(material);
+            }
+
+            material = Material::getMaterialByName(materialName);
+            continue;
+        }
+
+        if (tag == "Ns") {
+            float glossines;
+            ls >> glossines;
+            material->setGlossiness(glossines);
+        } else if (tag == "d") {
+            float dissolve;
+            ls >> dissolve;
+            material->setOpacity(1 - dissolve);
+        } else if (tag == "Tr") {
+            float transparent;
+            ls >> transparent;
+            material->setOpacity(transparent);
+        } else if (tag == "Pr") {
+            float roughness;
+            ls >> roughness;
+            material->setRoughness(roughness);
+        } else if (tag == "map_Ka") {
+            std::string textureName;
+            ls >> textureName;
+
+            for (char& c : textureName) {
+                if (c == '\\') {
+                    c = std::filesystem::path::preferred_separator;
+                }
+            }
+
+            std::filesystem::path directory = path.parent_path();
+            std::filesystem::path texturePath = directory / textureName;
+
+            Texture *texture = Texture::getTexture(texturePath, DEFAULT);
+            material->addTexture(texture);
+        } else if (tag == "map_Kd") {
+            std::string textureName;
+            ls >> textureName;
+
+            for (char& c : textureName) {
+                if (c == '\\') {
+                    c = std::filesystem::path::preferred_separator;
+                }
+            }
+
+            std::filesystem::path directory = path.parent_path();
+            std::filesystem::path texturePath = directory / textureName;
+
+            Texture *texture = Texture::getTexture(texturePath, DEFAULT);
+            material->addTexture(texture);
+        } else if (tag == "map_bump") {
+            std::string textureName;
+            ls >> textureName;
+
+            for (char& c : textureName) {
+                if (c == '\\') {
+                    c = std::filesystem::path::preferred_separator;
+                }
+            }
+
+            std::filesystem::path directory = path.parent_path();
+            std::filesystem::path texturePath = directory / textureName;
+
+            Texture *texture = Texture::getTexture(texturePath, BUMP_MAP);
+            material->addTexture(texture);
+        } else if (tag == "map_d") {
+            std::string textureName;
+            ls >> textureName;
+
+            for (char& c : textureName) {
+                if (c == '\\') {
+                    c = std::filesystem::path::preferred_separator;
+                }
+            }
+
+            std::filesystem::path directory = path.parent_path();
+            std::filesystem::path texturePath = directory / textureName;
+
+            Texture *texture = Texture::getTexture(texturePath, DISPLACEMENT_MAP);
+            material->addTexture(texture);
+        } else if (tag == "map_Ks") {
+            std::string textureName;
+            ls >> textureName;
+
+            for (char& c : textureName) {
+                if (c == '\\') {
+                    c = std::filesystem::path::preferred_separator;
+                }
+            }
+
+            std::filesystem::path directory = path.parent_path();
+            std::filesystem::path texturePath = directory / textureName;
+
+            Texture *texture = Texture::getTexture(texturePath, SPECULAR_MAP);
+            material->addTexture(texture);
+        }
+
     }
 
     return output;

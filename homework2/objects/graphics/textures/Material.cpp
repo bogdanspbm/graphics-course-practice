@@ -5,6 +5,8 @@
 #include "Material.h"
 #include "objects/opengl/GLProgram.h"
 
+std::map<std::string, Material *> Material::cachedMaterials;
+
 void Material::bindMaterial() {
 
     if (textures.empty()) {
@@ -28,4 +30,20 @@ void Material::addTexture(Texture *texture) {
 
 void Material::setTexture(int index, Texture *texture) {
     textures[index] = texture;
+}
+
+void Material::setAlbedo(const glm::vec3 &albedo) {
+    Material::albedo = albedo;
+}
+
+void Material::setRoughness(float roughness) {
+    Material::roughness = roughness;
+}
+
+void Material::setGlossiness(float glossiness) {
+    Material::glossiness = glossiness;
+}
+
+void Material::setOpacity(float opacity) {
+    Material::opacity = opacity;
 }

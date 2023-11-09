@@ -16,7 +16,7 @@ std::vector<std::uint32_t> *Renderable::getIndices() {
 }
 
 Material *Renderable::getMaterial() {
-    return material;
+    return Material::getMaterialByName(this->getMaterialName());
 }
 
 Renderable::Renderable(const std::filesystem::path &path) {
@@ -54,7 +54,7 @@ void Renderable::detachBuffers() {
 void Renderable::draw() {
     bindVAO();
 
-    material->bindMaterial();
+    this->getMaterial()->bindMaterial();
 
     if (!indices.empty()) {
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -120,4 +120,8 @@ void Renderable::generateBuffers() {
 
 void Renderable::setMaterialName(std::string name) {
     this->materialName = name;
+}
+
+void Renderable::setPath(std::string path) {
+    this->path = path;
 }

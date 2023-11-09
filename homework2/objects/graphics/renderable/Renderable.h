@@ -27,8 +27,6 @@ private:
     std::vector<Vertex> vertices;
     std::vector<std::uint32_t> indices;
 
-    Material *material = new Material();
-
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
@@ -57,6 +55,24 @@ public:
         cachedRenderable[name] = renderable;
         renderable->name = name;
         return renderable;
+    }
+
+protected:
+
+    std::string getMaterialName() {
+        if (materialName != "") {
+            return materialName;
+        }
+
+        if (name != "") {
+            return name;
+        }
+
+        if (path != "") {
+            return path;
+        }
+
+        return path;
     }
 
 public:
@@ -93,6 +109,8 @@ public:
     virtual Material *getMaterial() final;
 
     virtual void setMaterialName(std::string name);
+
+    virtual void setPath(std::string path);
 
 };
 

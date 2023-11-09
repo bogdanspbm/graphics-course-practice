@@ -93,6 +93,7 @@ try {
     Sun::getSun()->setDirection({0, 1, -2});
 
     auto renderList = loadRenderableListFromFile(project_root + "/sponza/sponza.obj");
+    auto materialList = loadMaterialListFromFile(project_root + "/sponza/sponza.mtl");
     std::vector<Placeable *> objectList;
 
     for (auto renderable: renderList) {
