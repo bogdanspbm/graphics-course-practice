@@ -50,6 +50,8 @@ const char mainFragmentSource[] =
         uniform float roughness;
         uniform float glossiness;
 
+        uniform int texturesCount;
+
         uniform sampler2D texture0;
         uniform sampler2D texture1;
 
@@ -112,7 +114,7 @@ const char mainFragmentSource[] =
 
             vec3 defaultColor = textureColor.xyz;
 
-            if(defaultColor == vec3(0)){
+            if(texturesCount == 0){
                 defaultColor = albedo;
             }
 
