@@ -65,7 +65,7 @@ const char mainFragmentSource[] =
 
         uniform sampler2D shadow_map;
 
-        uniform vec3 albedo;
+        uniform vec3 inputAlbedo;
         uniform vec3 inputAmbientLight;
         uniform vec3 inputSunColor;
         uniform vec3 inputSunDirection;
@@ -83,11 +83,11 @@ const char mainFragmentSource[] =
 
         layout (location = 0) out vec4 out_color;
 
-        vec3 diffuse(vec3 direction, vec3 normal) {
+        vec3 diffuse(vec3 albedo, vec3 direction, vec3 normal) {
             return albedo * max(0.0, dot(normal, direction));
         }
 
-        vec3 specular(vec3 direction, vec3 normal) {
+        vec3 specular(vec3 albedo, vec3 direction, vec3 normal) {
             float power = 1.0 / (roughness * roughness) - 1.0;
 
             vec3 viewDirection  =  inputViewDirection;
@@ -101,13 +101,13 @@ const char mainFragmentSource[] =
             return glossiness * albedo * pow(max(0.0, dot(reflected, normalizedViewDirection)), power);
         }
 
-        vec3 CalcPointLight(PointLight light, vec3 normal)
+        vec3 CalcPointLight(vec3 albedo, PointLight light, vec3 normal)
         {
             vec3 point_light_dir = light.position - inputViewPosition;
 
             float attenuation = dot(light.attenuation, vec3(1.0, length(point_light_dir), length(point_light_dir) * length(point_light_dir)));
 
-            vec3 point_light_extra = (diffuse(normalize(point_light_dir),normal) + specular(normalize(point_light_dir),normal)) * light.color * attenuation;
+            vec3 point_light_extra = (diffuse(albedo, normalize(point_light_dir),normal) + specular(albedo, normalize(point_light_dir),normal)) * light.color * attenuation;
 
             return point_light_extra;
         }
@@ -118,12 +118,12 @@ const char mainFragmentSource[] =
             vec4 textureColor = texture(texture0, texCoord);
 
             vec3 normalMapColor = texture(texture1, texCoord).xyz * 2.0 - 1.0;
-            vec3 perturbedNormal = normalize(inputNormal + normalMapColor);
+            vec3 perturbedNormal = inputNormal;
 
             vec3 defaultColor = textureColor.xyz;
 
             if(texturesCount == 0){
-                defaultColor = albedo;
+                defaultColor = inputAlbedo;
             }
 
             vec3 ambientLight = inputAmbientLight;
@@ -144,12 +144,12 @@ const char mainFragmentSource[] =
                 sunDirection = vec3(0,0.8,0.6);
             }
 
-            vec3 sunExtra = (diffuse(sunDirection, perturbedNormal) + specular(sunDirection, perturbedNormal)) * sunColor;
+            vec3 sunExtra = (diffuse(defaultColor,sunDirection, perturbedNormal) + specular(defaultColor,sunDirection, perturbedNormal)) * sunColor;
 
             vec3 color = ambient + sunExtra;
 
             //for(int i = 0; i < NR_POINT_LIGHTS; i++){
-            //        color += CalcPointLight(pointLights[i],perturbedNormal);
+            //        color += CalcPointLight(defaultColor, pointLights[i],perturbedNormal);
             //}
 
             vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;

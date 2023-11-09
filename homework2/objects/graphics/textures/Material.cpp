@@ -19,7 +19,7 @@ void Material::bindMaterial() {
     }
 
     GLProgram::getGLProgram()->setUniformInt("texturesCount", textures.size());
-    GLProgram::getGLProgram()->setUniformVector3F("albedo", albedo);
+    GLProgram::getGLProgram()->setUniformVector3F("inputAlbedo", albedo);
     GLProgram::getGLProgram()->setUniformFloat("roughness", roughness);
     GLProgram::getGLProgram()->setUniformFloat("glossiness", glossiness);
 }
