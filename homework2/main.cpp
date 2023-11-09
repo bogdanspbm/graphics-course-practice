@@ -29,6 +29,7 @@
 #include "objects/opengl/GLProgram.h"
 #include "objects/graphics/renderable/Placeable.h"
 #include "objects/graphics/renderable/ScreenView.h"
+#include "utils/ObjectUtils.h"
 
 
 std::string to_string(std::string_view str) {
@@ -91,6 +92,13 @@ try {
     Sun::getSun()->setColor({0.62, 0.60, 0.59});
     Sun::getSun()->setDirection({0, 1, 1});
 
+    auto renderList = loadRenderableListFromFile(project_root + "/sponza/sponza.obj");
+    std::vector<Placeable*> objectList;
+
+    for(auto renderable : renderList){
+        objectList.push_back(new Placeable(renderable));
+    }
+
     auto cowObject = new Placeable(project_root + "/models/cow.obj");
     cowObject->getMaterial()->addTexture(Texture::getTexture(project_root + "/models/cow.png", DEFAULT));
     cowObject->getMaterial()->addTexture(Texture::getTexture(project_root + "/models/cow_normal.png", NORMAL_MAP));
@@ -150,20 +158,31 @@ try {
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+
         glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
+        /*for(auto object : objectList){
+           object->draw();
+       }*/
+
         cowObject->draw();
 
         GLProgram::getGLProgram(MAIN)->useProgram();
+        /*for(auto object : objectList){
+           object->draw();
+       }*/
+
+        objectList[1]->draw();
+
         cowObject->draw();
 
         glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
         screenView->draw();
-
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
 
         SDL_GL_SwapWindow(window);
     }

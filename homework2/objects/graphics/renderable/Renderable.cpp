@@ -22,10 +22,7 @@ Material *Renderable::getMaterial() {
 Renderable::Renderable(const std::filesystem::path &path) {
     this->path = path;
     fillRenderableFromFile(this, path);
-    createVAO();
-    createVBO();
-    createEBO();
-    detachBuffers();
+    generateBuffers();
 }
 
 void Renderable::createVAO() {
@@ -108,5 +105,16 @@ void Renderable::updateVBO() {
 
     glEnableVertexAttribArray(colorLocation);
     glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, color));
+}
+
+Renderable::Renderable() {
+
+}
+
+void Renderable::generateBuffers() {
+    createVAO();
+    createVBO();
+    createEBO();
+    detachBuffers();
 }
 

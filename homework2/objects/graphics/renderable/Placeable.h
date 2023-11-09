@@ -24,6 +24,7 @@ private:
 
 public:
     Placeable(std::filesystem::path const &path);
+    Placeable(Renderable *renderable);
 
 private:
     void calcModelMatrix(float modelMatrix[16]);

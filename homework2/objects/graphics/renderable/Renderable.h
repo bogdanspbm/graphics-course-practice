@@ -21,6 +21,7 @@ private:
 
     // Identifier
     std::string path = "";
+    std::string name = "";
 
     std::vector<Vertex> vertices;
     std::vector<std::uint32_t> indices;
@@ -32,9 +33,10 @@ private:
     GLuint ebo;
 
     Renderable(std::filesystem::path const &path);
+    Renderable();
 
 public:
-    static Renderable *getRenderable(std::filesystem::path const &path) {
+    static Renderable *getRenderableByPath(std::filesystem::path const &path) {
         if (cachedRenderable.contains(path)) {
             return cachedRenderable[path];
         }
@@ -44,8 +46,22 @@ public:
         return renderable;
     }
 
+    static Renderable *getRenderableByName(std::string const name) {
+        if (cachedRenderable.contains(name)) {
+            return cachedRenderable[name];
+        }
+
+        Renderable *renderable = new Renderable();
+        cachedRenderable[name] = renderable;
+        renderable->name = name;
+        return renderable;
+    }
+
 public:
     // Methods
+
+    virtual void generateBuffers() final;
+
     virtual void draw() final;
 
     virtual void createVAO() final;
