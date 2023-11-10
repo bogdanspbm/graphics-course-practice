@@ -23,8 +23,21 @@ void Material::bindMaterial() {
 }
 
 void Material::addTexture(Texture *texture) {
+    if (hasTextureWithType(texture->getType())) {
+        return;
+    }
     textures.push_back(texture);
 }
+
+bool Material::hasTextureWithType(TextureType type) {
+    for (auto texture: textures) {
+        if (texture->getType() == type) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 void Material::setTexture(int index, Texture *texture) {
     textures[index] = texture;

@@ -37,6 +37,8 @@ public:
     // Methods
     void bindMaterial();
 
+    bool hasTextureWithType(TextureType type);
+
     void clearTextures();
 
     void addTexture(Texture *texture);
