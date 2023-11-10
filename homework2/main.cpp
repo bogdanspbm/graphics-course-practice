@@ -144,14 +144,21 @@ try {
         time += dt;
 
         glViewport(0, 0, width, height);
+        glClearColor(7.f, 0.55f, 0.5f, 0.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Enable alpha testing
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.5f);
+
+        // Enable depth testing
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
+        glDepthFunc(GL_LESS);
+
+        // Enable blending for transparency
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glClearColor(7.f, 0.55f, 0.5f, 0.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
         for (int i = 0; i < objectList.size(); i++) {

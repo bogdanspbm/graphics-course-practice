@@ -70,10 +70,10 @@ void main()
     float lightOpacity = 1;
 
     if (depth > depthValue.r + 0.01){
-        lightOpacity = 0;
+        discard;
     }
 
     vec3 result = (specular + diffuse + inputAmbientLight) / 3 * textureColor.xyz;
 
-    outColor = vec4(result , lightOpacity);
+    outColor = vec4(result , 1);
 }
