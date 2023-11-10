@@ -30,6 +30,25 @@ uniform vec3 inputViewPosition;
 
 layout (location = 0) out vec4 outColor;
 
+vec4 gaussianBlur(sampler2D inputTexture, vec2 texCoord, float blurRadius) {
+    vec4 color = vec4(0.0);
+    float totalWeight = 0.0;
+    vec2 resolution = vec2(textureSize(inputTexture, 0));
+
+    // Iterate over a kernel based on the blur radius
+    for (float i = -blurRadius; i <= blurRadius; i += 1.0) {
+        for (float j = -blurRadius; j <= blurRadius; j += 1.0) {
+            vec2 offset = vec2(i, j);
+            float weight = exp(-(offset.x * offset.x + offset.y * offset.y) / (2.0 * blurRadius * blurRadius));
+
+            color += texture(inputTexture, texCoord + offset / resolution) * weight;
+            totalWeight += weight;
+        }
+    }
+
+    // Normalize the result
+    return color / totalWeight;
+}
 
 
 void main()
@@ -38,11 +57,22 @@ void main()
 
     vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
     shadowTextCoord = shadowTextCoord * 0.5 + 0.5;
-    vec4 depthValue = texture(texture31, shadowTextCoord.xy);
+    vec4 depthValue = gaussianBlur(texture31, shadowTextCoord.xy, 5.f);
+
+    vec3 reflectDir = reflect(-inputSunDirection, inputNormal);
+    float spec = pow(max(dot(inputViewDirection, reflectDir), 0.0), glossiness);
+    vec3 specular = spec * inputSunColor;
+
+    float diff = max(dot(inputNormal, inputSunDirection), 0.0);
+    vec3 diffuse =  diff * inputSunColor;
+
+    float shadowCoef = 1;
 
     if (depth > depthValue.r + 0.01){
-        textureColor.xyz = textureColor.xyz * 0.5;
+        shadowCoef = 0.25;
     }
 
-    outColor = textureColor;
+    vec3 result = ((specular + diffuse) * shadowCoef + inputAmbientLight) / 3 * textureColor.xyz;
+
+    outColor = vec4(result ,1);
 }

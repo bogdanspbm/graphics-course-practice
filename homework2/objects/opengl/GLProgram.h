@@ -38,7 +38,7 @@ public:
         GLProgram::programs[type] = this;
 
         if (type == SHADOW) {
-            this->frameBuffer = new FrameBuffer(8192, 8192);
+            this->frameBuffer = new FrameBuffer(2048, 2048);
         }
     }
 
