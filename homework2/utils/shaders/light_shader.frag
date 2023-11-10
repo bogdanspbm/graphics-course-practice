@@ -38,8 +38,9 @@ uniform vec3 inputViewPosition;
 
 layout (location = 0) out vec4 outColor;
 
-vec4 gaussianBlur(sampler2D inputTexture, vec2 texCoord, float blurRadius) {
+float gaussianBlur(sampler2D inputTexture, vec2 texCoord, float depth, float blurRadius) {
     vec4 color = vec4(0.0);
+    float shadow = 0.0;
     float totalWeight = 0.0;
     vec2 resolution = vec2(textureSize(inputTexture, 0));
 
@@ -49,13 +50,18 @@ vec4 gaussianBlur(sampler2D inputTexture, vec2 texCoord, float blurRadius) {
             vec2 offset = vec2(i, j);
             float weight = exp(-(offset.x * offset.x + offset.y * offset.y) / (2.0 * blurRadius * blurRadius));
 
-            color += texture(inputTexture, texCoord + offset / resolution) * weight;
+            color = texture(inputTexture, texCoord + offset / resolution);
+
+            if (depth > color.r || depth < 0){
+                shadow += weight;
+            }
+
             totalWeight += weight;
         }
     }
 
     // Normalize the result
-    return color / totalWeight;
+    return 1- (shadow / totalWeight);
 }
 
 
@@ -65,7 +71,11 @@ void main()
 
     vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
     shadowTextCoord.xy = shadowTextCoord.xy * 0.5 + 0.5;
-    vec4 depthValue = gaussianBlur(texture31, shadowTextCoord.xy, 5.f);
+    float shadow = gaussianBlur(texture31, shadowTextCoord.xy, depth, 5);
+
+    if(shadow < 0.01){
+        discard;
+    }
 
     vec2 resolution = vec2(textureSize(texture31, 0));
 
@@ -99,23 +109,20 @@ void main()
         discard;
     }
 
-    if (depth > depthValue.r || depth < 0){
-        discard;
-    }
 
-    vec3 result = (4 * (specular + diffuse) * lightOpacity + inputAmbientLight) / 3 * textureColor.xyz;
+    vec3 result = (4 * (specular + diffuse) * lightOpacity * shadow + inputAmbientLight) / 3 * textureColor.xyz;
 
     float outOpacity = opacity;
 
-    if(useDisplacementMap > 0.5f){
+    if (useDisplacementMap > 0.5f){
         vec4 displacementMap = texture(texture1, texCoord);
         outOpacity = displacementMap.x;
     }
 
-    if(outOpacity == 0){
+    if (outOpacity == 0){
         discard;
     }
 
 
-    outColor = vec4(result , 1);
+    outColor = vec4(result, 1);
 }
