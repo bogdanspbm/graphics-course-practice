@@ -28,10 +28,8 @@ set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_executable(${TARGET_NAME} main.cpp
 		objects/opengl/GLProgram.cpp
-		utils/ShaderUtils.cpp
-		utils/shaders/ScreenViewShader.h
-		utils/shaders/MainShaders.h
-		utils/shaders/ShadowShader.h
+        utils/shaders/ScreenViewShader.h
+        utils/shaders/ShadowShader.h
 		objects/opengl/Camera.cpp
 		objects/opengl/Camera.h
 		objects/graphics/renderable/Renderable.cpp
@@ -55,6 +53,7 @@ add_executable(${TARGET_NAME} main.cpp
 		objects/graphics/light/Ambient.h
 		objects/graphics/light/structures/PointLight.h
 		utils/MathUtils.h
+		utils/ShaderUtils.h
 		objects/graphics/renderable/ScreenView.cpp
 		objects/graphics/renderable/ScreenView.h
 		objects/opengl/FrameBuffer.cpp
