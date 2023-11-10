@@ -3,6 +3,7 @@
 //
 
 #include <cstring>
+#include <iostream>
 #include "Camera.h"
 #include "glm/fwd.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -43,12 +44,12 @@ void Camera::calcViewMatrix(float *matrix) {
     glm::vec3 rotation = getRotation();
 
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
-                               * glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
-                               * glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+                               * glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 
-    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-getLocation().x, -getLocation().y, -getLocation().z));
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f),
+                                                 glm::vec3(-getLocation().x, -getLocation().y, -getLocation().z));
 
-    glm::mat4 viewMatrix = translationMatrix * rotationMatrix;
+    glm::mat4 viewMatrix = rotationMatrix * translationMatrix;
 
     glm::mat4 transposedViewMatrix = glm::transpose(viewMatrix);
 
@@ -87,4 +88,45 @@ void Camera::bindView() {
     GLProgram::getGLProgram()->setUniformFloat("near", near);
     GLProgram::getGLProgram()->setUniformVector3F("inputViewDirection", calculateForwardVector(getRotation()));
     GLProgram::getGLProgram()->setUniformVector3F("inputViewPosition", getLocation());
+}
+
+void Camera::bindControl(KeyHandler *keyHandler) {
+
+    keyHandler->bindOnMouseMotionEvent([this](glm::vec2 position, glm::vec2 offset) -> void {
+        this->rotation.x += offset.y;
+
+        if (this->rotation.x < -90) {
+            this->rotation.x = -90;
+        } else if (this->rotation.x > 90) {
+            this->rotation.x = 90;
+        }
+
+        this->rotation.y += offset.x;
+
+        if (this->rotation.y < -180) {
+            this->rotation.y = 360 - this->rotation.y;
+        } else if (this->rotation.x > 180) {
+            this->rotation.y = -360 + this->rotation.y;
+        }
+    });
+
+    keyHandler->bindOnPressedEvent([this]() -> void {
+        glm::vec3 forwardVector = calculateForwardVector(this->rotation);
+        this->location -= forwardVector;
+    }, SDLK_w);
+
+    keyHandler->bindOnPressedEvent([this]() -> void {
+        glm::vec3 forwardVector = calculateForwardVector(this->rotation);
+        this->location += forwardVector;
+    }, SDLK_s);
+
+    keyHandler->bindOnPressedEvent([this]() -> void {
+        glm::vec3 rightVector = calculateRightVector(this->rotation);
+        this->location += rightVector;
+    }, SDLK_d);
+
+    keyHandler->bindOnPressedEvent([this]() -> void {
+        glm::vec3 rightVector = calculateRightVector(this->rotation);
+        this->location -= rightVector;
+    }, SDLK_a);
 }

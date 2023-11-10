@@ -8,6 +8,7 @@
 
 #include "glm/vec3.hpp"
 #include "enums/GLProgramType.h"
+#include "objects/input/KeyHandler.h"
 
 class Camera {
 
@@ -42,6 +43,8 @@ public:
     void calcProjectionMatrix(float *matrix);
 
     void bindView();
+
+    void bindControl(KeyHandler* keyHandler);
 
     int *getWidth() {
         return &width;

@@ -88,9 +88,7 @@ try {
     GLProgram::createGLPrograms(window);
 
     auto keyHandler = new KeyHandler();
-    keyHandler->bindOnMouseMotionEvent([](glm::vec2 position, glm::vec2 offset)->void{
-        std::cout << offset.x << " " << offset.y << std::endl;
-    });
+    GLProgram::getGLProgram(MAIN)->getCamera()->bindControl(keyHandler);
 
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
@@ -120,7 +118,6 @@ try {
     bool running = true;
     while (running) {
         for (SDL_Event event; SDL_PollEvent(&event);) {
-            keyHandler->handleInputEvent(event);
             switch (event.type) {
                 case SDL_QUIT:
                     running = false;
@@ -134,6 +131,7 @@ try {
                     }
                     break;
             }
+            keyHandler->handleInputEvent(event);
         }
 
         if (!running)
@@ -145,17 +143,20 @@ try {
         time += dt;
 
         glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 
         glClearColor(0.8f, 0.8f, 1.f, 0.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
         for (int i = 0; i < objectList.size(); i++) {
             objectList[i]->draw();
         }
+
+        glClearColor(0.8f, 0.8f, 1.f, 0.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         cowObject->draw();
 

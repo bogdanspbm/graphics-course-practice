@@ -6,26 +6,8 @@
 
 #include <valarray>
 #include "glm/vec3.hpp"
+#include "glm/ext/matrix_transform.hpp"
 
-inline glm::vec3 rotateVector(const glm::vec3 vector, float yaw, float pitch) {
-    // Convert angles from degrees to radians
-    float yawRad = yaw * M_PI / 180.0f;
-    float pitchRad = pitch * M_PI / 180.0f;
-
-    // Calculate the rotation matrix for yaw and pitch
-    float cosYaw = cosf(yawRad);
-    float sinYaw = sinf(yawRad);
-    float cosPitch = cosf(pitchRad);
-    float sinPitch = sinf(pitchRad);
-
-    // Apply the rotation to the vector
-    glm::vec3 rotatedVector;
-    rotatedVector.x = vector.x * (cosYaw * cosPitch) + vector.z * (sinYaw * cosPitch);
-    rotatedVector.y = vector.y * cosPitch - vector.z * sinPitch;
-    rotatedVector.z = -vector.x * (sinYaw * cosPitch) + vector.z * (cosYaw * cosPitch);
-
-    return rotatedVector;
-}
 
 inline glm::vec3 positionToNormal(glm::vec3 position) {
     float length = std::sqrt(position.x * position.x + position.y * position.y + position.z * position.z);
@@ -43,17 +25,17 @@ inline glm::vec3 positionToNormal(glm::vec3 position) {
 }
 
 inline glm::vec3 calculateForwardVector(glm::vec3 rotation) {
-    float yaw = rotation.y * M_PI / 180.0f;
-    float pitch = rotation.x * M_PI / 180.0f;
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                               glm::rotate(glm::mat4(1.0f), glm::radians(-rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 
-    return rotateVector(glm::vec3(0, 0, 1), yaw, pitch);
+    return glm::normalize(glm::vec3(rotationMatrix[2]));
 }
 
 inline glm::vec3 calculateRightVector(const glm::vec3 rotation) {
-    float yaw = rotation.y * M_PI / 180.0f;
-    float pitch = rotation.x * M_PI / 180.0f;
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                               glm::rotate(glm::mat4(1.0f), glm::radians(-rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 
-    return rotateVector(glm::vec3(1, 0, 0), yaw, pitch);
+    return glm::normalize(glm::vec3(rotationMatrix[0]));
 }
 
 
@@ -67,7 +49,7 @@ inline glm::vec3 linearInterpolation(glm::vec3 a, glm::vec3 b, float percentage)
     return glm::vec3(interpolatedX, interpolatedY, interpolatedZ);
 }
 
-inline glm::vec3 directionToRotation(const glm::vec3& direction) {
+inline glm::vec3 directionToRotation(const glm::vec3 &direction) {
     glm::vec3 rotation;
 
     // Calculate yaw (rotation around the vertical Y-axis)
