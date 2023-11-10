@@ -15,6 +15,8 @@ void Material::bindMaterial() {
         texture->bindTexture();
     }
 
+    GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture()->bindTexture();
+
     GLProgram::getGLProgram()->setUniformVector3F("inputAlbedo", albedo);
     GLProgram::getGLProgram()->setUniformFloat("roughness", roughness);
     GLProgram::getGLProgram()->setUniformFloat("glossiness", glossiness);

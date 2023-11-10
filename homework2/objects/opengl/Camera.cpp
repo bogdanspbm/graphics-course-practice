@@ -19,6 +19,11 @@ const glm::vec3 &Camera::getLocation() const {
     if (type == SHADOW) {
         return Sun::getSun()->getLocation();
     }
+
+    if (DEBUG) {
+        return  Sun::getSun()->getLocation();
+    }
+
     return location;
 }
 
@@ -30,6 +35,11 @@ const glm::vec3 &Camera::getRotation() const {
     if (type == SHADOW) {
         return Sun::getSun()->getRotation();
     }
+
+    if (DEBUG) {
+        return Sun::getSun()->getRotation();
+    }
+
     return rotation;
 }
 
