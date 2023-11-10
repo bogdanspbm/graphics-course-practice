@@ -87,6 +87,9 @@ public:
         }
 
         auto light = lights[curSource];
+        if(light.useRotation){
+            return light.rotation;
+        }
         if (light.rotation.x != 0 || light.rotation.y != 0 || light.rotation.z != 0) {
             return light.rotation;
         }
@@ -109,7 +112,7 @@ public:
 
     void renderLight(std::vector<Placeable *> list) {
         curSource = 0;
-        for (int i = 0; i <= lights.size(); i++) {
+        for (int i = 0; i <= lights.size() ; i++) {
             GLProgram::getGLProgram(SHADOW)->useProgram();
 
             for (int i = 0; i < list.size(); i++) {

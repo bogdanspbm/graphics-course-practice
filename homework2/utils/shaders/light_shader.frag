@@ -3,7 +3,9 @@ in vec3 inputNormal;
 in vec4 shadowPosition;
 in vec2 texCoord;
 in float depth;
-in float distanceToLight;
+in vec3 vertexPosition;
+
+uniform vec3 lightPosition;
 
 uniform float roughness;
 uniform float glossiness;
@@ -75,12 +77,16 @@ void main()
         discard;
     }
 
-    vec3 reflectDir = reflect(-inputSunDirection, inputNormal);
+    vec3 lightDirection = normalize(lightPosition-vertexPosition);
+
+    vec3 reflectDir = reflect(-lightDirection, inputNormal);
     float spec = pow(max(dot(inputViewDirection, reflectDir), 0.0), glossiness);
     vec3 specular = spec * inputSunColor;
 
-    float diff = max(dot(inputNormal, inputSunDirection), 0.0);
+    float diff = max(dot(inputNormal, lightDirection), 0.0);
     vec3 diffuse =  diff * inputSunColor;
+
+    float distanceToLight = sqrt(pow(lightPosition.x-vertexPosition.x, 2) + pow(lightPosition.y-vertexPosition.y, 2) + pow(lightPosition.z-vertexPosition.z, 2));
 
     float lightOpacity = (lightRange-distanceToLight) / lightRange;
 
@@ -88,11 +94,12 @@ void main()
         lightOpacity = 1;
     }
 
+
     if (lightOpacity < 0){
         discard;
     }
 
-    if (depth > depthValue.r + 0.01 || depth < 0){
+    if (depth > depthValue.r || depth < 0){
         discard;
     }
 
@@ -108,6 +115,7 @@ void main()
     if(outOpacity == 0){
         discard;
     }
+
 
     outColor = vec4(result , 1);
 }

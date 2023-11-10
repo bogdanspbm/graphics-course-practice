@@ -95,28 +95,21 @@ try {
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
     Ambient::getAmbient()->setColor({1, 1, 1});
-    Sun::getSun()->setColor({1, 0.90, 0.95});
+    Sun::getSun()->setColor({0.2, 0.12, 0.14});
     Sun::getSun()->setDirection({0, 10, -1});
 
-    auto redLight = DirectionLight{{485, 125, -210},{0,   -1,  0}};
-    redLight.color = {1,0,0};
-    redLight.range = 400;
-    LightRender::getLightRenderer()->addDirectionLight(redLight);
-
-    auto greenLight = DirectionLight{{485, 125, 210},{0,   -1,  0}};
+    auto greenLight = DirectionLight{{0, 150, -400}};
+    greenLight.rotation = {0,180,0};
     greenLight.color = {0,1,0};
-    greenLight.range = 400;
+    greenLight.range = 300;
     LightRender::getLightRenderer()->addDirectionLight(greenLight);
 
-    auto blueLight = DirectionLight{{-485, 125, -210},{0,   -1,  0}};
+    auto blueLight = DirectionLight{{0, 150, 400}};
+    blueLight.rotation = {0,0,0};
+    blueLight.useRotation = true;
     blueLight.color = {0,0,1};
-    blueLight.range = 400;
+    blueLight.range = 300;
     LightRender::getLightRenderer()->addDirectionLight(blueLight);
-
-    auto yellowLight = DirectionLight{{-485, 125, 210},{0,   -1,  0}};
-    yellowLight.color = {0,1,1};
-    yellowLight.range = 400;
-    LightRender::getLightRenderer()->addDirectionLight(yellowLight);
 
 
     auto renderList = loadRenderableListFromFile(project_root + "/sponza/sponza.obj");
@@ -160,6 +153,9 @@ try {
         if (!running)
             break;
 
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
         auto now = std::chrono::high_resolution_clock::now();
         float dt = std::chrono::duration_cast<std::chrono::duration<float>>(now - last_frame_start).count();
         last_frame_start = now;
@@ -182,7 +178,7 @@ try {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-       // LightRender::getLightRenderer()->renderLight(objectList);
+        LightRender::getLightRenderer()->renderLight(objectList);
 
          GLProgram::getGLProgram(MAIN)->useProgram();
          for (int i = 0; i < objectList.size(); i++) {

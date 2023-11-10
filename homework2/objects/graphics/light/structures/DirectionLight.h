@@ -14,6 +14,7 @@ struct DirectionLight {
     glm::vec3 color = {1, 1, 1};
     glm::vec3 attenuation = {1, 1, 1};
 
+    bool useRotation = false;
     float range = 2000;
     float fov = 45;
 };

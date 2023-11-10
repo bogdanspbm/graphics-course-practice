@@ -3,6 +3,7 @@ in vec3 inputNormal;
 in vec4 shadowPosition;
 in vec2 texCoord;
 in float depth;
+in vec3 vertexPosition;
 
 uniform float roughness;
 uniform float glossiness;

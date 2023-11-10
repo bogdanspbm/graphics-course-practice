@@ -16,15 +16,15 @@ private:
 
     bool DEBUG = false;
 
-    glm::vec3 location = {0, 0, 0};
-    glm::vec3 rotation = {0, 0, 0};
+    glm::vec3 location = {0, 100, 0};
+    glm::vec3 rotation = {0, 180, 0};
 
     int width = 1920;
     int height = 1080;
 
     // Projection Params
     float near = 1.f;
-    float far = 2500.0f;
+    float far = 2000.0f;
     float fov = 90;
 
     // Program Type
