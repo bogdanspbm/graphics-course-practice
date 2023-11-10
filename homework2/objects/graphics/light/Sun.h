@@ -40,7 +40,7 @@ public:
     }
 
     glm::vec3 getLocation() {
-        return {0, 0, height};
+        return height * light.direction;
     }
 
     void bindLight();

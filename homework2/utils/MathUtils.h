@@ -63,7 +63,7 @@ inline glm::vec3 directionToRotation(const glm::vec3 &direction) {
     rotation.y = atan2(direction.x, -direction.z) * (180.0f / M_PI);
 
     // Calculate pitch (rotation around the X-axis)
-    rotation.x = asin(direction.y) * (180.0f / M_PI);
+    rotation.x = atan2(direction.y, -direction.z) * (180.0f / M_PI);
 
 
     return rotation;
