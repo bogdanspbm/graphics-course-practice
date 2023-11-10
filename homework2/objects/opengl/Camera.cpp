@@ -10,18 +10,15 @@
 #include "objects/graphics/light/Sun.h"
 #include "GLProgram.h"
 #include "utils/MathUtils.h"
+#include "LightRender.h"
 
 Camera::Camera(ProgramType type) {
     this->type = type;
 }
 
 const glm::vec3 &Camera::getLocation() const {
-    if (type == SHADOW) {
-        return Sun::getSun()->getLocation();
-    }
-
-    if (DEBUG) {
-        return  Sun::getSun()->getLocation();
+    if (type == SHADOW || DEBUG) {
+        return LightRender::getLightRenderer()->getLocation();
     }
 
     return location;
@@ -32,12 +29,8 @@ void Camera::setLocation(const glm::vec3 &location) {
 }
 
 const glm::vec3 &Camera::getRotation() const {
-    if (type == SHADOW) {
-        return Sun::getSun()->getRotation();
-    }
-
-    if (DEBUG) {
-        return Sun::getSun()->getRotation();
+    if (type == SHADOW || DEBUG) {
+        return LightRender::getLightRenderer()->getRotation();
     }
 
     return rotation;
@@ -67,25 +60,25 @@ void Camera::calcViewMatrix(float *matrix) {
 }
 
 void Camera::calcProjectionMatrix(float matrix[16]) {
-    float right = near * tan(fov / 2.0f);
+    float right = getNear() * tan(getFov() / 2.0f);
     float aspectRatio = (float) width / (float) height;
     float top = right / aspectRatio;
 
     memset(matrix, 0, sizeof(matrix));
-    matrix[0] = (2.0f * near) / (right * 2.0f);
+    matrix[0] = (2.0f * getNear()) / (right * 2.0f);
     matrix[1] = 0.f;
     matrix[2] = 0.f;
     matrix[3] = 0.f;
 
     matrix[4] = 0.f;
-    matrix[5] = (2.0f * near) / (top * 2.0f);
+    matrix[5] = (2.0f * getNear()) / (top * 2.0f);
     matrix[6] = 0.f;
     matrix[7] = 0.f;
 
     matrix[8] = 0.f;
     matrix[9] = 0.f;
-    matrix[10] = -(far + near) / (far - near);
-    matrix[11] = -(2.0f * far * near) / (far - near);
+    matrix[10] = -(getFar() + getNear()) / (getFar() - getNear());
+    matrix[11] = -(2.0f * getFar() * getNear()) / (getFar() - getNear());
 
     matrix[12] = 0.f;
     matrix[13] = 0.f;
@@ -94,13 +87,15 @@ void Camera::calcProjectionMatrix(float matrix[16]) {
 }
 
 void Camera::bindView() {
-    GLProgram::getGLProgram()->setUniformFloat("far", far);
-    GLProgram::getGLProgram()->setUniformFloat("near", near);
+    GLProgram::getGLProgram()->setUniformFloat("far", getFar());
+    GLProgram::getGLProgram()->setUniformFloat("near", getNear());
     GLProgram::getGLProgram()->setUniformVector3F("inputViewDirection", calculateForwardVector(getRotation()));
     GLProgram::getGLProgram()->setUniformVector3F("inputViewPosition", getLocation());
 }
 
 void Camera::bindControl(KeyHandler *keyHandler) {
+
+    float speed = 2;
 
     keyHandler->bindOnMouseMotionEvent([this](glm::vec2 position, glm::vec2 offset) -> void {
         this->rotation.x += offset.y;
@@ -120,28 +115,49 @@ void Camera::bindControl(KeyHandler *keyHandler) {
         }
     });
 
-    keyHandler->bindOnPressedEvent([this]() -> void {
+    keyHandler->bindOnPressedEvent([this,speed]() -> void {
         glm::vec3 forwardVector = calculateForwardVector(this->rotation);
-        this->location -= forwardVector;
+        this->location -= forwardVector * speed;
     }, SDLK_w);
 
-    keyHandler->bindOnPressedEvent([this]() -> void {
+    keyHandler->bindOnPressedEvent([this,speed]() -> void {
         glm::vec3 forwardVector = calculateForwardVector(this->rotation);
-        this->location += forwardVector;
+        this->location += forwardVector * speed;
     }, SDLK_s);
 
-    keyHandler->bindOnPressedEvent([this]() -> void {
+    keyHandler->bindOnPressedEvent([this,speed]() -> void {
         glm::vec3 rightVector = calculateRightVector(this->rotation);
-        this->location += rightVector;
+        this->location += rightVector * speed;
     }, SDLK_d);
 
-    keyHandler->bindOnPressedEvent([this]() -> void {
+    keyHandler->bindOnPressedEvent([this,speed]() -> void {
         glm::vec3 rightVector = calculateRightVector(this->rotation);
-        this->location -= rightVector;
+        this->location -= rightVector * speed;
     }, SDLK_a);
 
-    keyHandler->bindOnPressedEvent([this]() -> void {
+    keyHandler->bindOnPressedEvent([this,speed]() -> void {
         glm::vec3 upVector = calculateUpVector(this->rotation);
-        this->location += upVector;
+        this->location += upVector * speed;
     }, SDLK_SPACE);
+
+    keyHandler->bindOnPressEvent([this]() -> void {
+        std::cout << "Location: " << this->location.x << " " << this->location.y << " " << this->location.z << std::endl;
+        std::cout << "Rotation: " << this->rotation.x << " " << this->rotation.y << " " << this->rotation.z << std::endl;
+    }, SDLK_f);
+}
+
+float Camera::getFov() {
+    if (type == SHADOW || DEBUG) {
+        return LightRender::getLightRenderer()->getLightFov();
+    }
+
+    return fov;
+}
+
+float Camera::getFar() {
+    return far;
+}
+
+float Camera::getNear() {
+    return near;
 }

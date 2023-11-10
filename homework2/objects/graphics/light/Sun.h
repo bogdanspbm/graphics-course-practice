@@ -43,6 +43,18 @@ public:
         return height * light.direction;
     }
 
+    float getHeight(){
+        return height;
+    }
+
+    glm::vec3 getColor() {
+        return light.color;
+    }
+
+    glm::vec3 getDirection() {
+        return light.direction;
+    }
+
     void bindLight();
 };
 

@@ -96,7 +96,7 @@ public:
 
         camera->bindView();
 
-        Sun::getSun()->bindLight();
+        //Sun::getSun()->bindLight();
         Ambient::getAmbient()->bindLight();
     }
 

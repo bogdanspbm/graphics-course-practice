@@ -60,6 +60,8 @@ add_executable(${TARGET_NAME} main.cpp
 		objects/opengl/FrameBuffer.h
         objects/input/KeyHandler.h
 		objects/input/KeyHandler.cpp
+		objects/opengl/LightRender.cpp
+		objects/opengl/LightRender.h
 
 )
 target_include_directories(${TARGET_NAME} PUBLIC

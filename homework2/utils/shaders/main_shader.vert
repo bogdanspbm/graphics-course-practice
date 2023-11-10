@@ -6,6 +6,7 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform float far;
 uniform float near;
+uniform vec3 lightPosition;
 
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_normal;
@@ -15,6 +16,7 @@ out vec3 inputNormal;
 out vec2 texCoord;
 out vec4 shadowPosition;
 out float depth;
+out float distanceToLight;
 
 void main()
 {
@@ -23,4 +25,5 @@ void main()
     inputNormal = normalize(mat3(model) * in_normal);
     texCoord = in_texcoord;
     depth = (shadowPosition.z - near)/(far-near);
+    distanceToLight = sqrt(pow(lightPosition.x-in_position.x, 2) + pow(lightPosition.y-in_position.y, 2) + pow(lightPosition.y-in_position.y, 2));
 }

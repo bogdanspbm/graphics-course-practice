@@ -31,6 +31,7 @@
 #include "objects/graphics/renderable/ScreenView.h"
 #include "utils/ObjectUtils.h"
 #include "objects/input/KeyHandler.h"
+#include "objects/opengl/LightRender.h"
 
 
 std::string to_string(std::string_view str) {
@@ -93,9 +94,30 @@ try {
 
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
-    Ambient::getAmbient()->setColor({1, 0.90, 0.89});
+    Ambient::getAmbient()->setColor({1, 1, 1});
     Sun::getSun()->setColor({1, 0.90, 0.95});
     Sun::getSun()->setDirection({0, 10, -1});
+
+    auto redLight = DirectionLight{{485, 125, -210},{0,   -1,  0}};
+    redLight.color = {1,0,0};
+    redLight.range = 400;
+    LightRender::getLightRenderer()->addDirectionLight(redLight);
+
+    auto greenLight = DirectionLight{{485, 125, 210},{0,   -1,  0}};
+    greenLight.color = {0,1,0};
+    greenLight.range = 400;
+    LightRender::getLightRenderer()->addDirectionLight(greenLight);
+
+    auto blueLight = DirectionLight{{-485, 125, -210},{0,   -1,  0}};
+    blueLight.color = {0,0,1};
+    blueLight.range = 400;
+    LightRender::getLightRenderer()->addDirectionLight(blueLight);
+
+    auto yellowLight = DirectionLight{{-485, 125, 210},{0,   -1,  0}};
+    yellowLight.color = {0,1,1};
+    yellowLight.range = 400;
+    LightRender::getLightRenderer()->addDirectionLight(yellowLight);
+
 
     auto renderList = loadRenderableListFromFile(project_root + "/sponza/sponza.obj");
     auto materialList = loadMaterialListFromFile(project_root + "/sponza/sponza.mtl");
@@ -160,20 +182,12 @@ try {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-        GLProgram::getGLProgram(SHADOW)->useProgram();
-        for (int i = 0; i < objectList.size(); i++) {
-            objectList[i]->draw();
-        }
+        LightRender::getLightRenderer()->renderLight(objectList);
 
-        GLProgram::getGLProgram(LIGHT)->useProgram();
-        for (int i = 0; i < objectList.size(); i++) {   
-            objectList[i]->draw();
-        }
-
-        GLProgram::getGLProgram(MAIN)->useProgram();
-        for (int i = 0; i < objectList.size(); i++) {
-            objectList[i]->draw();
-        }
+         GLProgram::getGLProgram(MAIN)->useProgram();
+         for (int i = 0; i < objectList.size(); i++) {
+             objectList[i]->draw();
+         }
 
 
         glClearColor(0.8f, 0.8f, 1.f, 0.f);

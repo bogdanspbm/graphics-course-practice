@@ -3,10 +3,13 @@ in vec3 inputNormal;
 in vec4 shadowPosition;
 in vec2 texCoord;
 in float depth;
+in float distanceToLight;
 
 uniform float roughness;
 uniform float glossiness;
 uniform float opacity;
+
+uniform float lightRange;
 
 uniform sampler2D texture0;// ALBEDO
 uniform sampler2D texture1;// NORMAL
@@ -57,8 +60,18 @@ void main()
     vec4 textureColor = texture(texture0, texCoord);
 
     vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
-    shadowTextCoord = shadowTextCoord * 0.5 + 0.5;
+    shadowTextCoord.xy = shadowTextCoord.xy * 0.5 + 0.5;
     vec4 depthValue = gaussianBlur(texture31, shadowTextCoord.xy, 5.f);
+
+    vec2 resolution = vec2(textureSize(texture31, 0));
+
+    if (shadowTextCoord.x < 0 || shadowTextCoord.y < 0){
+        discard;
+    }
+
+    if (shadowTextCoord.x > resolution.x || shadowTextCoord.y > resolution.y){
+        discard;
+    }
 
     vec3 reflectDir = reflect(-inputSunDirection, inputNormal);
     float spec = pow(max(dot(inputViewDirection, reflectDir), 0.0), glossiness);
@@ -67,13 +80,21 @@ void main()
     float diff = max(dot(inputNormal, inputSunDirection), 0.0);
     vec3 diffuse =  diff * inputSunColor;
 
-    float lightOpacity = 1;
+    float lightOpacity = (lightRange-distanceToLight) / lightRange;
 
-    if (depth > depthValue.r + 0.01){
+    if (lightRange == 0){
+        lightOpacity = 1;
+    }
+
+    if (lightOpacity < 0){
         discard;
     }
 
-    vec3 result = (specular + diffuse + inputAmbientLight) / 3 * textureColor.xyz;
+    if (depth > depthValue.r + 0.01 || depth < 0){
+        discard;
+    }
 
-    outColor = vec4(result , 1);
+    vec3 result = (4 * (specular + diffuse) * lightOpacity + inputAmbientLight) / 3 * textureColor.xyz;
+
+    outColor = vec4(result, 1);
 }

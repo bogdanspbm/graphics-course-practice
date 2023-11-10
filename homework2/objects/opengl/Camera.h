@@ -35,6 +35,12 @@ public:
 
     const glm::vec3 &getLocation() const;
 
+    float getFov();
+
+    float getFar();
+
+    float getNear();
+
     void setLocation(const glm::vec3 &location);
 
     const glm::vec3 &getRotation() const;
