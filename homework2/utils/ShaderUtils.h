@@ -89,7 +89,7 @@ inline GLuint createShader(GLenum shaderType,
     return shaderID;
 }
 
-inline std::string readShaderFile(const std::string& filePath) {
+inline std::string readShaderFile(const std::string &filePath) {
     std::ifstream fileStream(filePath, std::ios::in);
 
     if (!fileStream.is_open()) {
@@ -109,7 +109,11 @@ inline std::string readShaderFile(const std::string& filePath) {
 inline GLuint createFragmentShader(ProgramType type) {
     switch (type) {
         case MAIN:
-            return createShader(GL_FRAGMENT_SHADER, readShaderFile(projectRoot + "/utils/shaders/main_shader.frag").c_str());
+            return createShader(GL_FRAGMENT_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/main_shader.frag").c_str());
+        case LIGHT:
+            return createShader(GL_FRAGMENT_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/light_shader.frag").c_str());
         case SHADOW:
             return createShader(GL_FRAGMENT_SHADER, shadowFragmentSource);
         case VIEW:
@@ -122,7 +126,11 @@ inline GLuint createFragmentShader(ProgramType type) {
 inline GLuint createVertexShader(ProgramType type) {
     switch (type) {
         case MAIN:
-            return createShader(GL_VERTEX_SHADER, readShaderFile(projectRoot + "/utils/shaders/main_shader.vert").c_str());
+            return createShader(GL_VERTEX_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/main_shader.vert").c_str());
+        case LIGHT:
+            return createShader(GL_VERTEX_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/main_shader.vert").c_str());
         case SHADOW:
             return createShader(GL_VERTEX_SHADER, shadowVertexSource);
         case VIEW:

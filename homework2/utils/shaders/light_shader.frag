@@ -67,9 +67,13 @@ void main()
     float diff = max(dot(inputNormal, inputSunDirection), 0.0);
     vec3 diffuse =  diff * inputSunColor;
 
-    float shadowCoef = 1;
+    float lightOpacity = 1;
 
-    vec3 result = ((specular + diffuse) * 0.25 + inputAmbientLight) / 3 * textureColor.xyz;
+    if (depth > depthValue.r + 0.01){
+        lightOpacity = 0;
+    }
 
-    outColor = vec4(result , opacity);
+    vec3 result = (specular + diffuse + inputAmbientLight) / 3 * textureColor.xyz;
+
+    outColor = vec4(result , lightOpacity);
 }

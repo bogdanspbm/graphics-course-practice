@@ -89,6 +89,7 @@ try {
 
     auto keyHandler = new KeyHandler();
     GLProgram::getGLProgram(MAIN)->getCamera()->bindControl(keyHandler);
+    GLProgram::getGLProgram(LIGHT)->getCamera()->bindControl(keyHandler);
 
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
@@ -157,16 +158,16 @@ try {
             objectList[i]->draw();
         }
 
-        cowObject->draw();
+        GLProgram::getGLProgram(LIGHT)->useProgram();
+        for (int i = 0; i < objectList.size(); i++) {   
+            objectList[i]->draw();
+        }
 
         GLProgram::getGLProgram(MAIN)->useProgram();
         for (int i = 0; i < objectList.size(); i++) {
             objectList[i]->draw();
         }
 
-
-
-        cowObject->draw();
 
         glClearColor(0.8f, 0.8f, 1.f, 0.f);
 

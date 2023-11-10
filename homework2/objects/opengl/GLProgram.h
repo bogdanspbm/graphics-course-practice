@@ -50,6 +50,7 @@ public:
         new GLProgram(window, MAIN);
         new GLProgram(window, SHADOW);
         new GLProgram(window, VIEW);
+        new GLProgram(window, LIGHT);
     }
 
     static GLProgram *getGLProgram(ProgramType type) {

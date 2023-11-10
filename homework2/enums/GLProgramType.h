@@ -9,7 +9,8 @@
 enum ProgramType{
     MAIN,
     SHADOW,
-    VIEW
+    VIEW,
+    LIGHT
 };
 
 #endif //HOMEWORK2_GLPROGRAMTYPE_H
