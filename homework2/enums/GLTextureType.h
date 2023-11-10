@@ -9,13 +9,13 @@
 
 enum TextureType{
     DEFAULT,
-    NORMAL_MAP,
+    DISPLACEMENT_MAP,
     GLOSS_MAP,
     ROUGH_MAP,
     ALPHA_MAP,
     SPECULAR_MAP,
     BUMP_MAP,
-    DISPLACEMENT_MAP,
+    NORMAL_MAP,
     SHADOW_MAP
 };
 
@@ -23,7 +23,7 @@ static int getTextureUnit(TextureType type){
     switch (type) {
         case DEFAULT:
             return 0 + GL_TEXTURE0;
-        case NORMAL_MAP:
+        case DISPLACEMENT_MAP:
             return 1 + GL_TEXTURE0;
         case GLOSS_MAP:
             return 2 + GL_TEXTURE0;
@@ -35,7 +35,7 @@ static int getTextureUnit(TextureType type){
             return 5 + GL_TEXTURE0;
         case BUMP_MAP:
             return 6 + GL_TEXTURE0;
-        case DISPLACEMENT_MAP:
+        case NORMAL_MAP:
             return 7 + GL_TEXTURE0;
         case SHADOW_MAP:
             return 31 + GL_TEXTURE0;

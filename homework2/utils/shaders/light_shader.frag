@@ -11,14 +11,16 @@ uniform float opacity;
 
 uniform float lightRange;
 
+uniform float useDisplacementMap;
+
 uniform sampler2D texture0;// ALBEDO
-uniform sampler2D texture1;// NORMAL
+uniform sampler2D texture1;// DISPLACEMENT_MAP
 uniform sampler2D texture2;// GLOSS
 uniform sampler2D texture3;// ROUGH
 uniform sampler2D texture4;// ALPHA
 uniform sampler2D texture5;// SPECULAR
 uniform sampler2D texture6;// BUMP_MAP
-uniform sampler2D texture7;// DISPLACEMENT_MAP
+uniform sampler2D texture7;// NORMAL
 uniform sampler2D texture8;
 uniform sampler2D texture9;
 
@@ -96,5 +98,16 @@ void main()
 
     vec3 result = (4 * (specular + diffuse) * lightOpacity + inputAmbientLight) / 3 * textureColor.xyz;
 
-    outColor = vec4(result, 1);
+    float outOpacity = opacity;
+
+    if(useDisplacementMap > 0.5f){
+        vec4 displacementMap = texture(texture1, texCoord);
+        outOpacity = displacementMap.x;
+    }
+
+    if(outOpacity == 0){
+        discard;
+    }
+
+    outColor = vec4(result , 1);
 }

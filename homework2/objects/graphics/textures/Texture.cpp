@@ -38,6 +38,7 @@ Texture::Texture(int width, int height) {
 }
 
 Texture::Texture(std::filesystem::path const &path, TextureType textureType) {
+    this->name = path;
     this->textureType = textureType;
 
     imageData = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
@@ -70,6 +71,7 @@ Texture::Texture(std::filesystem::path const &path, TextureType textureType) {
 }
 
 Texture::Texture(const std::filesystem::path &path) {
+    this->name = path;
     imageData = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
 
     if (imageData == nullptr) {
@@ -118,7 +120,12 @@ void Texture::bindTexture() {
 
     if (textureLocation != -1) {
         glUniform1i(textureLocation, textureUnit - GL_TEXTURE0); // Set the uniform to the texture unit offset from GL_TEXTURE0
+
+        if (textureType == DISPLACEMENT_MAP && name != "") {
+            GLProgram::getGLProgram()->setUniformFloat("useDisplacementMap", 1);
+        }
     }
+
 }
 
 void Texture::setTextureType(TextureType type) {

@@ -64,6 +64,11 @@ void Material::clearTextures() {
     for (int i = 0; i < TextureType::SHADOW_MAP; i++) {
         TextureType type = static_cast<TextureType>(i);
         Texture *texture = new Texture();
+
+        if (type == DISPLACEMENT_MAP) {
+            GLProgram::getGLProgram()->setUniformFloat("useDisplacementMap", 0.3f);
+        }
+
         texture->setTextureType(type);
         texture->bindTexture();
     }

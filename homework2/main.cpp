@@ -182,7 +182,7 @@ try {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-        LightRender::getLightRenderer()->renderLight(objectList);
+       // LightRender::getLightRenderer()->renderLight(objectList);
 
          GLProgram::getGLProgram(MAIN)->useProgram();
          for (int i = 0; i < objectList.size(); i++) {

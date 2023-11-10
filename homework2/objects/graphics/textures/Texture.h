@@ -16,6 +16,7 @@ private:
     static std::map<std::string, Texture *> cachedTextures;
 
     std::string TAG = "Texture";
+    std::string name = "";
 
     int width = 1024, height = 1024, numChannels = 3;
 
