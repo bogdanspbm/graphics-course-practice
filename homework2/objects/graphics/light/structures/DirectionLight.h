@@ -10,6 +10,7 @@
 struct DirectionLight {
     glm::vec3 location = {0, 0, 0};
     glm::vec3 direction = {0, 0, 0};
+    glm::vec3 rotation = {0, 0, 0};
     glm::vec3 color = {1, 1, 1};
     glm::vec3 attenuation = {1, 1, 1};
 

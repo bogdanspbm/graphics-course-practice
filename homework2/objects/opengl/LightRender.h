@@ -50,8 +50,7 @@ public:
             return Sun::getSun()->getDirection();
         }
 
-        auto light = lights[curSource];
-        return light.direction;
+        return calculateForwardVector(getRotation());
     }
 
     float getLightRange() {
@@ -88,7 +87,10 @@ public:
         }
 
         auto light = lights[curSource];
-        glm::vec3 rotation = directionToRotation(light.direction);
+        if (light.rotation.x != 0 || light.rotation.y != 0 || light.rotation.z != 0) {
+            return light.rotation;
+        }
+        glm::vec3 rotation = directionToRotation(glm::normalize(light.direction));
         return rotation;
     }
 
@@ -105,9 +107,8 @@ public:
         curSource = (curSource + 1) % (lights.size() + 1);
     }
 
-    void renderLight(std::vector<Placeable *> list)
-    {
-        curSource = lights.size();
+    void renderLight(std::vector<Placeable *> list) {
+        curSource = 0;
         for (int i = 0; i <= lights.size(); i++) {
             GLProgram::getGLProgram(SHADOW)->useProgram();
 
@@ -117,17 +118,16 @@ public:
 
             GLProgram::getGLProgram(LIGHT)->useProgram();
 
-            for (int i = 0; i < list.size(); i++) {
-                list[i]->draw();
-            }
-
             GLProgram::getGLProgram()->setUniformFloat("lightRange", getLightRange());
             GLProgram::getGLProgram()->setUniformVector3F("lightPosition", getLocation());
             GLProgram::getGLProgram()->setUniformVector3F("inputSunColor", getLightColor());
             GLProgram::getGLProgram()->setUniformVector3F("inputSunDirection", glm::normalize(getLightDirection()));
 
+            for (int i = 0; i < list.size(); i++) {
+                list[i]->draw();
+            }
+
             nextSource();
-            return;
         }
     }
 
