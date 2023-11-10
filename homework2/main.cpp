@@ -92,8 +92,8 @@ try {
 
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
-    Ambient::getAmbient()->setColor({0.82, 0.80, 0.79});
-    Sun::getSun()->setColor({0.62, 0.60, 0.59});
+    Ambient::getAmbient()->setColor({1, 0.90, 0.89});
+    Sun::getSun()->setColor({1, 0.90, 0.95});
     Sun::getSun()->setDirection({0, 10, -1});
 
     auto renderList = loadRenderableListFromFile(project_root + "/sponza/sponza.obj");
@@ -146,8 +146,10 @@ try {
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glClearColor(0.8f, 0.8f, 1.f, 0.f);
+        glClearColor(7.f, 0.55f, 0.5f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
@@ -161,6 +163,8 @@ try {
         for (int i = 0; i < objectList.size(); i++) {
             objectList[i]->draw();
         }
+
+
 
         cowObject->draw();
 

@@ -19,6 +19,7 @@ void Material::bindMaterial() {
 
     GLProgram::getGLProgram()->setUniformVector3F("inputAlbedo", albedo);
     GLProgram::getGLProgram()->setUniformFloat("roughness", roughness);
+    GLProgram::getGLProgram()->setUniformFloat("opacity", opacity);
     GLProgram::getGLProgram()->setUniformFloat("glossiness", glossiness);
 }
 

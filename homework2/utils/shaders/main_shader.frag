@@ -6,6 +6,7 @@ in float depth;
 
 uniform float roughness;
 uniform float glossiness;
+uniform float opacity;
 
 uniform sampler2D texture0;// ALBEDO
 uniform sampler2D texture1;// NORMAL
@@ -74,5 +75,5 @@ void main()
 
     vec3 result = ((specular + diffuse) * shadowCoef + inputAmbientLight) / 3 * textureColor.xyz;
 
-    outColor = vec4(result ,1);
+    outColor = vec4(result , opacity);
 }

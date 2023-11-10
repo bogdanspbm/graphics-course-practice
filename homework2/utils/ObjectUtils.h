@@ -338,11 +338,11 @@ inline std::vector<Material *> loadMaterialListFromFile(std::filesystem::path co
         } else if (tag == "d") {
             float dissolve;
             ls >> dissolve;
-            material->setOpacity(1 - dissolve);
+            material->setOpacity(dissolve);
         } else if (tag == "Tr") {
             float transparent;
             ls >> transparent;
-            material->setOpacity(transparent);
+            material->setOpacity(1-transparent);
         } else if (tag == "Pr") {
             float roughness;
             ls >> roughness;
