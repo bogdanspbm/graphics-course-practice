@@ -125,3 +125,7 @@ void Renderable::setMaterialName(std::string name) {
 void Renderable::setPath(std::string path) {
     this->path = path;
 }
+
+std::string Renderable::getName(){
+    return this->name;
+}

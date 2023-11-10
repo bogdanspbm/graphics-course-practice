@@ -112,6 +112,8 @@ public:
 
     virtual void setPath(std::string path);
 
+    virtual std::string getName();
+
 };
 
 

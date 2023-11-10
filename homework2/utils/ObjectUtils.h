@@ -157,6 +157,8 @@ inline std::vector<Renderable *> loadRenderableListFromFile(std::filesystem::pat
     std::string line;
     std::size_t line_count = 0;
 
+    bool parsedMaterial = false;
+
     auto fail = [&](auto const &... args) {
         throw std::runtime_error(to_string("Error parsing OBJ data, line ", line_count, ": ", args...));
     };
@@ -185,6 +187,7 @@ inline std::vector<Renderable *> loadRenderableListFromFile(std::filesystem::pat
                 }
 
                 model = Renderable::getRenderableByName(objectName);
+                parsedMaterial = false;
                 model->setPath(path);
             }
 
@@ -194,7 +197,24 @@ inline std::vector<Renderable *> loadRenderableListFromFile(std::filesystem::pat
         if (tag == "usemtl") {
             std::string materialName;
             ls >> materialName;
+
+
+            if (parsedMaterial) {
+                model->generateBuffers();
+                output.push_back(model);
+
+                auto prevModel = model;
+                model = Renderable::getRenderableByName(prevModel->getName() + materialName);
+
+                for (int a = 0; a < prevModel->getVertices()->size(); a++) {
+                    auto vertex = prevModel->getVertices()->data()[a];
+                    model->getVertices()->push_back(vertex);
+                }
+            }
+
+
             model->setMaterialName(materialName);
+            parsedMaterial = true;
             continue;
         }
 
@@ -342,7 +362,7 @@ inline std::vector<Material *> loadMaterialListFromFile(std::filesystem::path co
         } else if (tag == "Tr") {
             float transparent;
             ls >> transparent;
-            material->setOpacity(1-transparent);
+            material->setOpacity(1 - transparent);
         } else if (tag == "Pr") {
             float roughness;
             ls >> roughness;
@@ -351,7 +371,7 @@ inline std::vector<Material *> loadMaterialListFromFile(std::filesystem::path co
             std::string textureName;
             ls >> textureName;
 
-            for (char& c : textureName) {
+            for (char &c: textureName) {
                 if (c == '\\') {
                     c = std::filesystem::path::preferred_separator;
                 }
@@ -366,7 +386,7 @@ inline std::vector<Material *> loadMaterialListFromFile(std::filesystem::path co
             std::string textureName;
             ls >> textureName;
 
-            for (char& c : textureName) {
+            for (char &c: textureName) {
                 if (c == '\\') {
                     c = std::filesystem::path::preferred_separator;
                 }
@@ -381,7 +401,7 @@ inline std::vector<Material *> loadMaterialListFromFile(std::filesystem::path co
             std::string textureName;
             ls >> textureName;
 
-            for (char& c : textureName) {
+            for (char &c: textureName) {
                 if (c == '\\') {
                     c = std::filesystem::path::preferred_separator;
                 }
@@ -396,7 +416,7 @@ inline std::vector<Material *> loadMaterialListFromFile(std::filesystem::path co
             std::string textureName;
             ls >> textureName;
 
-            for (char& c : textureName) {
+            for (char &c: textureName) {
                 if (c == '\\') {
                     c = std::filesystem::path::preferred_separator;
                 }
@@ -411,7 +431,7 @@ inline std::vector<Material *> loadMaterialListFromFile(std::filesystem::path co
             std::string textureName;
             ls >> textureName;
 
-            for (char& c : textureName) {
+            for (char &c: textureName) {
                 if (c == '\\') {
                     c = std::filesystem::path::preferred_separator;
                 }
