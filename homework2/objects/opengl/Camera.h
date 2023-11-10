@@ -20,7 +20,7 @@ private:
     int height = 1080;
 
     // Projection Params
-    float near = 0.001f;
+    float near = 1.f;
     float far = 1600.0f;
     float fov = 90;
 

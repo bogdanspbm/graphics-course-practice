@@ -129,4 +129,9 @@ void Camera::bindControl(KeyHandler *keyHandler) {
         glm::vec3 rightVector = calculateRightVector(this->rotation);
         this->location -= rightVector;
     }, SDLK_a);
+
+    keyHandler->bindOnPressedEvent([this]() -> void {
+        glm::vec3 upVector = calculateUpVector(this->rotation);
+        this->location += upVector;
+    }, SDLK_SPACE);
 }

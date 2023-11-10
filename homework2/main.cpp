@@ -147,13 +147,13 @@ try {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 
-        glClearColor(0.8f, 0.8f, 1.f, 0.f);
+        /*glClearColor(0.8f, 0.8f, 1.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
         for (int i = 0; i < objectList.size(); i++) {
             objectList[i]->draw();
-        }
+        }*/
 
         glClearColor(0.8f, 0.8f, 1.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -167,9 +167,9 @@ try {
 
         cowObject->draw();
 
-        glClearColor(0.8f, 0.8f, 1.f, 0.f);
+        //glClearColor(0.8f, 0.8f, 1.f, 0.f);
 
-        screenView->draw();
+        //screenView->draw();
 
         SDL_GL_SwapWindow(window);
     }

@@ -38,6 +38,13 @@ inline glm::vec3 calculateRightVector(const glm::vec3 rotation) {
     return glm::normalize(glm::vec3(rotationMatrix[0]));
 }
 
+inline glm::vec3 calculateUpVector(const glm::vec3 rotation) {
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                               glm::rotate(glm::mat4(1.0f), glm::radians(-rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    return glm::normalize(glm::vec3(rotationMatrix[1]));
+}
+
 
 inline glm::vec3 linearInterpolation(glm::vec3 a, glm::vec3 b, float percentage) {
     percentage = std::clamp(percentage, 0.0f, 1.0f);
