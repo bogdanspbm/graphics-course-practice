@@ -30,6 +30,7 @@
 #include "objects/graphics/renderable/Placeable.h"
 #include "objects/graphics/renderable/ScreenView.h"
 #include "utils/ObjectUtils.h"
+#include "objects/input/KeyHandler.h"
 
 
 std::string to_string(std::string_view str) {
@@ -86,11 +87,16 @@ try {
 
     GLProgram::createGLPrograms(window);
 
+    auto keyHandler = new KeyHandler();
+    keyHandler->bindOnMouseMotionEvent([](glm::vec2 position, glm::vec2 offset)->void{
+        std::cout << offset.x << " " << offset.y << std::endl;
+    });
+
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
     Ambient::getAmbient()->setColor({0.82, 0.80, 0.79});
     Sun::getSun()->setColor({0.62, 0.60, 0.59});
-    Sun::getSun()->setDirection({0, 1, -2});
+    Sun::getSun()->setDirection({0, 10, -1});
 
     auto renderList = loadRenderableListFromFile(project_root + "/sponza/sponza.obj");
     auto materialList = loadMaterialListFromFile(project_root + "/sponza/sponza.mtl");
@@ -111,14 +117,10 @@ try {
 
     float time = 0.f;
 
-    std::map<SDL_Keycode, bool> button_down;
-
-    float camera_distance = 1.5f;
-    float camera_angle = glm::pi<float>();
-
     bool running = true;
     while (running) {
-        for (SDL_Event event; SDL_PollEvent(&event);)
+        for (SDL_Event event; SDL_PollEvent(&event);) {
+            keyHandler->handleInputEvent(event);
             switch (event.type) {
                 case SDL_QUIT:
                     running = false;
@@ -131,13 +133,8 @@ try {
                             break;
                     }
                     break;
-                case SDL_KEYDOWN:
-                    button_down[event.key.keysym.sym] = true;
-                    break;
-                case SDL_KEYUP:
-                    button_down[event.key.keysym.sym] = false;
-                    break;
             }
+        }
 
         if (!running)
             break;
@@ -146,16 +143,6 @@ try {
         float dt = std::chrono::duration_cast<std::chrono::duration<float>>(now - last_frame_start).count();
         last_frame_start = now;
         time += dt;
-
-        if (button_down[SDLK_UP])
-            camera_distance -= 4.f * dt;
-        if (button_down[SDLK_DOWN])
-            camera_distance += 4.f * dt;
-
-        if (button_down[SDLK_LEFT])
-            camera_angle += 2.f * dt;
-        if (button_down[SDLK_RIGHT])
-            camera_angle -= 2.f * dt;
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

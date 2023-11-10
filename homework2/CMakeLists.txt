@@ -59,6 +59,8 @@ add_executable(${TARGET_NAME} main.cpp
 		objects/graphics/renderable/ScreenView.h
 		objects/opengl/FrameBuffer.cpp
 		objects/opengl/FrameBuffer.h
+        objects/input/KeyHandler.h
+		objects/input/KeyHandler.cpp
 
 )
 target_include_directories(${TARGET_NAME} PUBLIC

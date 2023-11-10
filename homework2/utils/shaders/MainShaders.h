@@ -11,7 +11,7 @@ const char mainVertexSource[] =
         R"(#version 330 core
 
 uniform mat4 model;
-uniform mat4 sun_view;
+uniform mat4 sunView;
 uniform mat4 projection;
 uniform mat4 view;
 uniform float far;
@@ -28,7 +28,7 @@ out float depth;
 
 void main()
 {
-    shadowPosition =  projection *  sun_view * model  * vec4(in_position, 1.0);
+    shadowPosition =  projection *  sunView * model  * vec4(in_position, 1.0);
     gl_Position = projection * view * model * vec4(in_position, 1.0);
     inputNormal = normalize(mat3(model) * in_normal);
     texCoord = in_texcoord;
@@ -66,98 +66,21 @@ const char mainFragmentSource[] =
         uniform vec3 inputViewDirection;
         uniform vec3 inputViewPosition;
 
-        struct PointLight {
-            vec3 position;
-            vec3 color;
-            vec3 attenuation;
-        };
 
-        #define NR_POINT_LIGHTS 16
-        uniform PointLight pointLights[NR_POINT_LIGHTS];
-
-        layout (location = 0) out vec4 out_color;
-
-        vec3 diffuse(vec3 albedo, vec3 direction, vec3 normal) {
-            return albedo * max(0.0, dot(normal, direction));
-        }
-
-        vec3 specular(vec3 albedo, vec3 direction, vec3 normal) {
-            float power = 1.0 / (roughness * roughness) - 1.0;
-
-            vec3 viewDirection  =  inputViewDirection;
-            if(viewDirection == vec3(0)){
-                viewDirection = vec3(0,0,-1);
-            }
-
-            vec3 normalizedViewDirection = normalize(viewDirection);
-            vec3 reflected = reflect(-direction, normal);
-
-            return glossiness * albedo * pow(max(0.0, dot(reflected, normalizedViewDirection)), power);
-        }
-
-        vec3 CalcPointLight(vec3 albedo, PointLight light, vec3 normal)
-        {
-            vec3 point_light_dir = light.position - inputViewPosition;
-
-            float attenuation = dot(light.attenuation, vec3(1.0, length(point_light_dir), length(point_light_dir) * length(point_light_dir)));
-
-            vec3 point_light_extra = (diffuse(albedo, normalize(point_light_dir),normal) + specular(albedo, normalize(point_light_dir),normal)) * light.color * attenuation;
-
-            return point_light_extra;
-        }
+        layout (location = 0) out vec4 outColor;
 
         void main()
         {
-
             vec4 textureColor = texture(texture0, texCoord);
-
-            vec3 normalMapColor = texture(texture1, texCoord).xyz * 2.0 - 1.0;
-            vec3 perturbedNormal = inputNormal;
-
-            vec3 defaultColor = textureColor.xyz;
-
-            if(textureColor.xyz == vec3(0)){
-                defaultColor = inputAlbedo;
-            }
-
-            vec3 ambientLight = inputAmbientLight;
-
-            if(ambientLight == vec3(0)){
-                ambientLight = vec3(0.8);
-            }
-
-            vec3 ambient = defaultColor * ambientLight;
-
-            vec3 sunColor = inputSunColor;
-            if(sunColor == vec3(0)){
-                sunColor = vec3(0.8);
-            }
-
-            vec3 sunDirection = inputSunDirection;
-            if(sunDirection == vec3(0)){
-                sunDirection = vec3(0,0.8,0.6);
-            }
-
-            vec3 sunExtra = (diffuse(defaultColor,sunDirection, perturbedNormal) + specular(defaultColor,sunDirection, perturbedNormal)) * sunColor;
-
-            vec3 color = ambient + sunExtra;
-
-            //for(int i = 0; i < NR_POINT_LIGHTS; i++){
-            //        color += CalcPointLight(defaultColor, pointLights[i],perturbedNormal);
-            //}
 
             vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
             shadowTextCoord = shadowTextCoord * 0.5 + 0.5;
             vec4 depthValue = texture(texture31, shadowTextCoord.xy);
-            float isVisible = (depth < depthValue.r + 0.01) ? 1.0 : 0.0;;
 
-            if(isVisible > 0.5){
-                  out_color = vec4(color, 0.5);
-            } else {
-                out_color = vec4(color * 0.5, 0.5);
+            if(depth > depthValue.r + 0.01){
+                textureColor.xyz = textureColor.xyz * 0.5;
             }
 
-            out_color = vec4(color,1);
-
+            outColor = textureColor;
         }
 )";

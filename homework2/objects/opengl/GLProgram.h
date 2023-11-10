@@ -38,7 +38,7 @@ public:
         GLProgram::programs[type] = this;
 
         if (type == SHADOW) {
-            this->frameBuffer = new FrameBuffer(2048, 2048);
+            this->frameBuffer = new FrameBuffer(8192, 8192);
         }
     }
 
@@ -69,6 +69,8 @@ private:
 
     void setViewMatrix();
 
+    void setSunViewMatrix();
+
     void setProjectionMatrix();
 
 public:
@@ -88,9 +90,11 @@ public:
         }
 
         setViewMatrix();
+        setSunViewMatrix();
         setProjectionMatrix();
 
         camera->bindView();
+
         Sun::getSun()->bindLight();
         Ambient::getAmbient()->bindLight();
     }

@@ -87,3 +87,9 @@ FrameBuffer *GLProgram::getFrameBuffer() {
     return frameBuffer;
 }
 
+void GLProgram::setSunViewMatrix() {
+    float view[16];
+    getGLProgram(SHADOW)->getCamera()->calcViewMatrix(view);
+    setUniformMatrix4FV("sunView", view, true);
+}
+
