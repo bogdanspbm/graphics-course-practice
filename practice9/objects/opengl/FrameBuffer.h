@@ -14,7 +14,6 @@ private:
     const std::string TAG = "FrameBuffer";
 
     Texture *texture;
-    GLuint depthRenderbuffer;
     GLuint framebuffer;
 
     glm::vec4 clearColor = {1.0f, 1.0f, 1.0f, 1.f};

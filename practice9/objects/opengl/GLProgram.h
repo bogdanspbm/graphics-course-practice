@@ -74,25 +74,30 @@ private:
 
     void setProjectionMatrix();
 
+    void setTransformMatrix();
+
 public:
     // Methods
     void useProgram() {
-        GLProgram::currentProgramType = type;
-        GLProgram::currentProgramID = programID;
-        glUseProgram(programID);
-
         SDL_GetWindowSize(window, camera->getWidth(), camera->getHeight());
-        glViewport(0, 0, *camera->getWidth(), *camera->getHeight());
 
         if (frameBuffer != nullptr) {
             frameBuffer->bindFrameBuffer();
         } else {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
+
+        glViewport(0, 0, *camera->getWidth(), *camera->getHeight());
+
+        GLProgram::currentProgramType = type;
+        GLProgram::currentProgramID = programID;
+        glUseProgram(programID);
 
         setViewMatrix();
         setSunViewMatrix();
         setProjectionMatrix();
+        setTransformMatrix();
 
         camera->bindView();
 

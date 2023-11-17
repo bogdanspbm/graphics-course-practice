@@ -12,8 +12,8 @@ FrameBuffer::FrameBuffer(int width, int height) {
 
 void FrameBuffer::generateFrameBuffer() {
     texture = new Texture(width, height);
-    glGenRenderbuffers(1, &depthRenderbuffer);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, depthRenderbuffer);
+    glGenRenderbuffers(1, &framebuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
     glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture->getTextureID(), 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -26,7 +26,6 @@ void FrameBuffer::generateFrameBuffer() {
 void FrameBuffer::bindFrameBuffer() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.w);
     glViewport(0, 0, width / 2, height / 2);
 }
 

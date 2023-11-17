@@ -34,8 +34,18 @@ public:
         light.direction = glm::normalize(direction);
     }
 
+    void setRotation(glm::vec3 rotation) {
+        light.rotation = rotation;
+        light.useRotation = true;
+    }
+
     glm::vec3 getRotation() {
         glm::vec3 rotation = directionToRotation(light.direction);
+
+        if(light.useRotation){
+            return light.rotation;
+        }
+
         return rotation;
     }
 

@@ -237,11 +237,12 @@ int main() try {
 
     Ambient::getAmbient()->setColor({1, 1, 1});
     Sun::getSun()->setColor({0.2, 0.12, 0.14});
+    Sun::getSun()->setRotation({170, 210, 0});
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/bunny.obj";
     auto bunny = new Placeable(scene_path);
-    bunny->setPosition({0,0,-2});
+    bunny->setPosition({0, 0, -2});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -277,7 +278,9 @@ int main() try {
         if (!paused)
             time += dt;
 
-        glClearColor(7.f, 0.55f, 0.5f, 0.f);
+        glClearColor(0.8f, 0.8f, 0.9f, 1.f);
+
+        GLProgram::getGLProgram(SHADOW)->useProgram();
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
@@ -285,10 +288,17 @@ int main() try {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-        GLProgram::getGLProgram(SHADOW)->useProgram();
         bunny->draw();
+        glGenerateMipmap(GL_TEXTURE_2D);
 
-        GLProgram::getGLProgram(MAIN)->useProgram();
+        GLProgram::getGLProgram(LIGHT)->useProgram();
+
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
         bunny->draw();
 
         screenView->draw();
