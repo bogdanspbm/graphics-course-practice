@@ -405,19 +405,9 @@ int main() try
         glDrawElements(GL_TRIANGLES, scene.indices.size(), GL_UNSIGNED_INT, nullptr);
 
         glBindTexture(GL_TEXTURE_2D, shadow_map);
-        glGenerateMipmap(GL_TEXTURE_2D);
 
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glViewport(0, 0, width, height);
-
-        glClearColor(0.8f, 0.8f, 0.9f, 0.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LEQUAL);
-
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
 
         float near = 0.01f;
         float far = 10.f;
@@ -429,8 +419,6 @@ int main() try
 
         glm::mat4 projection = glm::mat4(1.f);
         projection = glm::perspective(glm::pi<float>() / 2.f, (1.f * width) / height, near, far);
-
-        glBindTexture(GL_TEXTURE_2D, shadow_map);
 
         glUseProgram(program);
         glUniformMatrix4fv(model_location, 1, GL_FALSE, reinterpret_cast<float *>(&model));
