@@ -302,6 +302,8 @@ int main() try {
         bunny->draw();
 
         screenView->draw();
+
+
         SDL_GL_SwapWindow(window);
     }
 
