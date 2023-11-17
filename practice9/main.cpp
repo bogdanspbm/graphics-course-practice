@@ -65,7 +65,7 @@ void main()
 )";
 
 const char fragment_shader_source[] =
-R"(#version 330 core
+        R"(#version 330 core
 
 uniform vec3 ambient;
 
@@ -88,9 +88,18 @@ void main()
     shadow_pos = shadow_pos * 0.5 + vec4(0.5);
 
     bool in_shadow_texture = (shadow_pos.x > 0.0) && (shadow_pos.x < 1.0) && (shadow_pos.y > 0.0) && (shadow_pos.y < 1.0) && (shadow_pos.z > 0.0) && (shadow_pos.z < 1.0);
+
     float shadow_factor = 1.0;
+
     if (in_shadow_texture)
-        shadow_factor = (texture(shadow_map, shadow_pos.xy).r < shadow_pos.z) ? 0.0 : 1.0;
+    {
+        vec2 data = texture(shadow_map, shadow_pos.xy).rg;
+        float mu = data.r + 0.001;
+        float sigma = data.g - mu * mu;
+        float z = shadow_pos.z;
+        float factor = (z < mu) ? 1.0 : sigma / (sigma + (z - mu) * (z - mu));
+        shadow_factor = factor;
+    }
 
     vec3 albedo = vec3(1.0, 1.0, 1.0);
 
@@ -129,13 +138,14 @@ R"(#version 330 core
 
 uniform sampler2D shadow_map;
 
+out vec4 FragColor;
 in vec2 texcoord;
 
 layout (location = 0) out vec4 out_color;
 
 void main()
 {
-    out_color = vec4(texture(shadow_map, texcoord).rrr, 1.0);
+        out_color = texture(shadow_map, texcoord);
 }
 )";
 
@@ -155,9 +165,13 @@ void main()
 
 const char shadow_fragment_shader_source[] =
 R"(#version 330 core
+out vec4 FragColor;
 
 void main()
-{}
+{
+    float z = gl_FragCoord.z;
+    FragColor = vec4(z, z * z, 0.0, 0.0);
+}
 )";
 
 GLuint create_shader(GLenum type, const char * source)
@@ -302,12 +316,19 @@ int main() try
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, shadow_map_resolution, shadow_map_resolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, shadow_map_resolution, shadow_map_resolution, 0, GL_RGBA, GL_FLOAT, nullptr);
 
     GLuint shadow_fbo;
     glGenFramebuffers(1, &shadow_fbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadow_fbo);
-    glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadow_map, 0);
+    glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, shadow_map, 0);
+
+    GLuint depth_renderbuffer;
+    glGenRenderbuffers(1, &depth_renderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depth_renderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, shadow_map_resolution, shadow_map_resolution);
+    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_renderbuffer);
+
     if (glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         throw std::runtime_error("Incomplete framebuffer!");
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -387,7 +408,7 @@ int main() try
         glm::vec3 light_z = -light_direction;
         glm::vec3 light_x = glm::normalize(glm::cross(light_z, {0.f, 1.f, 0.f}));
         glm::vec3 light_y = glm::cross(light_x, light_z);
-        float shadow_scale = 2.f;
+        float shadow_scale = 0.25f;
 
         glm::mat4 transform = glm::mat4(1.f);
         for (size_t i = 0; i < 3; ++i)
