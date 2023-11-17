@@ -33,8 +33,6 @@ Texture::Texture(int width, int height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Texture::Texture(std::filesystem::path const &path, TextureType textureType) {
@@ -64,7 +62,6 @@ Texture::Texture(std::filesystem::path const &path, TextureType textureType) {
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    glBindTexture(GL_TEXTURE_2D, 0);
     stbi_image_free(imageData);
 
     cachedTextures[path] = this;
@@ -95,7 +92,6 @@ Texture::Texture(const std::filesystem::path &path) {
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    glBindTexture(GL_TEXTURE_2D, 0);
     stbi_image_free(imageData);
 
     cachedTextures[path] = this;

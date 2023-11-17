@@ -235,6 +235,10 @@ int main() try {
     GLProgram::createGLPrograms(window);
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
+    auto keyHandler = new KeyHandler();
+    GLProgram::getGLProgram(MAIN)->getCamera()->bindControl(keyHandler);
+    GLProgram::getGLProgram(LIGHT)->getCamera()->bindControl(keyHandler);
+
     Ambient::getAmbient()->setColor({1, 1, 1});
     Sun::getSun()->setColor({0.2, 0.12, 0.14});
     Sun::getSun()->setRotation({170, 210, 0});
@@ -253,7 +257,7 @@ int main() try {
 
     bool running = true;
     while (running) {
-        for (SDL_Event event; SDL_PollEvent(&event);)
+        for (SDL_Event event; SDL_PollEvent(&event);){
             switch (event.type) {
                 case SDL_QUIT:
                     running = false;
@@ -268,6 +272,8 @@ int main() try {
                     }
                     break;
             }
+            keyHandler->handleInputEvent(event);
+        }
 
         if (!running)
             break;
@@ -282,14 +288,8 @@ int main() try {
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
 
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LEQUAL);
-
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
 
         bunny->draw();
-        glGenerateMipmap(GL_TEXTURE_2D);
 
         GLProgram::getGLProgram(LIGHT)->useProgram();
 

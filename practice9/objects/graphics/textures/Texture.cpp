@@ -19,8 +19,6 @@ Texture::Texture() {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width / 2, height / 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Texture::Texture(int width, int height) {
@@ -37,8 +35,6 @@ Texture::Texture(int width, int height) {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width / 2, height / 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Texture::Texture(std::filesystem::path const &path, TextureType textureType) {
@@ -67,8 +63,6 @@ Texture::Texture(std::filesystem::path const &path, TextureType textureType) {
     }
 
     glGenerateMipmap(GL_TEXTURE_2D);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
     stbi_image_free(imageData);
 
     cachedTextures[path] = this;
@@ -98,8 +92,6 @@ Texture::Texture(const std::filesystem::path &path) {
     }
 
     glGenerateMipmap(GL_TEXTURE_2D);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
     stbi_image_free(imageData);
 
     cachedTextures[path] = this;
@@ -125,7 +117,7 @@ void Texture::bindTexture() {
     if (textureLocation != -1) {
         glUniform1i(textureLocation, textureUnit - GL_TEXTURE0); // Set the uniform to the texture unit offset from GL_TEXTURE0
 
-        if (textureType == DISPLACEMENT_MAP && name != "") {
+        if (textureType == DISPLACEMENT_MAP && !name.empty()) {
             GLProgram::getGLProgram()->setUniformFloat("useDisplacementMap", 1);
         }
     }

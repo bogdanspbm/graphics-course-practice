@@ -48,9 +48,9 @@ public:
 public:
     static void createGLPrograms(SDL_Window *window) {
         new GLProgram(window, MAIN);
-        new GLProgram(window, SHADOW);
         new GLProgram(window, VIEW);
         new GLProgram(window, LIGHT);
+        new GLProgram(window, SHADOW);
     }
 
     static GLProgram *getGLProgram(ProgramType type) {
@@ -84,9 +84,15 @@ public:
         if (frameBuffer != nullptr) {
             frameBuffer->bindFrameBuffer();
         } else {
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
             //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
+
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
         glViewport(0, 0, *camera->getWidth(), *camera->getHeight());
 
