@@ -26,7 +26,40 @@ set(TARGET_NAME "${PROJECT_NAME}")
 
 set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(${TARGET_NAME} main.cpp obj_parser.hpp obj_parser.cpp)
+add_executable(${TARGET_NAME} main.cpp 	objects/opengl/GLProgram.cpp
+		utils/shaders/ScreenViewShader.h
+        objects/opengl/Camera.cpp
+		objects/opengl/Camera.h
+		objects/graphics/renderable/Renderable.cpp
+		objects/graphics/renderable/Renderable.h
+		structures/Vertex.h
+		objects/graphics/renderable/Placeable.cpp
+		objects/graphics/renderable/Placeable.h
+		enums/GLProgramType.h
+		utils/ObjectUtils.h
+		objects/graphics/textures/Texture.cpp
+		objects/graphics/textures/Texture.h
+		libs/stb_image.h
+		objects/graphics/textures/Material.cpp
+		objects/graphics/textures/Material.h
+		libs/stb_image.c
+		enums/GLTextureType.h
+		objects/graphics/light/structures/DirectionLight.h
+		objects/graphics/light/Sun.cpp
+		objects/graphics/light/Sun.h
+		objects/graphics/light/Ambient.cpp
+		objects/graphics/light/Ambient.h
+		objects/graphics/light/structures/PointLight.h
+		utils/MathUtils.h
+		utils/ShaderUtils.h
+		objects/graphics/renderable/ScreenView.cpp
+		objects/graphics/renderable/ScreenView.h
+		objects/opengl/FrameBuffer.cpp
+		objects/opengl/FrameBuffer.h
+		objects/input/KeyHandler.h
+		objects/input/KeyHandler.cpp
+		objects/opengl/LightRender.cpp
+		objects/opengl/LightRender.h)
 target_include_directories(${TARGET_NAME} PUBLIC
 	"${SDL2_INCLUDE_DIRS}"
 	"${GLEW_INCLUDE_DIRS}"
