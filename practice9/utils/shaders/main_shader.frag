@@ -59,10 +59,6 @@ void main()
 {
     vec4 textureColor = texture(texture0, texCoord);
 
-    if (textureColor.xyz == vec3(0)){
-        textureColor = vec4(inputAlbedo, 1);
-    }
-
     vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
     shadowTextCoord = shadowTextCoord * 0.5 + 0.5;
     vec4 depthValue = gaussianBlur(texture31, shadowTextCoord.xy, 5.f);
@@ -80,14 +76,14 @@ void main()
 
     float outOpacity = opacity;
 
-    if (useDisplacementMap > 0.5f){
+    if(useDisplacementMap > 0.5f){
         vec4 displacementMap = texture(texture1, texCoord);
         outOpacity = displacementMap.x;
     }
 
-    if (outOpacity == 0){
+    if(outOpacity == 0){
         discard;
     }
 
-    outColor = vec4(result, 1);
+    outColor = vec4(result , 1);
 }

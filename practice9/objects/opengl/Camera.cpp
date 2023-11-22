@@ -95,7 +95,7 @@ void Camera::bindView() {
 
 void Camera::bindControl(KeyHandler *keyHandler) {
 
-    float speed = 0.1;
+    float speed = 2;
 
     keyHandler->bindOnMouseMotionEvent([this](glm::vec2 position, glm::vec2 offset) -> void {
         this->rotation.x += offset.y;

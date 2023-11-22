@@ -241,7 +241,6 @@ int main() try {
 
     Ambient::getAmbient()->setColor({1, 1, 1});
     Sun::getSun()->setColor({0.2, 0.12, 0.14});
-    Sun::getSun()->setRotation({170, 210, 0});
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/bunny.obj";

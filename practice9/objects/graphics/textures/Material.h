@@ -16,7 +16,7 @@ private:
     static std::map<std::string, Material *> cachedMaterials;
     std::vector<Texture *> textures;
     std::string name;
-    glm::vec3 albedo = {0.9, 0.9, 0.9};
+    glm::vec3 albedo = {0.6, 0.6, 0.6};
     float roughness = 0.1f;
     float glossiness = 0.5f;
     float opacity = 1.f;
