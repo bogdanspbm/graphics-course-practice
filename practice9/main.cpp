@@ -236,16 +236,18 @@ int main() try {
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
     auto keyHandler = new KeyHandler();
-    GLProgram::getGLProgram(MAIN)->getCamera()->bindControl(keyHandler);
-    GLProgram::getGLProgram(LIGHT)->getCamera()->bindControl(keyHandler);
+   // GLProgram::getGLProgram(MAIN)->getCamera()->bindControl(keyHandler);
+    //GLProgram::getGLProgram(LIGHT)->getCamera()->bindControl(keyHandler);
 
     Ambient::getAmbient()->setColor({1, 1, 1});
     Sun::getSun()->setColor({0.2, 0.12, 0.14});
+    Sun::getSun()->setRotation({180, 180, 0});
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/bunny.obj";
     auto bunny = new Placeable(scene_path);
-    bunny->setPosition({0, 0, -2});
+    bunny->setRotation({180,0,0});
+    bunny->setPosition({0, 1, -2});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -283,14 +285,14 @@ int main() try {
         if (!paused)
             time += dt;
 
-        glClearColor(0.8f, 0.8f, 0.9f, 1.f);
-
         GLProgram::getGLProgram(SHADOW)->useProgram();
-
-
         bunny->draw();
 
-        GLProgram::getGLProgram(LIGHT)->useProgram();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClearColor(0.8f, 0.8f, 0.9f, 1.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        GLProgram::getGLProgram(MAIN)->useProgram();
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
@@ -301,7 +303,6 @@ int main() try {
         bunny->draw();
 
         screenView->draw();
-
 
         SDL_GL_SwapWindow(window);
     }

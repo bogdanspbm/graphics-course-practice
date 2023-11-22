@@ -14,7 +14,7 @@ class Sun {
 private:
     static Sun *instance;
     DirectionLight light = DirectionLight{};
-    float height = 1500;
+    float height = 50;
 
 public:
     Sun();
@@ -35,8 +35,17 @@ public:
     }
 
     glm::vec3 getRotation() {
+        if(light.useRotation){
+            return light.rotation;
+        }
+
         glm::vec3 rotation = directionToRotation(light.direction);
         return rotation;
+    }
+
+    void setRotation(glm::vec3 rotation) {
+        light.rotation = rotation;
+        light.useRotation = true;
     }
 
     glm::vec3 getLocation() {

@@ -14,7 +14,7 @@ class Camera {
 
 private:
 
-    bool DEBUG = false;
+    bool DEBUG = true;
 
     glm::vec3 location = {0, 100, 0};
     glm::vec3 rotation = {0, 180, 0};
@@ -24,7 +24,7 @@ private:
 
     // Projection Params
     float near = 1.f;
-    float far = 2000.0f;
+    float far = 200.0f;
     float fov = 90;
 
     // Program Type

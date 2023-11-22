@@ -17,7 +17,7 @@ private:
     GLuint depthRenderbuffer;
     GLuint framebuffer;
 
-    glm::vec4 clearColor = {1.0f, 1.0f, 1.0f, 1.f};
+    glm::vec4 clearColor = {0.0f, 0.0f, 0.0f, 1.f};
 
     int width = 800, height = 400;
 public:
