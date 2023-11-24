@@ -135,6 +135,10 @@ int main() try {
         if (!paused)
             time += dt;
 
+        auto sunRotation =  Sun::getSun()->getRotation();
+        sunRotation.y += dt * 5;
+        Sun::getSun()->setRotation(sunRotation);
+
         GLProgram::getGLProgram(SHADOW)->useProgram();
         bunny->draw();
 

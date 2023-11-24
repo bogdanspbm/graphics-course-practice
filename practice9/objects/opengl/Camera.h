@@ -14,17 +14,17 @@ class Camera {
 
 private:
 
-    bool DEBUG = true;
+    bool DEBUG = false;
 
-    glm::vec3 location = {0, 100, 0};
-    glm::vec3 rotation = {0, 180, 0};
+    glm::vec3 location = {0, 0, -1.5};
+    glm::vec3 rotation = {195, 0, 0};
 
     int width = 1920;
     int height = 1080;
 
     // Projection Params
-    float near = 1.f;
-    float far = 200.0f;
+    float near = 0.5f;
+    float far = 20.0f;
     float fov = 90;
 
     // Program Type
