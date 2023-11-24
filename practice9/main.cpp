@@ -240,7 +240,7 @@ int main() try {
     //GLProgram::getGLProgram(LIGHT)->getCamera()->bindControl(keyHandler);
 
     Ambient::getAmbient()->setColor({1, 1, 1});
-    Sun::getSun()->setColor({0.2, 0.12, 0.14});
+    Sun::getSun()->setColor({0.8, 0.72, 0.74});
     Sun::getSun()->setRotation({180, 180, 0});
 
     std::string project_root = PROJECT_ROOT;

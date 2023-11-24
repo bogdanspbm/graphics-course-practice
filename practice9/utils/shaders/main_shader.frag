@@ -24,6 +24,7 @@ uniform sampler2D texture9;
 
 uniform sampler2D texture31;// SHADOW_MAP
 
+uniform int useAlbedo;
 uniform vec3 inputAlbedo;
 uniform vec3 inputAmbientLight;
 uniform vec3 inputSunColor;
@@ -57,7 +58,11 @@ vec4 gaussianBlur(sampler2D inputTexture, vec2 texCoord, float blurRadius) {
 
 void main()
 {
-    vec4 textureColor = texture(texture0, texCoord);
+    vec4 materialColor = texture(texture0, texCoord);
+
+    if (useAlbedo == 1){
+        materialColor = vec4(inputAlbedo, 1);
+    }
 
     vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
     shadowTextCoord = shadowTextCoord * 0.5 + 0.5;
@@ -72,18 +77,18 @@ void main()
 
     float shadowCoef = 1;
 
-    vec3 result = ((specular + diffuse) * 0.25 + inputAmbientLight) / 3 * textureColor.xyz;
+    vec3 result = ((specular + diffuse) * 0.25 + inputAmbientLight) / 3 * materialColor.xyz;
 
     float outOpacity = opacity;
 
-    if(useDisplacementMap > 0.5f){
+    if (useDisplacementMap > 0.5f){
         vec4 displacementMap = texture(texture1, texCoord);
         outOpacity = displacementMap.x;
     }
 
-    if(outOpacity == 0){
+    if (outOpacity == 0){
         discard;
     }
 
-    outColor = vec4(result , 1);
+    outColor = vec4(result, 1);
 }
