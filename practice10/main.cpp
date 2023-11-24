@@ -100,7 +100,7 @@ int main() try {
     bunny->setPosition({0, 1, 0});
 
     bunny->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_albedo.jpg", DEFAULT));
-    bunny->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_ao.jpg", SPECULAR_MAP));
+    bunny->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_ao.jpg", GLOSS_MAP));
     bunny->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_normal.jpg", NORMAL_MAP));
     bunny->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_roughness.jpg", ROUGH_MAP));
 

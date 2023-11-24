@@ -16,14 +16,14 @@ private:
 
     bool DEBUG = false;
 
-    glm::vec3 location = {0, -0.5, -2.5};
+    glm::vec3 location = {0, 0.35, -1.5};
     glm::vec3 rotation = {205, 0, 0};
 
     int width = 1920;
     int height = 1080;
 
     // Projection Params
-    float near = 1.f;
+    float near = 0.2f;
     float far = 20.0f;
     float fov = 90;
 

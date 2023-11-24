@@ -9,6 +9,8 @@ uniform float roughness;
 uniform float glossiness;
 uniform float opacity;
 
+uniform mat4 model;
+
 uniform float lightRange;
 
 uniform float useDisplacementMap;
@@ -45,6 +47,18 @@ void main()
     vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
     shadowTextCoord.xyz = shadowTextCoord.xyz * 0.5 + 0.5;
 
+    vec3 normal = inputNormal;
+
+    if(enabledTextures[7] == 1){
+        normal = texture(texture7, texCoord).xyz;
+    }
+
+    float finalGlossines = glossiness;
+
+    if(enabledTextures[2] == 1){
+        finalGlossines = texture(texture2, texCoord).x;
+    }
+
     vec2 s = vec2(0.0, 0.0);
     vec2 w = vec2(0.0, 0.0);
     const int N = 7;
@@ -67,13 +81,13 @@ void main()
 
     vec3 ambientLight = inputAmbientLight;
     vec3 lightDirection = normalize(lightPosition - gl_FragCoord.xyz);
-    vec3 reflectDir = reflect(-lightDirection, inputNormal);
+    vec3 reflectDir = reflect(-lightDirection, normal);
 
-    float spec = pow(max(dot(inputViewDirection, reflectDir), 0.0), glossiness);
+    float spec = pow(max(dot(inputViewDirection, reflectDir), 0.0), finalGlossines);
     vec3 specular = spec * inputSunColor;
 
-    float diff = max(dot(inputNormal, lightDirection), 0.0);
-    vec3 diffuse =  diff * inputSunColor;
+    float diff = max(dot(normal, lightDirection), 0.0);
+    vec3 diffuse =  diff * inputSunColor  * roughness;
 
     vec3 light = ambientLight + (specular + diffuse) * sFactor;
 
