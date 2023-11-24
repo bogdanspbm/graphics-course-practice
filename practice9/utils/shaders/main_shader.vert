@@ -14,15 +14,11 @@ layout (location = 2) in vec2 in_texcoord;
 out vec3 inputNormal;
 out vec2 texCoord;
 out vec4 shadowPosition;
-out vec3 vertexPosition;
-out float depth;
 
 void main()
 {
     gl_Position = projection * view * model * vec4(in_position, 1.0);
     inputNormal = normalize(mat3(model) * in_normal);
-    shadowPosition =  projection *  sunView * model  * vec4(in_position + 10 * normalize(in_normal), 1.0);
+    shadowPosition =  projection *  sunView * model  * vec4(in_position, 1.0);
     texCoord = in_texcoord;
-    depth = (shadowPosition.z - near)/(far-near);
-    vertexPosition = in_position;
 }

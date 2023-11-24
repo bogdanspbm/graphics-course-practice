@@ -44,157 +44,7 @@ void glew_fail(std::string_view message, GLenum error) {
     throw std::runtime_error(to_string(message) + reinterpret_cast<const char *>(glewGetErrorString(error)));
 }
 
-const char vertex_shader_source[] =
-        R"(#version 330 core
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-
-layout (location = 0) in vec3 in_position;
-layout (location = 1) in vec3 in_normal;
-
-out vec3 position;
-out vec3 normal;
-
-void main()
-{
-    gl_Position = projection * view * model * vec4(in_position, 1.0);
-    position = (model * vec4(in_position, 1.0)).xyz;
-    normal = normalize((model * vec4(in_normal, 0.0)).xyz);
-}
-)";
-
-const char fragment_shader_source[] =
-        R"(#version 330 core
-
-uniform vec3 ambient;
-
-uniform vec3 light_direction;
-uniform vec3 light_color;
-
-uniform mat4 transform;
-
-uniform sampler2D shadow_map;
-
-in vec3 position;
-in vec3 normal;
-
-layout (location = 0) out vec4 out_color;
-
-void main()
-{
-    vec4 shadow_pos = transform * vec4(position, 1.0);
-    shadow_pos /= shadow_pos.w;
-    shadow_pos = shadow_pos * 0.5 + vec4(0.5);
-
-    bool in_shadow_texture = (shadow_pos.x > 0.0) && (shadow_pos.x < 1.0) && (shadow_pos.y > 0.0) && (shadow_pos.y < 1.0) && (shadow_pos.z > 0.0) && (shadow_pos.z < 1.0);
-    float shadow_factor = 1.0;
-    if (in_shadow_texture)
-        shadow_factor = (texture(shadow_map, shadow_pos.xy).r < shadow_pos.z) ? 0.0 : 1.0;
-
-    vec3 albedo = vec3(1.0, 1.0, 1.0);
-
-    vec3 light = ambient;
-    light += light_color * max(0.0, dot(normal, light_direction)) * shadow_factor;
-    vec3 color = albedo * light;
-
-    out_color = vec4(color, 1.0);
-}
-)";
-
-const char debug_vertex_shader_source[] =
-        R"(#version 330 core
-
-vec2 vertices[6] = vec2[6](
-    vec2(-1.0, -1.0),
-    vec2( 1.0, -1.0),
-    vec2( 1.0,  1.0),
-    vec2(-1.0, -1.0),
-    vec2( 1.0,  1.0),
-    vec2(-1.0,  1.0)
-);
-
-out vec2 texcoord;
-
-void main()
-{
-    vec2 position = vertices[gl_VertexID];
-    gl_Position = vec4(position * 0.25 + vec2(-0.75, -0.75), 0.0, 1.0);
-    texcoord = position * 0.5 + vec2(0.5);
-}
-)";
-
-const char debug_fragment_shader_source[] =
-        R"(#version 330 core
-
-uniform sampler2D shadow_map;
-
-in vec2 texcoord;
-
-layout (location = 0) out vec4 out_color;
-
-void main()
-{
-    out_color = vec4(texture(shadow_map, texcoord).rrr, 1.0);
-}
-)";
-
-const char shadow_vertex_shader_source[] =
-        R"(#version 330 core
-
-uniform mat4 model;
-uniform mat4 transform;
-
-layout (location = 0) in vec3 in_position;
-
-void main()
-{
-    gl_Position = transform * model * vec4(in_position, 1.0);
-}
-)";
-
-const char shadow_fragment_shader_source[] =
-        R"(#version 330 core
-
-void main()
-{}
-)";
-
-GLuint create_shader(GLenum type, const char *source) {
-    GLuint result = glCreateShader(type);
-    glShaderSource(result, 1, &source, nullptr);
-    glCompileShader(result);
-    GLint status;
-    glGetShaderiv(result, GL_COMPILE_STATUS, &status);
-    if (status != GL_TRUE) {
-        GLint info_log_length;
-        glGetShaderiv(result, GL_INFO_LOG_LENGTH, &info_log_length);
-        std::string info_log(info_log_length, '\0');
-        glGetShaderInfoLog(result, info_log.size(), nullptr, info_log.data());
-        throw std::runtime_error("Shader compilation failed: " + info_log);
-    }
-    return result;
-}
-
-GLuint create_program(GLuint vertex_shader, GLuint fragment_shader) {
-    GLuint result = glCreateProgram();
-    glAttachShader(result, vertex_shader);
-    glAttachShader(result, fragment_shader);
-    glLinkProgram(result);
-
-    GLint status;
-    glGetProgramiv(result, GL_LINK_STATUS, &status);
-    if (status != GL_TRUE) {
-        GLint info_log_length;
-        glGetProgramiv(result, GL_INFO_LOG_LENGTH, &info_log_length);
-        std::string info_log(info_log_length, '\0');
-        glGetProgramInfoLog(result, info_log.size(), nullptr, info_log.data());
-        throw std::runtime_error("Program linkage failed: " + info_log);
-    }
-
-    return result;
-}
 
 int main() try {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -239,7 +89,7 @@ int main() try {
    // GLProgram::getGLProgram(MAIN)->getCamera()->bindControl(keyHandler);
     //GLProgram::getGLProgram(LIGHT)->getCamera()->bindControl(keyHandler);
 
-    Ambient::getAmbient()->setColor({1, 1, 1});
+    Ambient::getAmbient()->setColor({0.5, 0.5, 0.5});
     Sun::getSun()->setColor({0.8, 0.72, 0.74});
     Sun::getSun()->setRotation({180, 180, 0});
 
@@ -292,7 +142,7 @@ int main() try {
         glClearColor(0.8f, 0.8f, 0.9f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        GLProgram::getGLProgram(MAIN)->useProgram();
+        GLProgram::getGLProgram(LIGHT)->useProgram();
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);

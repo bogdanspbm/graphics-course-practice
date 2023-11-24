@@ -2,8 +2,6 @@
 in vec3 inputNormal;
 in vec4 shadowPosition;
 in vec2 texCoord;
-in float depth;
-in vec3 vertexPosition;
 
 uniform vec3 lightPosition;
 
@@ -70,59 +68,33 @@ void main()
     vec4 textureColor = texture(texture0, texCoord);
 
     vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
-    shadowTextCoord.xy = shadowTextCoord.xy * 0.5 + 0.5;
-    float shadow = gaussianBlur(texture31, shadowTextCoord.xy, depth, 5);
+    shadowTextCoord.xyz = shadowTextCoord.xyz * 0.5 + 0.5;
 
-    if(shadow < 0.01){
-        discard;
+    vec2 s = vec2(0.0, 0.0);
+    vec2 w = vec2(0.0, 0.0);
+    const int N = 7;
+    float radius = 5.0;
+    for (int x = -N; x <= N; ++x) {
+        for (int y = -N; y <= N; ++y) {
+            float c = exp(-float(x * x + y * y) / (radius*radius));
+            s += c * texture(texture31, shadowTextCoord.xy + vec2(x,y) / vec2(textureSize(texture31, 0))).rg;
+            w += c;
+        }
     }
 
-    vec2 resolution = vec2(textureSize(texture31, 0));
+    vec2 data = s / w;
+    float mu = data.r;
+    float sigma = data.g - mu * mu;
+    float z = shadowTextCoord.z - 0.001;
+    float factor = (z < mu) ? 1.0 : sigma / (sigma + (z - mu) * (z - mu));
+    float delta = 0.125;
+    float sFactor = (factor < delta) ? 0.0 : (factor - delta) / (1 - delta);
 
-    if (shadowTextCoord.x < 0 || shadowTextCoord.y < 0){
-        discard;
-    }
+    vec3 albedo = vec3(1.0, 1.0, 1.0);
 
-    if (shadowTextCoord.x > resolution.x || shadowTextCoord.y > resolution.y){
-        discard;
-    }
+    vec3 light = inputAmbientLight;
+    light += inputSunColor * max(0.0, dot(inputNormal, inputSunDirection)) * sFactor;
+    vec3 color = inputAlbedo * light;
 
-    vec3 lightDirection = normalize(lightPosition-vertexPosition);
-
-    vec3 reflectDir = reflect(-lightDirection, inputNormal);
-    float spec = pow(max(dot(inputViewDirection, reflectDir), 0.0), glossiness);
-    vec3 specular = spec * inputSunColor;
-
-    float diff = max(dot(inputNormal, lightDirection), 0.0);
-    vec3 diffuse =  diff * inputSunColor;
-
-    float distanceToLight = sqrt(pow(lightPosition.x-vertexPosition.x, 2) + pow(lightPosition.y-vertexPosition.y, 2) + pow(lightPosition.z-vertexPosition.z, 2));
-
-    float lightOpacity = (lightRange-distanceToLight) / lightRange;
-
-    if (lightRange == 0){
-        lightOpacity = 1;
-    }
-
-
-    if (lightOpacity < 0){
-        discard;
-    }
-
-
-    vec3 result = (4 * (specular + diffuse) * lightOpacity * shadow + inputAmbientLight) / 3 * textureColor.xyz;
-
-    float outOpacity = opacity;
-
-    if (useDisplacementMap > 0.5f){
-        vec4 displacementMap = texture(texture1, texCoord);
-        outOpacity = displacementMap.x;
-    }
-
-    if (outOpacity == 0){
-        discard;
-    }
-
-
-    outColor = vec4(result, 1);
+    outColor = vec4(vec3(color), 1);
 }
