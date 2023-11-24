@@ -13,6 +13,7 @@ Sun::Sun() {
 
 void Sun::bindLight() {
     GLProgram::getGLProgram()->setUniformVector3F("inputSunColor", glm::normalize(light.color));
+    GLProgram::getGLProgram()->setUniformVector3F("lightDirection", getDirection());
 
     if (light.useRotation) {
         GLProgram::getGLProgram()->setUniformVector3F("inputSunDirection", glm::normalize(calculateForwardVector(light.rotation)));

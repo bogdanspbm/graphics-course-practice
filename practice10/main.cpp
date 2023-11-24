@@ -103,6 +103,7 @@ int main() try {
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_ao.jpg", GLOSS_MAP));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_normal.jpg", NORMAL_MAP));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_roughness.jpg", ROUGH_MAP));
+    sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", REFLECTION_MAP));
 
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();

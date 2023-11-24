@@ -4,7 +4,7 @@ in vec3 inputTangent;
 in vec4 shadowPosition;
 in vec2 texCoord;
 
-uniform vec3 lightPosition;
+uniform vec3 lightDirection;
 
 uniform float roughness;
 uniform float glossiness;
@@ -26,10 +26,12 @@ uniform sampler2D texture4;// ALPHA
 uniform sampler2D texture5;// SPECULAR
 uniform sampler2D texture6;// BUMP_MAP
 uniform sampler2D texture7;// NORMAL
-uniform sampler2D texture8;
+uniform sampler2D texture8;// REFLECTION
 uniform sampler2D texture9;
 
 uniform sampler2D texture31;// SHADOW_MAP
+
+const float PI = 3.141592653589793;
 
 uniform vec3 inputAlbedo;
 uniform vec3 inputAmbientLight;
@@ -53,8 +55,19 @@ void main()
     vec3 normal = inputNormal;
 
     if(enabledTextures[7] == 1){
-        vec3 normilizedMapNormal = normalize(texture(texture7, texCoord).xyz * 2.0 - 1.0);
+        vec3 normilizedMapNormal = texture(texture7, texCoord).xyz * 2.0 - 1.0;
         normal = tbn * normilizedMapNormal;
+    }
+
+    vec3 ambientLight = inputAmbientLight;
+    vec3 reflectDir = reflect(-lightDirection, normal);
+
+    vec3 envAlbedo = vec3(0);
+
+    if(enabledTextures[8] == 1){
+        float x = atan(reflectDir.z, reflectDir.x) / PI * 0.5 + 0.5;
+        float y = -atan(reflectDir.y, length(reflectDir.xz)) / PI + 0.5;
+        envAlbedo = texture(texture8, vec2(x,y)).xyz;
     }
 
     float finalGlossines = glossiness;
@@ -83,9 +96,6 @@ void main()
     float delta = 0.125;
     float sFactor = (factor < delta) ? 0.0 : (factor - delta) / (1 - delta);
 
-    vec3 ambientLight = inputAmbientLight;
-    vec3 lightDirection = normalize(lightPosition - gl_FragCoord.xyz);
-    vec3 reflectDir = reflect(-lightDirection, normal);
 
     float spec = pow(max(dot(inputViewDirection, reflectDir), 0.0), finalGlossines);
     vec3 specular = spec * inputSunColor;
@@ -101,7 +111,7 @@ void main()
         materialColor.xyz = inputAlbedo;
     }
 
-    vec3 color = materialColor.xyz * light;
+    vec3 color = materialColor.xyz * light + envAlbedo / 2;
 
     outColor = vec4(color, 1);
 }
