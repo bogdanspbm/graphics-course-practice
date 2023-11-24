@@ -14,7 +14,7 @@ class Sun {
 private:
     static Sun *instance;
     DirectionLight light = DirectionLight{};
-    float height = 1;
+    float height = 3;
 
 public:
     Sun();
