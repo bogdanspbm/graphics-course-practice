@@ -8,13 +8,14 @@
 
 #include "objects/graphics/light/structures/DirectionLight.h"
 #include "utils/MathUtils.h"
+#include <iostream>
 #include "glm/geometric.hpp"
 
 class Sun {
 private:
     static Sun *instance;
     DirectionLight light = DirectionLight{};
-    float height = 3;
+    float height = 4;
 
 public:
     Sun();
@@ -44,7 +45,8 @@ public:
     }
 
     void setRotation(glm::vec3 rotation) {
-        light.rotation = rotation;
+        light.rotation = clampedVec(rotation);
+        std::cout << light.rotation.y << std::endl;
         light.useRotation = true;
     }
 

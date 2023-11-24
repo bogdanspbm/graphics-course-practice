@@ -96,7 +96,7 @@ int main() try {
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/bunny.obj";
     auto bunny = new Placeable(scene_path);
-    bunny->setRotation({180,0,0});
+    bunny->setRotation({180,45,0});
     bunny->setPosition({0, 1, 0});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();

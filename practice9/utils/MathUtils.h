@@ -69,4 +69,20 @@ inline glm::vec3 directionToRotation(const glm::vec3 &direction) {
     return rotation;
 }
 
+inline float clampTo180(float value) {
+    while (value > 180.0f) {
+        value -= 360.0f;
+    }
+    while (value < -180.0f) {
+        value += 360.0f;
+    }
+    return value;
+}
+
+inline glm::vec3 clampedVec(glm::vec3 originalVec) {
+    return {clampTo180(originalVec.x),
+            clampTo180(originalVec.y),
+            clampTo180(originalVec.z)};
+};
+
 #endif //HOMEWORK2_MATHUTILS_H

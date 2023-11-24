@@ -18,7 +18,7 @@ private:
     std::string name;
     glm::vec3 albedo = {0.8, 0.8, 0.8};
     float roughness = 0.1f;
-    float glossiness = 0.5f;
+    float glossiness = 5.f;
     float opacity = 1.f;
 
 public:

@@ -77,7 +77,7 @@ void main()
     for (int x = -N; x <= N; ++x) {
         for (int y = -N; y <= N; ++y) {
             float c = exp(-float(x * x + y * y) / (radius*radius));
-            s += c * texture(texture31, shadowTextCoord.xy + vec2(x,y) / vec2(textureSize(texture31, 0))).rg;
+            s += c * texture(texture31, shadowTextCoord.xy + vec2(x, y) / vec2(textureSize(texture31, 0))).rg;
             w += c;
         }
     }
@@ -90,11 +90,17 @@ void main()
     float delta = 0.125;
     float sFactor = (factor < delta) ? 0.0 : (factor - delta) / (1 - delta);
 
-    vec3 albedo = vec3(1.0, 1.0, 1.0);
+    vec3 ambientLight = inputAmbientLight;
+    vec3 lightDirection = normalize(lightPosition - gl_FragCoord.xyz);
+    vec3 reflectDir = reflect(-lightDirection, inputNormal);
 
-    vec3 light = inputAmbientLight;
-    light += inputSunColor * max(0.0, dot(inputNormal, inputSunDirection)) * sFactor;
-    vec3 color = inputAlbedo * light;
+    float spec = pow(max(dot(inputViewDirection, reflectDir), 0.0), glossiness);
+    vec3 specular = spec * inputSunColor;
 
-    outColor = vec4(vec3(color), 1);
+    float diff = max(dot(inputNormal, lightDirection), 0.0);
+    vec3 diffuse =  diff * inputSunColor;
+
+    vec3 light = ambientLight + (specular + diffuse) * sFactor;
+
+    outColor = vec4(vec3(light), 1);
 }
