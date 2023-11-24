@@ -140,6 +140,7 @@ inline void fillRenderableFromFile(Renderable *model, std::filesystem::path cons
         }
     }
 
+    model->calculateNormalsAndTangents();
 }
 
 inline std::vector<Renderable *> loadRenderableListFromFile(std::filesystem::path const &path) {

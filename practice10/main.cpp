@@ -94,15 +94,16 @@ int main() try {
     Sun::getSun()->setRotation({180, -45, 0});
 
     std::string project_root = PROJECT_ROOT;
-    std::string scene_path = project_root + "/cube.obj";
-    auto bunny = new Placeable(scene_path);
-    bunny->setRotation({180,45,0});
-    bunny->setPosition({0, 1, 0});
+    std::string scene_path = project_root + "/sphere.obj";
+    auto sphere = new Placeable(scene_path);
+    sphere->setRotation({150,0,0});
+    sphere->setScale({0.7,0.7,0.7});
+    sphere->setPosition({0, 1, 0});
 
-    bunny->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_albedo.jpg", DEFAULT));
-    bunny->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_ao.jpg", GLOSS_MAP));
-    bunny->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_normal.jpg", NORMAL_MAP));
-    bunny->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_roughness.jpg", ROUGH_MAP));
+    sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_albedo.jpg", DEFAULT));
+    sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_ao.jpg", GLOSS_MAP));
+    sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_normal.jpg", NORMAL_MAP));
+    sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_roughness.jpg", ROUGH_MAP));
 
 
 
@@ -147,7 +148,7 @@ int main() try {
         Sun::getSun()->setRotation(sunRotation);
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
-        bunny->draw();
+        sphere->draw();
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClearColor(0.8f, 0.8f, 0.9f, 1.f);
@@ -161,7 +162,7 @@ int main() try {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-        bunny->draw();
+        sphere->draw();
 
         screenView->draw();
 

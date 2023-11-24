@@ -1,5 +1,6 @@
 #version 330 core
 in vec3 inputNormal;
+in vec3 inputTangent;
 in vec4 shadowPosition;
 in vec2 texCoord;
 
@@ -47,10 +48,13 @@ void main()
     vec3 shadowTextCoord = shadowPosition.xyz / shadowPosition.w;
     shadowTextCoord.xyz = shadowTextCoord.xyz * 0.5 + 0.5;
 
+    vec3 bitangent = cross(inputTangent, inputNormal);
+    mat3 tbn = mat3(inputTangent, bitangent, inputNormal);
     vec3 normal = inputNormal;
 
     if(enabledTextures[7] == 1){
-        normal = texture(texture7, texCoord).xyz;
+        vec3 normilizedMapNormal = normalize(texture(texture7, texCoord).xyz * 2.0 - 1.0);
+        normal = tbn * normilizedMapNormal;
     }
 
     float finalGlossines = glossiness;
@@ -99,5 +103,5 @@ void main()
 
     vec3 color = materialColor.xyz * light;
 
-    outColor = vec4(color.xyz, 1);
+    outColor = vec4(color, 1);
 }

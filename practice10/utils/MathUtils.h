@@ -85,4 +85,12 @@ inline glm::vec3 clampedVec(glm::vec3 originalVec) {
             clampTo180(originalVec.z)};
 };
 
+inline glm::vec3 cross(glm::vec3 a, glm::vec3 b)  {
+    return glm::vec3{
+            a.y * b.z - a.z * b.y,
+            a.z * b.x - a.x * b.z,
+            a.x * b.y - a.y * b.x
+    };
+}
+
 #endif //HOMEWORK2_MATHUTILS_H

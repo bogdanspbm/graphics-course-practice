@@ -90,14 +90,19 @@ void Renderable::updateVBO() {
     // Attribute locations (you can define these as constants)
     const GLuint positionLocation = 0;
     const GLuint normalLocation = 1;
-    const GLuint texcoordLocation = 2;
-    const GLuint colorLocation = 3;
+    const GLuint tangentLocation = 2;
+    const GLuint texcoordLocation = 3;
+    const GLuint colorLocation = 4;
 
     glEnableVertexAttribArray(positionLocation);
     glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, position));
 
     glEnableVertexAttribArray(normalLocation);
     glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
+
+    glEnableVertexAttribArray(tangentLocation);
+    glVertexAttribPointer(tangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, tangent));
+
 
     glEnableVertexAttribArray(texcoordLocation);
     glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
