@@ -105,6 +105,10 @@ int main() try {
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_roughness.jpg", ROUGH_MAP));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", REFLECTION_MAP));
 
+    auto cubeMap = new Placeable(project_root + "/cube_map.obj");
+    cubeMap->setScale({3,3,3});
+    cubeMap->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", DEFAULT));
+
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -144,8 +148,8 @@ int main() try {
 
         sphere->addRotation({dt * 5, dt * 5, 0});
 
-        GLProgram::getGLProgram(SHADOW)->useProgram();
-        sphere->draw();
+       // GLProgram::getGLProgram(SHADOW)->useProgram();
+       // sphere->draw();
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClearColor(0.8f, 0.8f, 0.9f, 1.f);
@@ -160,6 +164,7 @@ int main() try {
         glCullFace(GL_BACK);
 
         sphere->draw();
+        cubeMap->draw();
 
         screenView->draw();
 
