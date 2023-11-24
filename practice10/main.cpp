@@ -45,7 +45,6 @@ void glew_fail(std::string_view message, GLenum error) {
 }
 
 
-
 int main() try {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
         sdl2_fail("SDL_Init: ");
@@ -86,7 +85,7 @@ int main() try {
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
     auto keyHandler = new KeyHandler();
-   // GLProgram::getGLProgram(MAIN)->getCamera()->bindControl(keyHandler);
+    // GLProgram::getGLProgram(MAIN)->getCamera()->bindControl(keyHandler);
     //GLProgram::getGLProgram(LIGHT)->getCamera()->bindControl(keyHandler);
 
     Ambient::getAmbient()->setColor({0.5, 0.5, 0.5});
@@ -96,15 +95,14 @@ int main() try {
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/sphere.obj";
     auto sphere = new Placeable(scene_path);
-    sphere->setRotation({150,0,0});
-    sphere->setScale({0.7,0.7,0.7});
+    sphere->setRotation({150, 0, 0});
+    sphere->setScale({0.7, 0.7, 0.7});
     sphere->setPosition({0, 1, 0});
 
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_albedo.jpg", DEFAULT));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_ao.jpg", GLOSS_MAP));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_normal.jpg", NORMAL_MAP));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_roughness.jpg", ROUGH_MAP));
-
 
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
@@ -116,7 +114,7 @@ int main() try {
 
     bool running = true;
     while (running) {
-        for (SDL_Event event; SDL_PollEvent(&event);){
+        for (SDL_Event event; SDL_PollEvent(&event);) {
             switch (event.type) {
                 case SDL_QUIT:
                     running = false;
@@ -143,9 +141,7 @@ int main() try {
         if (!paused)
             time += dt;
 
-        auto sunRotation =  Sun::getSun()->getRotation();
-        sunRotation.y += dt * 5;
-        Sun::getSun()->setRotation(sunRotation);
+        sphere->addRotation({dt * 5, dt * 5, 0});
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
         sphere->draw();

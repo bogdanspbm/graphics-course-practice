@@ -20,8 +20,8 @@ out vec4 shadowPosition;
 void main()
 {
     gl_Position = projection * view * model * vec4(in_position, 1.0);
-    inputNormal = normalize(mat3(model) * in_normal);
-    inputTangent = normalize(mat3(model) * in_tangent);
+    inputNormal = mat3(model) * in_normal;
+    inputTangent = mat3(model) * in_tangent;
     shadowPosition =  projection *  sunView * model  * vec4(in_position, 1.0);
     texCoord = in_texcoord;
 }

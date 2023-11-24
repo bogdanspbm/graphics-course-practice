@@ -25,7 +25,7 @@ public:
     }
 
     void calculateNormal(const glm::vec3& edge1, const glm::vec3& edge2) {
-        normal = cross(edge1,edge2);
+        normal = glm::normalize(cross(edge1,edge2));
     }
 
     // Calculate the tangent for this vertex
@@ -34,6 +34,7 @@ public:
         this->tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
         this->tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
         this->tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+        this->tangent = normalize(this->tangent);
     }
 
 };

@@ -35,6 +35,8 @@ public:
 
     virtual void setPosition(glm::vec3 position);
 
+    virtual void addRotation(glm::vec3 offset);
+
     virtual void setRotation(glm::vec3 rotation);
 
     virtual void setScale(glm::vec3 scale);

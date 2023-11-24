@@ -71,3 +71,7 @@ Material *Placeable::getMaterial() {
 Placeable::Placeable(Renderable *renderable) {
     this->renderable = renderable;
 }
+
+void Placeable::addRotation(glm::vec3 offset) {
+        this->rotation += offset;
+}
