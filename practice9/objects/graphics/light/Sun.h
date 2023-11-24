@@ -46,7 +46,6 @@ public:
 
     void setRotation(glm::vec3 rotation) {
         light.rotation = clampedVec(rotation);
-        std::cout << light.rotation.y << std::endl;
         light.useRotation = true;
     }
 
