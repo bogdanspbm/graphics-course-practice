@@ -10,22 +10,13 @@ std::map<std::string, Material *> Material::cachedMaterials;
 void Material::bindMaterial() {
     clearTextures();
 
-    bool useAlbedo = true;
+    for (int i = 0; i < 32; i++) {
+        GLProgram::getGLProgram()->setUniformInt(("enabledTextures[" + std::to_string(i) + "]").c_str(), 0);
+    }
 
     for (int i = 0; i < textures.size(); i++) {
         auto texture = textures[i];
         texture->bindTexture();
-
-        if (texture->getType() == DEFAULT) {
-            useAlbedo = false;
-        }
-    }
-
-
-    if(useAlbedo){
-        GLProgram::getGLProgram()->setUniformInt("useAlbedo", 1);
-    } else {
-        GLProgram::getGLProgram()->setUniformInt("useAlbedo", 0);
     }
 
     GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture()->bindTexture();

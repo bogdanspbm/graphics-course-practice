@@ -118,10 +118,7 @@ void Texture::bindTexture() {
 
     if (textureLocation != -1) {
         glUniform1i(textureLocation, textureUnit - GL_TEXTURE0); // Set the uniform to the texture unit offset from GL_TEXTURE0
-
-        if (textureType == DISPLACEMENT_MAP && name != "") {
-            GLProgram::getGLProgram()->setUniformFloat("useDisplacementMap", 1);
-        }
+        GLProgram::getGLProgram()->setUniformInt(("enabledTextures[" + std::to_string(textureUnit - GL_TEXTURE0) + "]").c_str(), 1);
     }
 
 }

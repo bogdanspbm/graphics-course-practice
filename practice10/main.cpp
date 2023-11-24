@@ -91,7 +91,7 @@ int main() try {
 
     Ambient::getAmbient()->setColor({0.5, 0.5, 0.5});
     Sun::getSun()->setColor({0.8, 0.72, 0.74});
-    Sun::getSun()->setRotation({180, 45, 0});
+    Sun::getSun()->setRotation({180, -45, 0});
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/cube.obj";

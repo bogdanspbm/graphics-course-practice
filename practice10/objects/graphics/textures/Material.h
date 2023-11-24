@@ -7,6 +7,8 @@
 
 #include <vector>
 #include <map>
+#include <string>
+
 #include "objects/graphics/textures/Texture.h"
 #include "glm/vec3.hpp"
 

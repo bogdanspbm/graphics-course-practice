@@ -11,6 +11,8 @@ uniform float opacity;
 
 uniform float useDisplacementMap;
 
+uniform int enabledTextures[32];
+
 uniform sampler2D texture0;// ALBEDO
 uniform sampler2D texture1;// DISPLACEMENT_MAP
 uniform sampler2D texture2;// GLOSS
@@ -24,7 +26,6 @@ uniform sampler2D texture9;
 
 uniform sampler2D texture31;// SHADOW_MAP
 
-uniform int useAlbedo;
 uniform vec3 inputAlbedo;
 uniform vec3 inputAmbientLight;
 uniform vec3 inputSunColor;
@@ -60,7 +61,7 @@ void main()
 {
     vec4 materialColor = texture(texture0, texCoord);
 
-    if (useAlbedo == 1){
+    if (enabledTextures[0] == 1){
         materialColor = vec4(inputAlbedo, 1);
     }
 
