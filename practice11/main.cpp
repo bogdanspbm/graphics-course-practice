@@ -96,6 +96,9 @@ int main() try {
         p.position.z = std::uniform_real_distribution<float>{-1.f, 1.f}(rng);
         p.rotation = std::uniform_real_distribution<float>{-90.f, 90.f}(rng);
         p.size = std::uniform_real_distribution<float>{0.003f, 0.05f}(rng);
+        p.color.x = std::uniform_real_distribution<float>{0.f, 1.f}(rng);
+        p.color.y = std::uniform_real_distribution<float>{0.f, 1.f}(rng);
+        p.color.z = std::uniform_real_distribution<float>{0.f, 1.f}(rng);
     }
 
     auto particle = new Renderable(particles);

@@ -2,6 +2,8 @@
 
 layout (location = 0) out vec4 out_color;
 in vec2 texcoord;
+in vec3 particleColor;
+
 
 uniform int enabledTextures[32];
 
@@ -29,5 +31,5 @@ void main()
         }
     }
 
-    out_color = vec4(1, 1, 1, opacity);
+    out_color = vec4(particleColor, opacity);
 }

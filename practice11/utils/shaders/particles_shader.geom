@@ -10,9 +10,10 @@ layout (triangle_strip, max_vertices = 4) out;
 
 in float size[];
 in float rotation[];
+in vec3 colors[];
 
 out vec2 texcoord;
-
+out vec3 particleColor;
 
 void main()
 {
@@ -25,6 +26,7 @@ void main()
 
     vec3 normalXR = normalX * cos(rotation[0]) - normalY * sin(rotation[0]);
     vec3 normalYR = normalX * sin(rotation[0]) + normalY * cos(rotation[0]);
+    particleColor = colors[0];
 
     for (int i = 0; i < 4; i++) {
         vec3 posX = size[0] * normalXR * (i / 2 == 0 ? -1 : 1);

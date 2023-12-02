@@ -93,6 +93,7 @@ void Renderable::updateVBO() {
         const GLuint positionLocation = 0;
         const GLuint rotationLocation = 1;
         const GLuint sizeLocation = 2;
+        const GLuint colorPosition = 3;
 
         glEnableVertexAttribArray(positionLocation);
         glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Particle),
@@ -105,6 +106,9 @@ void Renderable::updateVBO() {
         glEnableVertexAttribArray(sizeLocation);
         glVertexAttribPointer(sizeLocation, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *) offsetof(Particle, size));
 
+        glEnableVertexAttribArray(colorPosition);
+        glVertexAttribPointer(colorPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Particle),
+                              (void *) offsetof(Particle, color));
 
     } else {
         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
