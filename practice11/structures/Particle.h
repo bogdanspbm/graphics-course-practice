@@ -19,11 +19,11 @@ struct Particle {
 
     Particle(std::default_random_engine &rng) {
         position.x = std::uniform_real_distribution<float>{-0.3f, 0.3f}(rng);
-        position.y = 0.f;
+        position.y = std::uniform_real_distribution<float>{-0.3f, 0.3f}(rng);
         position.z = std::uniform_real_distribution<float>{-0.3f, 0.3f}(rng);
         rotation = std::uniform_real_distribution<float>{0.f, 5.f}(rng);
 
-        size = std::uniform_real_distribution<float>{0.01f, 0.04f}(rng);
+        size = std::uniform_real_distribution<float>{0.05f, 0.15f}(rng);
 
         velocity.x = std::uniform_real_distribution<float>{0, 0.5f}(rng);
         velocity.y = std::uniform_real_distribution<float>{0, 0.5f}(rng);

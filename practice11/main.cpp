@@ -102,6 +102,7 @@ int main() try {
 
     auto fireParticle = new FireParticle();
     fireParticle->setPosition({0, 1, 0});
+    fireParticle->addRotation({180,0,0});
 
     auto particleTexture = Texture::getTexture(particle_texture_path, ALPHA_MAP);
 
