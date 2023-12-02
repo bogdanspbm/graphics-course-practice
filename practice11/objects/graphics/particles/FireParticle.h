@@ -33,6 +33,8 @@ private:
 public:
     void moveAndDraw(float dt);
 
+    void move(float dt);
+
     virtual void setPosition(glm::vec3 position);
 
     virtual void addRotation(glm::vec3 offset);

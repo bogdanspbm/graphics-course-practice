@@ -191,6 +191,8 @@ virtual std::string getName();
 
 virtual bool isParticle() final;
 
+virtual void setParticles(std::vector<Particle> particles) final;
+
 };
 
 

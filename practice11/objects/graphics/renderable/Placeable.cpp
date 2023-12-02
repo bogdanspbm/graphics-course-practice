@@ -75,3 +75,7 @@ Placeable::Placeable(Renderable *renderable) {
 void Placeable::addRotation(glm::vec3 offset) {
         this->rotation += offset;
 }
+
+Renderable *Placeable::GetRenderable() {
+    return renderable;
+}

@@ -88,7 +88,7 @@ void Renderable::updateEBO() {
 
 void Renderable::updateVBO() {
     if (isParticle()) {
-        glBufferData(GL_ARRAY_BUFFER, particles.size() * sizeof(Particle), particles.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, particles.size() * sizeof(Particle), particles.data(), GL_DYNAMIC_DRAW);
 
         const GLuint positionLocation = 0;
         const GLuint rotationLocation = 1;
@@ -171,4 +171,9 @@ bool Renderable::isParticle() {
 Renderable::Renderable(std::vector<Particle> particles) {
     this->particles = particles;
     generateBuffers();
+}
+
+void Renderable::setParticles(std::vector<Particle> particles){
+    this->particles = particles;
+    updateVBO();
 }

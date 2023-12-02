@@ -74,3 +74,8 @@ Material *FireParticle::getMaterial() {
 Placeable *FireParticle::getPlaceable() {
     return placeable;
 }
+
+void FireParticle::move(float dt) {
+    moveParticles(dt);
+    getPlaceable()->GetRenderable()->setParticles(particles);
+}

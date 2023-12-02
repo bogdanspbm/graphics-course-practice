@@ -42,6 +42,8 @@ public:
     virtual void setScale(glm::vec3 scale);
 
     virtual Material *getMaterial() final;
+
+    virtual Renderable* GetRenderable() final;
 };
 
 
