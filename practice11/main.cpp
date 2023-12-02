@@ -26,6 +26,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include "structures/Particle.h"
+#include "objects/opengl/GLProgram.h"
 
 
 std::string to_string(std::string_view str)
@@ -160,6 +161,8 @@ int main() try
 
     if (!GLEW_VERSION_3_3)
         throw std::runtime_error("OpenGL 3.3 is not supported");
+
+    GLProgram::createGLPrograms(window);
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
 

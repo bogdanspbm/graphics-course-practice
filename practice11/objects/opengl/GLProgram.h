@@ -34,7 +34,11 @@ public:
         this->window = window;
         this->type = type;
         this->camera = new Camera(type);
-        programID = createProgram(createVertexShader(type), createFragmentShader(type));
+        if (type == PARTICLES) {
+            programID = createProgram(createGeomShader(type), createVertexShader(type), createFragmentShader(type));
+        } else {
+            programID = createProgram(createVertexShader(type), createFragmentShader(type));
+        }
         GLProgram::programs[type] = this;
 
         if (type == SHADOW) {
@@ -48,6 +52,7 @@ public:
 public:
     static void createGLPrograms(SDL_Window *window) {
         new GLProgram(window, MAIN);
+        new GLProgram(window, PARTICLES);
         new GLProgram(window, SHADOW);
         new GLProgram(window, VIEW);
         new GLProgram(window, LIGHT);

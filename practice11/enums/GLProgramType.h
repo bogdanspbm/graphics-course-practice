@@ -8,6 +8,7 @@
 
 enum ProgramType{
     MAIN,
+    PARTICLES,
     SHADOW,
     VIEW,
     LIGHT

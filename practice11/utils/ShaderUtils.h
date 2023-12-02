@@ -54,6 +54,43 @@ inline GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
     throw std::invalid_argument(TAG + ":\n" + log);
 }
 
+inline GLuint createProgram(GLuint geomShader, GLuint vertexShader, GLuint fragmentShader) {
+    // Create Program
+    GLuint programID = glCreateProgram();
+
+    // Attach Shaders
+    glAttachShader(programID, geomShader);
+    glAttachShader(programID, vertexShader);
+    glAttachShader(programID, fragmentShader);
+
+    // Link Program
+    glLinkProgram(programID);
+
+    // Get Status
+    GLint status;
+    glGetProgramiv(programID, GL_LINK_STATUS, &status);
+
+    if (status == GL_TRUE) {
+        return programID;
+    }
+
+    // Process Error
+
+    GLint logLen;
+    glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logLen);
+
+    if (logLen <= 0) {
+        glDeleteProgram(programID);
+        throw std::invalid_argument(TAG + ": Can't read log.");
+    }
+
+    std::string log(logLen, '\0');
+    glGetProgramInfoLog(programID, logLen, nullptr, &log[0]);
+    glDeleteProgram(programID);
+
+    throw std::invalid_argument(TAG + ":\n" + log);
+}
+
 // create_shader
 inline GLuint createShader(GLenum shaderType,
                            const char *shaderSource) {
@@ -105,16 +142,25 @@ inline std::string readShaderFile(const std::string &filePath) {
 }
 
 
+inline GLuint createGeomShader(ProgramType type) {
+    return createShader(GL_GEOMETRY_SHADER,
+                        readShaderFile(projectRoot + "/utils/shaders/particles_shader.geom").c_str());
+}
+
 inline GLuint createFragmentShader(ProgramType type) {
     switch (type) {
         case MAIN:
             return createShader(GL_FRAGMENT_SHADER,
                                 readShaderFile(projectRoot + "/utils/shaders/main_shader.frag").c_str());
+        case PARTICLES:
+            return createShader(GL_FRAGMENT_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/particles_shader.frag").c_str());
         case LIGHT:
             return createShader(GL_FRAGMENT_SHADER,
                                 readShaderFile(projectRoot + "/utils/shaders/light_shader.frag").c_str());
         case SHADOW:
-            return createShader(GL_FRAGMENT_SHADER,  readShaderFile(projectRoot + "/utils/shaders/shadow_shader_depth.frag").c_str());
+            return createShader(GL_FRAGMENT_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/shadow_shader_depth.frag").c_str());
         case VIEW:
             return createShader(GL_FRAGMENT_SHADER, screenViewFragmentSource);
     }
@@ -127,11 +173,15 @@ inline GLuint createVertexShader(ProgramType type) {
         case MAIN:
             return createShader(GL_VERTEX_SHADER,
                                 readShaderFile(projectRoot + "/utils/shaders/main_shader.vert").c_str());
+        case PARTICLES:
+            return createShader(GL_VERTEX_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/particles_shader.vert").c_str());
         case LIGHT:
             return createShader(GL_VERTEX_SHADER,
                                 readShaderFile(projectRoot + "/utils/shaders/main_shader.vert").c_str());
         case SHADOW:
-            return createShader(GL_VERTEX_SHADER,  readShaderFile(projectRoot + "/utils/shaders/shadow_shader_depth.vert").c_str());
+            return createShader(GL_VERTEX_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/shadow_shader_depth.vert").c_str());
         case VIEW:
             return createShader(GL_VERTEX_SHADER, screenViewVertexSource);
     }
