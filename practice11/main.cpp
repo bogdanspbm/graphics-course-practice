@@ -32,6 +32,7 @@
 #include "objects/opengl/GLProgram.h"
 #include "objects/graphics/renderable/Renderable.h"
 #include "objects/graphics/renderable/Placeable.h"
+#include "objects/graphics/particles/FireParticle.h"
 
 
 std::string to_string(std::string_view str) {
@@ -86,30 +87,26 @@ int main() try {
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
 
-
     std::default_random_engine rng;
-
-    std::vector<Particle> particles(256);
-    for (auto &p: particles) {
-        p.position.x = std::uniform_real_distribution<float>{-1.f, 1.f}(rng);
-        p.position.y = 0.f;
-        p.position.z = std::uniform_real_distribution<float>{-1.f, 1.f}(rng);
-        p.rotation = std::uniform_real_distribution<float>{-90.f, 90.f}(rng);
-        p.size = std::uniform_real_distribution<float>{0.003f, 0.05f}(rng);
-        p.color.x = std::uniform_real_distribution<float>{0.f, 1.f}(rng);
-        p.color.y = std::uniform_real_distribution<float>{0.f, 1.f}(rng);
-        p.color.z = std::uniform_real_distribution<float>{0.f, 1.f}(rng);
+    std::vector<Particle> particles;
+    for (int i = 0; i < 256; i++) {
+        auto p = Particle(rng);
+        particles.push_back(p);
     }
-
     auto particle = new Renderable(particles);
     auto particleObject = new Placeable(particle);
-    particleObject->setPosition({0,1,0});
+
 
     const std::string project_root = PROJECT_ROOT;
     const std::string particle_texture_path = project_root + "/particle.png";
 
+    auto fireParticle = new FireParticle();
+
+
     auto particleTexture = Texture::getTexture(particle_texture_path, ALPHA_MAP);
+
     particleObject->getMaterial()->addTexture(particleTexture);
+    fireParticle->getMaterial()->addTexture(particleTexture);
 
     glPointSize(5.f);
 
@@ -175,11 +172,13 @@ int main() try {
             camera_rotation += 3.f * dt;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_DEPTH_TEST);
 
 
         GLProgram::getGLProgram(PARTICLES)->useProgram();
-        particleObject->draw();
+        fireParticle->getPlaceable()->draw();
+        //fireParticle->moveAndDraw(dt);
+        //particleObject->draw();
 
         SDL_GL_SwapWindow(window);
     }

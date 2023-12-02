@@ -58,7 +58,9 @@ add_executable(${TARGET_NAME} main.cpp objects/opengl/GLProgram.cpp
 		objects/input/KeyHandler.cpp
 		objects/opengl/LightRender.cpp
 		objects/opengl/LightRender.h
-		structures/Particle.h)
+		structures/Particle.h
+		objects/graphics/particles/FireParticle.cpp
+		objects/graphics/particles/FireParticle.h)
 target_include_directories(${TARGET_NAME} PUBLIC
 	"${SDL2_INCLUDE_DIRS}"
 	"${GLEW_INCLUDE_DIRS}"
