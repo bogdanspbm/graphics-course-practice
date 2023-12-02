@@ -88,7 +88,13 @@ void Renderable::updateEBO() {
 
 void Renderable::updateVBO() {
     if (isParticle()) {
-        glBufferData(GL_ARRAY_BUFFER, particles.size() * sizeof(Particle), particles.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, particles.size() * sizeof(Particle), particles.data(), GL_STATIC_DRAW);
+
+        if(vgoGenerated){
+            return;
+        }
+
+        vgoGenerated = true;
 
         const GLuint positionLocation = 0;
         const GLuint rotationLocation = 1;
@@ -111,7 +117,13 @@ void Renderable::updateVBO() {
                               (void *) offsetof(Particle, color));
 
     } else {
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+
+        if(vgoGenerated){
+            return;
+        }
+
+        vgoGenerated = true;
 
         // Attribute locations (you can define these as constants)
         const GLuint positionLocation = 0;
@@ -175,5 +187,6 @@ Renderable::Renderable(std::vector<Particle> particles) {
 
 void Renderable::setParticles(std::vector<Particle> particles){
     this->particles = particles;
+    bindVBO();
     updateVBO();
 }

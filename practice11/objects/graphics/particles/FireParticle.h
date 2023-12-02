@@ -14,6 +14,7 @@
 class FireParticle {
 
 private:
+    float speed = 1.f;
     int details = 256;
     float A = 1, C = 2, D = 0.5;
     Placeable *placeable;

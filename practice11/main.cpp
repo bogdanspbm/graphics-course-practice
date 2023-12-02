@@ -101,7 +101,7 @@ int main() try {
     const std::string particle_texture_path = project_root + "/particle.png";
 
     auto fireParticle = new FireParticle();
-    fireParticle->setPosition({0,1,0});
+    fireParticle->setPosition({0, 1, 0});
 
     auto particleTexture = Texture::getTexture(particle_texture_path, ALPHA_MAP);
 

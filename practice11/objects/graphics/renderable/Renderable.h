@@ -34,6 +34,8 @@ private:
     GLuint vbo;
     GLuint ebo;
 
+    bool vgoGenerated = false;
+
     Renderable(std::filesystem::path const &path);
 
     Renderable();

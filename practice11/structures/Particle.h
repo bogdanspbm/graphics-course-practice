@@ -18,11 +18,19 @@ struct Particle {
     float angularVelocity = 1;
 
     Particle(std::default_random_engine &rng) {
-        position.x = std::uniform_real_distribution<float>{-1.f, 1.f}(rng);
+        position.x = std::uniform_real_distribution<float>{-0.3f, 0.3f}(rng);
         position.y = 0.f;
-        position.z = std::uniform_real_distribution<float>{-1.f, 1.f}(rng);
-        rotation = std::uniform_real_distribution<float>{-90.f, 90.f}(rng);
-        size = std::uniform_real_distribution<float>{0.003f, 0.05f}(rng);
+        position.z = std::uniform_real_distribution<float>{-0.3f, 0.3f}(rng);
+        rotation = std::uniform_real_distribution<float>{0.f, 5.f}(rng);
+
+        size = std::uniform_real_distribution<float>{0.01f, 0.04f}(rng);
+
+        velocity.x = std::uniform_real_distribution<float>{0, 0.5f}(rng);
+        velocity.y = std::uniform_real_distribution<float>{0, 0.5f}(rng);
+        velocity.z = std::uniform_real_distribution<float>{0, 0.5f}(rng);
+
+        angularVelocity = std::uniform_real_distribution<float>{0, 0.5f}(rng);
+
         color.x = std::uniform_real_distribution<float>{0.f, 1.f}(rng);
         color.y = std::uniform_real_distribution<float>{0.f, 1.f}(rng);
         color.z = std::uniform_real_distribution<float>{0.f, 1.f}(rng);

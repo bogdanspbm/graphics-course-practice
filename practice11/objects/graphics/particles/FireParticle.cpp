@@ -25,7 +25,7 @@ void FireParticle::generateParticles() {
 void FireParticle::moveParticles(float dt) {
 
     for (auto &p: particles) {
-        p.velocity += A * dt;
+        p.velocity.y += A * dt;
 
         p.position += p.velocity * dt;
 
@@ -34,15 +34,9 @@ void FireParticle::moveParticles(float dt) {
         p.size *= exp(-D * dt);
 
         p.rotation += p.angularVelocity * dt;
-
         if (p.position.y > 2) {
             p = Particle(rng);
         }
-    }
-
-    if (particles.size() < details) {
-        Particle p(rng);
-        particles.push_back(p);
     }
 }
 
@@ -76,6 +70,6 @@ Placeable *FireParticle::getPlaceable() {
 }
 
 void FireParticle::move(float dt) {
-    moveParticles(dt);
+    moveParticles(this->speed * dt);
     getPlaceable()->GetRenderable()->setParticles(particles);
 }
