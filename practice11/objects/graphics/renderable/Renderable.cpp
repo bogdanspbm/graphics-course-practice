@@ -163,3 +163,8 @@ std::string Renderable::getName() {
 bool Renderable::isParticle() {
     return true;
 }
+
+Renderable::Renderable(std::vector<Particle> particles) {
+    this->particles = particles;
+    generateBuffers();
+}

@@ -39,6 +39,10 @@ private:
     Renderable();
 
 public:
+
+    Renderable(std::vector<Particle> particles);
+
+public:
     static Renderable *getRenderableByPath(std::filesystem::path const &path) {
         if (cachedRenderable.contains(path)) {
             return cachedRenderable[path];
