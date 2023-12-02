@@ -105,7 +105,13 @@ int main() try {
     const std::string project_root = PROJECT_ROOT;
     const std::string particle_texture_path = project_root + "/particle.png";
 
+    auto particleTexture = Texture::getTexture(particle_texture_path, ALPHA_MAP);
+    particleObject->getMaterial()->addTexture(particleTexture);
+
     glPointSize(5.f);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 

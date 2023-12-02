@@ -20,5 +20,14 @@ uniform sampler2D texture31;// SHADOW_MAP
 
 void main()
 {
-    out_color = vec4(texcoord, 0.0, 1.0);
+    float opacity = 1;
+    if (enabledTextures[4] > 0.5){
+        vec4 textColor = texture(texture4, texcoord);
+        opacity = textColor.r;
+        if (opacity <= 0.01){
+            discard;
+        }
+    }
+
+    out_color = vec4(1, 1, 1, opacity);
 }
