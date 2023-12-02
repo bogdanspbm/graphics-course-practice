@@ -25,6 +25,7 @@
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include "structures/Particle.h"
 
 
 std::string to_string(std::string_view str)
@@ -124,11 +125,6 @@ GLuint create_program(Shaders ... shaders)
     return result;
 }
 
-struct particle
-{
-    glm::vec3 position;
-};
-
 int main() try
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -179,7 +175,7 @@ int main() try
 
     std::default_random_engine rng;
 
-    std::vector<particle> particles(256);
+    std::vector<Particle> particles(256);
     for (auto & p : particles)
     {
         p.position.x = std::uniform_real_distribution<float>{-1.f, 1.f}(rng);
@@ -195,7 +191,7 @@ int main() try
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(particle), (void*)(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *) offsetof(Particle, position));
 
     const std::string project_root = PROJECT_ROOT;
     const std::string particle_texture_path = project_root + "/particle.png";
@@ -279,7 +275,7 @@ int main() try
         glm::vec3 camera_position = (glm::inverse(view) * glm::vec4(0.f, 0.f, 0.f, 1.f)).xyz();
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, particles.size() * sizeof(particle), particles.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, particles.size() * sizeof(Particle), particles.data(), GL_STATIC_DRAW);
 
         glUseProgram(program);
 

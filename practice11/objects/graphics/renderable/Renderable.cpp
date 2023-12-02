@@ -56,7 +56,9 @@ void Renderable::draw() {
 
     this->getMaterial()->bindMaterial();
 
-    if (!indices.empty()) {
+    if (isParticle()) {
+        glDrawArrays(GL_POINTS, 0, particles.size());
+    } else if (!indices.empty()) {
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     } else {
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
@@ -85,31 +87,54 @@ void Renderable::updateEBO() {
 }
 
 void Renderable::updateVBO() {
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
+    if (isParticle()) {
+        glBufferData(GL_ARRAY_BUFFER, particles.size() * sizeof(Particle), particles.data(), GL_STATIC_DRAW);
 
-    // Attribute locations (you can define these as constants)
-    const GLuint positionLocation = 0;
-    const GLuint normalLocation = 1;
-    const GLuint tangentLocation = 2;
-    const GLuint texcoordLocation = 3;
-    const GLuint colorLocation = 4;
+        const GLuint positionLocation = 0;
+        const GLuint rotationLocation = 1;
+        const GLuint sizeLocation = 2;
 
-    glEnableVertexAttribArray(positionLocation);
-    glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, position));
+        glEnableVertexAttribArray(positionLocation);
+        glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Particle),
+                              (void *) offsetof(Particle, position));
 
-    glEnableVertexAttribArray(normalLocation);
-    glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
+        glEnableVertexAttribArray(rotationLocation);
+        glVertexAttribPointer(rotationLocation, 1, GL_FLOAT, GL_FALSE, sizeof(Particle),
+                              (void *) offsetof(Particle, rotation));
 
-    glEnableVertexAttribArray(tangentLocation);
-    glVertexAttribPointer(tangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, tangent));
+        glEnableVertexAttribArray(sizeLocation);
+        glVertexAttribPointer(sizeLocation, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *) offsetof(Particle, size));
 
 
-    glEnableVertexAttribArray(texcoordLocation);
-    glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void *) offsetof(Vertex, textCoord));
+    } else {
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
 
-    glEnableVertexAttribArray(colorLocation);
-    glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, color));
+        // Attribute locations (you can define these as constants)
+        const GLuint positionLocation = 0;
+        const GLuint normalLocation = 1;
+        const GLuint tangentLocation = 2;
+        const GLuint texcoordLocation = 3;
+        const GLuint colorLocation = 4;
+
+        glEnableVertexAttribArray(positionLocation);
+        glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                              (void *) offsetof(Vertex, position));
+
+        glEnableVertexAttribArray(normalLocation);
+        glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
+
+        glEnableVertexAttribArray(tangentLocation);
+        glVertexAttribPointer(tangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                              (void *) offsetof(Vertex, tangent));
+
+
+        glEnableVertexAttribArray(texcoordLocation);
+        glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                              (void *) offsetof(Vertex, textCoord));
+
+        glEnableVertexAttribArray(colorLocation);
+        glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, color));
+    }
 }
 
 Renderable::Renderable() {
@@ -131,6 +156,10 @@ void Renderable::setPath(std::string path) {
     this->path = path;
 }
 
-std::string Renderable::getName(){
+std::string Renderable::getName() {
     return this->name;
+}
+
+bool Renderable::isParticle() {
+    return true;
 }

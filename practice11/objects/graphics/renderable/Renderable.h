@@ -12,6 +12,7 @@
 #include "structures/Vertex.h"
 #include "objects/graphics/textures/Material.h"
 #include "glm/geometric.hpp"
+#include "structures/Particle.h"
 #include <map>
 
 class Renderable {
@@ -25,6 +26,7 @@ private:
     std::string name = "";
     std::string materialName = "";
 
+    std::vector<Particle> particles;
     std::vector<Vertex> vertices;
     std::vector<std::uint32_t> indices;
 
@@ -182,6 +184,8 @@ virtual void setMaterialName(std::string name);
 virtual void setPath(std::string path);
 
 virtual std::string getName();
+
+virtual bool isParticle() final;
 
 };
 
