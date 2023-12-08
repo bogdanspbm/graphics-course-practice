@@ -25,24 +25,30 @@ inline glm::vec3 positionToNormal(glm::vec3 position) {
 }
 
 inline glm::vec3 calculateForwardVector(glm::vec3 rotation) {
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                               glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 rotationMatrix = glm::mat4(1.f);
+    rotationMatrix = glm::rotate(rotationMatrix, glm::radians(rotation.x), {1.f, 0.f, 0.f});
+    rotationMatrix = glm::rotate(rotationMatrix, glm::radians(rotation.y), {0.f, 1.f, 0.f});
 
-    return glm::normalize(glm::vec3(rotationMatrix[2]));
+    glm::vec3 forwardVector = glm::vec3(rotationMatrix * glm::vec4(0.f, 0.f, -1.f, 0.f));
+    return glm::normalize(forwardVector);
 }
 
 inline glm::vec3 calculateRightVector(const glm::vec3 rotation) {
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                               glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 rotationMatrix = glm::mat4(1.f);
+    rotationMatrix = glm::rotate(rotationMatrix, glm::radians(rotation.x), {1.f, 0.f, 0.f});
+    rotationMatrix = glm::rotate(rotationMatrix, glm::radians(rotation.y), {0.f, 1.f, 0.f});
 
-    return glm::normalize(glm::vec3(rotationMatrix[0]));
+    glm::vec3 rightVector = glm::vec3(rotationMatrix * glm::vec4(1.f, 0.f, 0.f, 0.f));
+    return glm::normalize(rightVector);
 }
 
 inline glm::vec3 calculateUpVector(const glm::vec3 rotation) {
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                               glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 rotationMatrix = glm::mat4(1.f);
+    rotationMatrix = glm::rotate(rotationMatrix, glm::radians(rotation.x), {1.f, 0.f, 0.f});
+    rotationMatrix = glm::rotate(rotationMatrix, glm::radians(rotation.y), {0.f, 1.f, 0.f});
 
-    return glm::normalize(glm::vec3(rotationMatrix[1]));
+    glm::vec3 upVector = glm::vec3(rotationMatrix * glm::vec4(0.f, 1.f, 0.f, 0.f));
+    return glm::normalize(upVector);
 }
 
 

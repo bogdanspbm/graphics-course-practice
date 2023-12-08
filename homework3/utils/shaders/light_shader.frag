@@ -133,19 +133,15 @@ void main()
     float diff = max(dot(normal, lightDirection), 0.0);
     vec3 diffuse =  diff * inputSunColor  * roughness;
 
-    sFactor = 1;
-
-    float lightness = ambientLight.x + max(0.0, dot(normalize(normal), normalize(vec3(1,2,3))));
-
-    vec3 light = ambientLight + (specular + diffuse) * sFactor;
+    float lightness = ambientLight.x + max(0.0, dot(normalize(normal), inputSunDirection)) * sFactor;
 
     vec4 materialColor = texture(texture7, texCoord);
 
     if (enabledTextures[0] == 0){
         materialColor.xyz = inputAlbedo;
     }
-
+    
     vec3 color = materialColor.xyz * lightness;
 
-    outColor = vec4(color, 1);
+    outColor = vec4(vec3(color), 1);
 }

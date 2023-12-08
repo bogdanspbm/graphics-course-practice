@@ -44,8 +44,8 @@ void Camera::setRotation(const glm::vec3 &rotation) {
 
 glm::mat4 Camera::calcViewMatrix() {
     glm::mat4 view(1.f);
-    view = glm::rotate(view, this->rotation.x, {1.f, 0.f, 0.f});
-    view = glm::rotate(view, this->rotation.y, {0.f, 1.f, 0.f});
+    view = glm::rotate(view,  glm::radians(this->rotation.x), {1.f, 0.f, 0.f});
+    view = glm::rotate(view,  glm::radians(this->rotation.y), {0.f, 1.f, 0.f});
     view = glm::translate(view, this->location);
     return view;
 }
@@ -89,27 +89,27 @@ void Camera::bindControl(KeyHandler *keyHandler) {
 
     keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 forwardVector = calculateForwardVector(this->rotation);
-        this->location -= forwardVector * speed;
+        this->location += forwardVector * speed;
     }, SDLK_w);
 
     keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 forwardVector = calculateForwardVector(this->rotation);
-        this->location += forwardVector * speed;
+        this->location -= forwardVector * speed;
     }, SDLK_s);
 
     keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 rightVector = calculateRightVector(this->rotation);
-        this->location += rightVector * speed;
+        this->location -= rightVector * speed;
     }, SDLK_d);
 
     keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 rightVector = calculateRightVector(this->rotation);
-        this->location -= rightVector * speed;
+        this->location += rightVector * speed;
     }, SDLK_a);
 
     keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 upVector = calculateUpVector(this->rotation);
-        this->location += upVector * speed;
+        this->location -= upVector * speed;
     }, SDLK_SPACE);
 
     keyHandler->bindOnPressEvent([this]() -> void {

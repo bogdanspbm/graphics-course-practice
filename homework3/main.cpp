@@ -171,7 +171,7 @@ int main() try {
         if (!paused)
             time += dt;
 
-        Sun::getSun()->setDirection({std::cos(time * 0.5f), 4, std::sin(time * 0.5f)});
+        Sun::getSun()->setDirection({std::cos(time * 0.25f), 4, std::sin(time * 0.25f)});
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
         bunny->draw();
