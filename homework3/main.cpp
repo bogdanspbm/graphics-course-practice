@@ -92,7 +92,7 @@ int main() try {
 
     Ambient::getAmbient()->setColor({0.5, 0.5, 0.5});
     Sun::getSun()->setColor({0.8, 0.72, 0.74});
-    Sun::getSun()->setRotation({0, -45, 0});
+    Sun::getSun()->setDirection({0, 1, 0});
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/sphere.obj";
@@ -108,7 +108,7 @@ int main() try {
 
     std::string rabitPath = project_root + "/bunny.obj";
     auto bunny = new Placeable(rabitPath);
-    bunny->setRotation({0,45,0});
+    bunny->setRotation({0, 45, 0});
     bunny->setPosition({0, 1, 0});
 
     auto sphere = new Placeable(scene_path);
@@ -120,15 +120,16 @@ int main() try {
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_ao.jpg", GLOSS_MAP));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_normal.jpg", NORMAL_MAP));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_roughness.jpg", ROUGH_MAP));
-    sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", REFLECTION_MAP));
+    sphere->getMaterial()->addTexture(
+            Texture::getTexture(project_root + "/textures/environment_map.jpg", REFLECTION_MAP));
 
     auto cubeMap = new Placeable(project_root + "/cube_map.obj");
-    cubeMap->setScale({10,10,10});
+    cubeMap->setScale({10, 10, 10});
     cubeMap->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", DEFAULT));
 
     auto cubeVolume = new CubeVolume();
-    cubeVolume->getPlaceable()->setScale({2,2,2});
-    cubeVolume->getPlaceable()->setPosition({0,1,-1});
+    cubeVolume->getPlaceable()->setScale({2, 2, 2});
+    cubeVolume->getPlaceable()->setPosition({0, 1, -1});
 
     auto texture3D = Texture::getTexture(project_root + "/cloud.data", DEFAULT_3D);
     cubeVolume->getPlaceable()->getMaterial()->addTexture(texture3D);
@@ -170,10 +171,7 @@ int main() try {
         if (!paused)
             time += dt;
 
-
-        auto sunRotation =  Sun::getSun()->getRotation();
-        sunRotation.y += dt * 5;
-        Sun::getSun()->setRotation(sunRotation);
+        Sun::getSun()->setDirection({std::cos(time * 0.5f), 4, std::sin(time * 0.5f)});
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
         bunny->draw();

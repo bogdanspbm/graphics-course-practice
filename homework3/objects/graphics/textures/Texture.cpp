@@ -154,5 +154,5 @@ void Texture::loadTexture3D(const std::filesystem::path &path, TextureType type)
 }
 
 bool Texture::is2D() {
-    return textureType < DEFAULT_3D && textureType != SHADOW_MAP;
+    return textureType < DEFAULT_3D || textureType == SHADOW_MAP;
 }

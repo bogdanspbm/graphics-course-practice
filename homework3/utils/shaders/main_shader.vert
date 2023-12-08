@@ -1,7 +1,7 @@
 #version 330 core
 
 uniform mat4 model;
-uniform mat4 sunView;
+uniform mat4 transform;
 uniform mat4 projection;
 uniform mat4 view;
 uniform float far;
@@ -22,6 +22,6 @@ void main()
     gl_Position = projection * view * model * vec4(in_position, 1.0);
     inputNormal = mat3(model) * in_normal;
     inputTangent = mat3(model) * in_tangent;
-    shadowPosition =  projection *  sunView * model  * vec4(in_position, 1.0);
+    shadowPosition =  transform * model  * vec4(in_position, 1.0);
     texCoord = in_texcoord;
 }

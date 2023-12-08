@@ -57,15 +57,13 @@ bool GLProgram::setUniformFloat(const GLchar *name, float value) {
 }
 
 void GLProgram::setViewMatrix() {
-    float view[16];
-    camera->calcViewMatrix(view);
-    setUniformMatrix4FV("view", view, true);
+    auto view = camera->calcViewMatrix();
+    setUniformMatrix4FV("view", reinterpret_cast<float *>(&view), false);
 }
 
 void GLProgram::setProjectionMatrix() {
-    float projection[16];
-    camera->calcProjectionMatrix(projection);
-    setUniformMatrix4FV("projection", projection, true);
+    auto projection = camera->calcProjectionMatrix();
+    setUniformMatrix4FV("projection", reinterpret_cast<float *>(&projection), false);
 }
 
 GLuint GLProgram::getProgramID() {
@@ -87,9 +85,21 @@ FrameBuffer *GLProgram::getFrameBuffer() {
     return frameBuffer;
 }
 
+
 void GLProgram::setSunViewMatrix() {
-    float view[16];
-    getGLProgram(SHADOW)->getCamera()->calcViewMatrix(view);
-    setUniformMatrix4FV("sunView", view, true);
+    glm::vec3 lightDirection = Sun::getSun()->getDirection();
+    glm::vec3 lightZ = -lightDirection;
+    glm::vec3 lightX = glm::normalize(glm::cross(lightZ, {0.f, 1.f, 0.f}));
+    glm::vec3 lightY = glm::cross(lightX, lightZ);
+    float shadowScale = 0.00055f;
+
+    glm::mat4 transform = glm::mat4(1.f);
+    for (size_t i = 0; i < 3; ++i) {
+        transform[i][0] = shadowScale * lightX[i];
+        transform[i][1] = shadowScale * lightY[i];
+        transform[i][2] = shadowScale * lightZ[i];
+    }
+
+    setUniformMatrix4FV("transform", reinterpret_cast<float *>(&transform), false);
 }
 

@@ -9,12 +9,13 @@
 #include "glm/vec3.hpp"
 #include "enums/GLProgramType.h"
 #include "objects/input/KeyHandler.h"
+#include "glm/fwd.hpp"
 
 class Camera {
 
 private:
 
-    bool DEBUG = true;
+    bool DEBUG = false;
 
     glm::vec3 location = {0, -0.5, -2.5};
     glm::vec3 rotation = {25, 0, 0};
@@ -23,8 +24,8 @@ private:
     int height = 1080;
 
     // Projection Params
-    float near = 1.f;
-    float far = 20.0f;
+    float near = 10.f;
+    float far = 2000.0f;
     float fov = 90;
 
     // Program Type
@@ -47,9 +48,9 @@ public:
 
     void setRotation(const glm::vec3 &rotation);
 
-    void calcViewMatrix(float *matrix);
+    glm::mat4 calcViewMatrix();
 
-    void calcProjectionMatrix(float *matrix);
+    glm::mat4 calcProjectionMatrix();
 
     void bindView();
 

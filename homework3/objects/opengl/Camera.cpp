@@ -11,6 +11,7 @@
 #include "GLProgram.h"
 #include "utils/MathUtils.h"
 #include "LightRender.h"
+#include "glm/ext/matrix_clip_space.hpp"
 
 Camera::Camera(ProgramType type) {
     this->type = type;
@@ -41,50 +42,19 @@ void Camera::setRotation(const glm::vec3 &rotation) {
 }
 
 
-void Camera::calcViewMatrix(float *matrix) {
-    memset(matrix, 0, sizeof(float) * 16);
-
-    glm::vec3 lRotation = getRotation();
-    glm::vec3 lLocation = getLocation();
-
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(lRotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
-                               * glm::rotate(glm::mat4(1.0f), glm::radians(lRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-
-    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f),
-                                                 glm::vec3(-lLocation.x, -lLocation.y, -lLocation.z));
-
-    glm::mat4 viewMatrix = rotationMatrix * translationMatrix;
-
-    glm::mat4 transposedViewMatrix = glm::transpose(viewMatrix);
-
-    memcpy(matrix, &transposedViewMatrix[0][0], sizeof(float) * 16);
+glm::mat4 Camera::calcViewMatrix() {
+    glm::mat4 view(1.f);
+    view = glm::rotate(view, this->rotation.x, {1.f, 0.f, 0.f});
+    view = glm::rotate(view, this->rotation.y, {0.f, 1.f, 0.f});
+    view = glm::translate(view, this->location);
+    return view;
 }
 
-void Camera::calcProjectionMatrix(float matrix[16]) {
-    float right = getNear() * tan(getFov() / 2.0f);
-    float aspectRatio = (float) width / (float) height;
-    float top = right / aspectRatio;
 
-    memset(matrix, 0, sizeof(matrix));
-    matrix[0] = (2.0f * getNear()) / (right * 2.0f);
-    matrix[1] = 0.f;
-    matrix[2] = 0.f;
-    matrix[3] = 0.f;
-
-    matrix[4] = 0.f;
-    matrix[5] = (2.0f * getNear()) / (top * 2.0f);
-    matrix[6] = 0.f;
-    matrix[7] = 0.f;
-
-    matrix[8] = 0.f;
-    matrix[9] = 0.f;
-    matrix[10] = -(getFar() + getNear()) / (getFar() - getNear());
-    matrix[11] = -(2.0f * getFar() * getNear()) / (getFar() - getNear());
-
-    matrix[12] = 0.f;
-    matrix[13] = 0.f;
-    matrix[14] = -1.f;
-    matrix[15] = 0.f;
+glm::mat4 Camera::calcProjectionMatrix() {
+    glm::mat4 projection = glm::mat4(1.f);
+    projection = glm::perspective(glm::pi<float>() / 2.f, (1.f * width) / height, near, far);
+    return projection;
 }
 
 void Camera::bindView() {
@@ -117,34 +87,36 @@ void Camera::bindControl(KeyHandler *keyHandler) {
         }
     });
 
-    keyHandler->bindOnPressedEvent([this,speed]() -> void {
+    keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 forwardVector = calculateForwardVector(this->rotation);
         this->location -= forwardVector * speed;
     }, SDLK_w);
 
-    keyHandler->bindOnPressedEvent([this,speed]() -> void {
+    keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 forwardVector = calculateForwardVector(this->rotation);
         this->location += forwardVector * speed;
     }, SDLK_s);
 
-    keyHandler->bindOnPressedEvent([this,speed]() -> void {
+    keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 rightVector = calculateRightVector(this->rotation);
         this->location += rightVector * speed;
     }, SDLK_d);
 
-    keyHandler->bindOnPressedEvent([this,speed]() -> void {
+    keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 rightVector = calculateRightVector(this->rotation);
         this->location -= rightVector * speed;
     }, SDLK_a);
 
-    keyHandler->bindOnPressedEvent([this,speed]() -> void {
+    keyHandler->bindOnPressedEvent([this, speed]() -> void {
         glm::vec3 upVector = calculateUpVector(this->rotation);
         this->location += upVector * speed;
     }, SDLK_SPACE);
 
     keyHandler->bindOnPressEvent([this]() -> void {
-        std::cout << "Location: " << this->location.x << " " << this->location.y << " " << this->location.z << std::endl;
-        std::cout << "Rotation: " << this->rotation.x << " " << this->rotation.y << " " << this->rotation.z << std::endl;
+        std::cout << "Location: " << this->location.x << " " << this->location.y << " " << this->location.z
+                  << std::endl;
+        std::cout << "Rotation: " << this->rotation.x << " " << this->rotation.y << " " << this->rotation.z
+                  << std::endl;
     }, SDLK_f);
 }
 
