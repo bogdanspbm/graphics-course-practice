@@ -111,7 +111,9 @@ in vec3 position;
 
 void main()
 {
-    out_color = vec4(1.0, 0.5, 0.5, 1.0);
+    vec3 direction = normalize(position - camera_position);
+    vec2 intersect = intersect_bbox(position, direction);
+    out_color = vec4(vec3(intersect.y - intersect.x) / 4, 1.0);
 }
 )";
 
