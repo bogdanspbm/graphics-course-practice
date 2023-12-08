@@ -32,6 +32,7 @@
 #include "objects/graphics/renderable/Placeable.h"
 #include "objects/graphics/renderable/ScreenView.h"
 #include "objects/graphics/volumes/CubeVolume.h"
+#include "utils/ObjectUtils.h"
 
 std::string to_string(std::string_view str) {
     return std::string(str.begin(), str.end());
@@ -95,6 +96,16 @@ int main() try {
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/sphere.obj";
+
+    auto renderList = loadRenderableListFromFile(project_root + "/sponza/sponza.obj");
+    auto materialList = loadMaterialListFromFile(project_root + "/sponza/sponza.mtl");
+    std::vector<Placeable *> objectList;
+
+    for (auto renderable: renderList) {
+        objectList.push_back(new Placeable(renderable));
+    }
+
+
     auto sphere = new Placeable(scene_path);
     sphere->setRotation({150, 0, 0});
     sphere->setScale({0.7, 0.7, 0.7});
@@ -171,20 +182,10 @@ int main() try {
         glCullFace(GL_BACK);
 
 
-         sphere->draw();
-        cubeMap->draw();
-
-        GLProgram::getGLProgram(VOLUMETRIC)->useProgram();
-
-        glEnable(GL_DEPTH_TEST);
-
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_FRONT);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        cubeVolume->draw();
+        GLProgram::getGLProgram(LIGHT)->useProgram();
+        for (int i = 0; i < objectList.size(); i++) {
+            objectList[i]->draw();
+        }
 
         SDL_GL_SwapWindow(window);
     }

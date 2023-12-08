@@ -25,6 +25,9 @@ Renderable::Renderable(const std::filesystem::path &path) {
     generateBuffers();
 }
 
+Renderable::Renderable() {
+}
+
 void Renderable::createVAO() {
     glGenVertexArrays(1, &vao);
     bindVAO();

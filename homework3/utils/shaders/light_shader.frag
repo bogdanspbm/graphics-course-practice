@@ -27,7 +27,7 @@ uniform sampler2D texture5;// SPECULAR
 uniform sampler2D texture6;// BUMP_MAP
 uniform sampler2D texture7;// NORMAL
 uniform sampler2D texture8;// REFLECTION
-uniform sampler2D texture9; //
+uniform sampler2D texture9;//
 
 uniform sampler2D texture31;// SHADOW_MAP
 
@@ -43,6 +43,31 @@ uniform vec3 inputViewPosition;
 
 layout (location = 0) out vec4 outColor;
 
+vec3 getBumpOffsets(vec2 texCoord) {
+
+    vec2 resolution = vec2(textureSize(texture6, 0));
+
+    float pixelDeltaX = 1.0 / resolution.x;
+    float pixelDeltaY = 1.0 / resolution.y;
+
+    vec2 up    = vec2(0.0, pixelDeltaY);
+    vec2 down  = vec2(0.0, -pixelDeltaY);
+    vec2 left  = vec2(-pixelDeltaX, 0.0);
+    vec2 right = vec2(pixelDeltaX, 0.0);
+
+    vec4 rightColor = texture(texture6, texCoord + right);
+    vec4 leftColor  = texture(texture6, texCoord + left);
+    vec4 upColor    = texture(texture6, texCoord + up);
+    vec4 downColor  = texture(texture6, texCoord + down);
+
+    float center = texture(texture6, texCoord).x;
+
+    float deltaX = rightColor.r - leftColor.r;
+    float delyaY = upColor.r - downColor.r;
+
+    return vec3(deltaX,delyaY, 0);
+}
+
 void main()
 {
     vec4 textureColor = texture(texture0, texCoord);
@@ -54,9 +79,14 @@ void main()
     mat3 tbn = mat3(inputTangent, bitangent, inputNormal);
     vec3 normal = inputNormal;
 
-    if(enabledTextures[7] == 1){
+    if (enabledTextures[7] == 1){
         vec3 normilizedMapNormal = texture(texture7, texCoord).xyz * 2.0 - 1.0;
         normal = tbn * normilizedMapNormal;
+    }
+
+    if (enabledTextures[6] == 1) {
+        vec3 normalOffset = getBumpOffsets(texCoord);
+        normal = normal + inputTangent * normalOffset.x + bitangent * normalOffset.y;
     }
 
     vec3 ambientLight = inputAmbientLight;
@@ -64,15 +94,15 @@ void main()
 
     vec3 envAlbedo = vec3(0);
 
-    if(enabledTextures[8] == 1){
+    if (enabledTextures[8] == 1){
         float x = atan(reflectDir.z, reflectDir.x) / PI * 0.5 + 0.5;
         float y = -atan(reflectDir.y, length(reflectDir.xz)) / PI + 0.5;
-        envAlbedo = texture(texture8, vec2(x,y)).xyz;
+        envAlbedo = texture(texture8, vec2(x, y)).xyz;
     }
 
     float finalGlossines = glossiness;
 
-    if(enabledTextures[2] == 1){
+    if (enabledTextures[2] == 1){
         finalGlossines = texture(texture2, texCoord).x;
     }
 
@@ -107,7 +137,7 @@ void main()
 
     vec4 materialColor = texture(texture0, texCoord.xy);
 
-    if(enabledTextures[0] == 0){
+    if (enabledTextures[0] == 0){
         materialColor.xyz = inputAlbedo;
     }
 

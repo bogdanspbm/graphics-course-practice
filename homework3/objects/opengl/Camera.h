@@ -23,8 +23,8 @@ private:
     int height = 1080;
 
     // Projection Params
-    float near = 0.1f;
-    float far = 20.0f;
+    float near = 1.f;
+    float far = 2000.0f;
     float fov = 90;
 
     // Program Type

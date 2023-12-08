@@ -287,7 +287,7 @@ inline std::vector<Renderable *> loadRenderableListFromFile(std::filesystem::pat
                     v.position = positions[index[0]];
 
                     if (index[1] != -1)
-                        v.textCoord = textCoords[index[1]];
+                        v.textCoord = {textCoords[index[1]].x, 1-textCoords[index[1]].y};
                     else
                         v.textCoord = {0.f, 0.f};
 
