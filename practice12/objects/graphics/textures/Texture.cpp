@@ -41,7 +41,7 @@ Texture::Texture(std::filesystem::path const &path, TextureType textureType) {
     this->name = path;
     this->textureType = textureType;
 
-    imageData = stbi_load(path.c_str(), &width, &height, &numChannels, 4);
+    imageData = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
 
     if (imageData == nullptr) {
         throw std::invalid_argument(TAG + ": Can't read texture.");
@@ -51,10 +51,8 @@ Texture::Texture(std::filesystem::path const &path, TextureType textureType) {
 
     glBindTexture(GL_TEXTURE_2D, textureID);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     if (numChannels == 3) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
@@ -63,6 +61,8 @@ Texture::Texture(std::filesystem::path const &path, TextureType textureType) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                      getImageData());
     } else if (numChannels == 1) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexImage2D(GL_TEXTURE_2D,
                      0,
                      GL_RGBA8,
