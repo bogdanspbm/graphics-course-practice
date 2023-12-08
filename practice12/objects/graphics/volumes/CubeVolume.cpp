@@ -50,5 +50,6 @@ Placeable *CubeVolume::getPlaceable() {
 void CubeVolume::draw() {
     GLProgram::getGLProgram()->setUniformVector3F("bBoxMin", boxMin);
     GLProgram::getGLProgram()->setUniformVector3F("bBoxMax", boxMax);
+    GLProgram::getGLProgram()->setUniformFloat("absorption", absorption);
     this->placeable->draw();
 }

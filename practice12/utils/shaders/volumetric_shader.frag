@@ -1,7 +1,14 @@
 #version 330 core
 
-uniform vec3 camera_position;
-uniform vec3 light_direction;
+uniform vec3 inputAlbedo;
+uniform vec3 inputAmbientLight;
+uniform vec3 inputSunColor;
+uniform vec3 inputSunDirection;
+uniform vec3 inputViewDirection;
+uniform vec3 inputViewPosition;
+
+uniform float absorption;
+
 uniform vec3 bBoxMin;
 uniform vec3 bBoxMax;
 
@@ -45,7 +52,10 @@ in vec3 position;
 
 void main()
 {
-    vec3 direction = normalize(position - camera_position);
+    vec3 direction = normalize(position - inputViewPosition);
     vec2 intersect = intersect_bbox(position, direction);
-    out_color = vec4(vec3(intersect.y - intersect.x) / 4, 1.0);
+    float tDelta = intersect.y - intersect.x;
+    float opticalDepth = (tDelta) * absorption;
+    float opacity = 1.0 - exp(-opticalDepth);
+    out_color = vec4(vec3(0.5) / 4, opacity);
 }
