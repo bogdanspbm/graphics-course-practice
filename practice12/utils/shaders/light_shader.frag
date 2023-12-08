@@ -27,7 +27,7 @@ uniform sampler2D texture5;// SPECULAR
 uniform sampler2D texture6;// BUMP_MAP
 uniform sampler2D texture7;// NORMAL
 uniform sampler2D texture8;// REFLECTION
-uniform sampler2D texture9;
+uniform sampler2D texture9; //
 
 uniform sampler2D texture31;// SHADOW_MAP
 

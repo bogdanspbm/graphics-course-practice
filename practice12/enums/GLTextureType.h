@@ -17,6 +17,7 @@ enum TextureType{
     BUMP_MAP,
     NORMAL_MAP,
     REFLECTION_MAP,
+    DEFAULT_3D,
     SHADOW_MAP
 };
 
@@ -40,6 +41,8 @@ static int getTextureUnit(TextureType type){
             return 7 + GL_TEXTURE0;
         case REFLECTION_MAP:
             return 8 + GL_TEXTURE0;
+        case DEFAULT_3D:
+            return 20 + GL_TEXTURE0;
         case SHADOW_MAP:
             return 31 + GL_TEXTURE0;
     }

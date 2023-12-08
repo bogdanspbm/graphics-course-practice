@@ -86,8 +86,8 @@ int main() try {
     auto screenView = new ScreenView(GLProgram::getGLProgram(SHADOW)->getFrameBuffer()->getTexture());
 
     auto keyHandler = new KeyHandler();
-    // GLProgram::getGLProgram(MAIN)->getCamera()->bindControl(keyHandler);
-    //GLProgram::getGLProgram(LIGHT)->getCamera()->bindControl(keyHandler);
+    GLProgram::getGLProgram(LIGHT)->getCamera()->bindControl(keyHandler);
+    GLProgram::getGLProgram(VOLUMETRIC)->getCamera()->bindControl(keyHandler);
 
     Ambient::getAmbient()->setColor({0.5, 0.5, 0.5});
     Sun::getSun()->setColor({0.8, 0.72, 0.74});
@@ -107,12 +107,16 @@ int main() try {
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", REFLECTION_MAP));
 
     auto cubeMap = new Placeable(project_root + "/cube_map.obj");
-    cubeMap->setScale({3,3,3});
+    cubeMap->setScale({10,10,10});
     cubeMap->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", DEFAULT));
 
     auto cubeVolume = new CubeVolume();
-    cubeVolume->getPlaceable()->setScale({0.5,0.5,0.5});
-    cubeVolume->getPlaceable()->setPosition({0,1,0.5});
+    cubeVolume->getPlaceable()->setScale({2,2,2});
+    cubeVolume->getPlaceable()->setPosition({0,1,-1});
+
+    auto texture3D = Texture::getTexture(project_root + "/cloud.data", DEFAULT_3D);
+    cubeVolume->getPlaceable()->getMaterial()->addTexture(texture3D);
+    cubeVolume->getPlaceable();
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -150,7 +154,6 @@ int main() try {
         if (!paused)
             time += dt;
 
-        sphere->addRotation({dt * 5, dt * 5, 0});
 
         // GLProgram::getGLProgram(SHADOW)->useProgram();
         // sphere->draw();
@@ -168,7 +171,7 @@ int main() try {
         glCullFace(GL_BACK);
 
 
-        //sphere->draw();
+         sphere->draw();
         cubeMap->draw();
 
         GLProgram::getGLProgram(VOLUMETRIC)->useProgram();

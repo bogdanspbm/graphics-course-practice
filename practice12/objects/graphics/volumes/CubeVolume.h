@@ -12,7 +12,8 @@ class CubeVolume {
 private:
     glm::vec3 boxMin{-2.f, -1.f, -1.f};
     glm::vec3 boxMax{2.f, 1.f, 1.f};
-    float absorption = 1;
+    glm::vec3 absorption = {1, 1, 1};
+    glm::vec3 scattering = {4, 1, 10};
 
     Placeable *placeable;
 public:

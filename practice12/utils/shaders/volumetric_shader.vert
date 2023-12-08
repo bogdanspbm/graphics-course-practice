@@ -1,8 +1,8 @@
 #version 330 core
 
 uniform mat4 model;
-uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 view;
 
 uniform vec3 bBoxMin;
 uniform vec3 bBoxMax;
@@ -13,6 +13,9 @@ out vec3 position;
 
 void main()
 {
-    position = bBoxMin + in_position * (bBoxMax - bBoxMin);
-    gl_Position = projection * view * model * vec4(position, 1.0);
+    vec3 lPosition = bBoxMin + in_position * (bBoxMax - bBoxMin);
+
+    position = (model * vec4(lPosition, 1.0)).xyz;
+
+    gl_Position = projection * view * vec4(position, 1.0);
 }

@@ -42,9 +42,16 @@ public:
         return texture;
     }
 
+private:
+    void loadTexture2D(std::filesystem::path const &path, TextureType type);
+    void loadTexture3D(std::filesystem::path const &path, TextureType type);
+
+
 public:
     // Getters
     unsigned char *getImageData();
+
+    bool is2D();
 
     GLuint getTextureID();
 
