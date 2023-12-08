@@ -8,7 +8,7 @@
 std::map<std::string, Material *> Material::cachedMaterials;
 
 void Material::bindMaterial() {
-    clearTextures();
+    //clearTextures();
 
     for (int i = 0; i < 32; i++) {
         GLProgram::getGLProgram()->setUniformInt(("enabledTextures[" + std::to_string(i) + "]").c_str(), 0);

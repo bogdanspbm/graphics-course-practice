@@ -92,7 +92,7 @@ int main() try {
 
     Ambient::getAmbient()->setColor({0.5, 0.5, 0.5});
     Sun::getSun()->setColor({0.8, 0.72, 0.74});
-    Sun::getSun()->setRotation({180, -45, 0});
+    Sun::getSun()->setRotation({0, -45, 0});
 
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/sphere.obj";
@@ -105,6 +105,11 @@ int main() try {
         objectList.push_back(new Placeable(renderable));
     }
 
+
+    std::string rabitPath = project_root + "/bunny.obj";
+    auto bunny = new Placeable(rabitPath);
+    bunny->setRotation({0,45,0});
+    bunny->setPosition({0, 1, 0});
 
     auto sphere = new Placeable(scene_path);
     sphere->setRotation({150, 0, 0});
@@ -166,8 +171,15 @@ int main() try {
             time += dt;
 
 
-        // GLProgram::getGLProgram(SHADOW)->useProgram();
-        // sphere->draw();
+        auto sunRotation =  Sun::getSun()->getRotation();
+        sunRotation.y += dt * 5;
+        Sun::getSun()->setRotation(sunRotation);
+
+        GLProgram::getGLProgram(SHADOW)->useProgram();
+        bunny->draw();
+        for (int i = 0; i < objectList.size(); i++) {
+            objectList[i]->draw();
+        }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClearColor(0.8f, 0.8f, 0.9f, 1.f);
@@ -181,11 +193,15 @@ int main() try {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
+        bunny->draw();
 
-        GLProgram::getGLProgram(LIGHT)->useProgram();
         for (int i = 0; i < objectList.size(); i++) {
             objectList[i]->draw();
         }
+
+        glClearColor(0.8f, 0.8f, 1.f, 0.f);
+
+        screenView->draw();
 
         SDL_GL_SwapWindow(window);
     }

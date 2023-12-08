@@ -16,8 +16,8 @@ void Sun::bindLight() {
     GLProgram::getGLProgram()->setUniformVector3F("lightDirection", getDirection());
 
     if (light.useRotation) {
-        GLProgram::getGLProgram()->setUniformVector3F("inputSunDirection", glm::normalize(calculateForwardVector(light.rotation)));
+        GLProgram::getGLProgram()->setUniformVector3F("inputSunDirection", -glm::normalize(calculateForwardVector(light.rotation)));
     } else {
-        GLProgram::getGLProgram()->setUniformVector3F("inputSunDirection", glm::normalize(light.direction));
+        GLProgram::getGLProgram()->setUniformVector3F("inputSunDirection", -glm::normalize(light.direction));
     }
 }
