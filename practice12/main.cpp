@@ -27,8 +27,6 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#include "obj_parser.hpp"
-#include "stb_image.h"
 
 std::string to_string(std::string_view str)
 {
