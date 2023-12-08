@@ -31,6 +31,7 @@
 
 #include "objects/graphics/renderable/Placeable.h"
 #include "objects/graphics/renderable/ScreenView.h"
+#include "objects/graphics/volumes/CubeVolume.h"
 
 std::string to_string(std::string_view str) {
     return std::string(str.begin(), str.end());
@@ -109,6 +110,9 @@ int main() try {
     cubeMap->setScale({3,3,3});
     cubeMap->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", DEFAULT));
 
+    auto cubeVolume = new CubeVolume();
+    cubeVolume->getPlaceable()->setScale({0.5,0.5,0.5});
+    cubeVolume->getPlaceable()->setPosition({0,1,0.5});
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -163,10 +167,21 @@ int main() try {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-        sphere->draw();
+
+        //sphere->draw();
         cubeMap->draw();
 
-        screenView->draw();
+        GLProgram::getGLProgram(VOLUMETRIC)->useProgram();
+
+        glEnable(GL_DEPTH_TEST);
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        cubeVolume->draw();
 
         SDL_GL_SwapWindow(window);
     }
