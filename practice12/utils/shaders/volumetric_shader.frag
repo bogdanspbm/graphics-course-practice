@@ -107,5 +107,5 @@ void main()
 
     //    vec3 color = vec3(48.0/255.0, 213.0/255.0, 200.0/255.0)/2;
     float alpha = 1;
-    out_color = vec4(color, (color.x + color.y + color.z) / 3);
+    out_color = vec4(color,1);
 }
