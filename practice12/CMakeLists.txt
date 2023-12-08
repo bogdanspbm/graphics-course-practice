@@ -60,7 +60,10 @@ add_executable(${TARGET_NAME} main.cpp objects/opengl/GLProgram.cpp
 		objects/opengl/LightRender.h
 		structures/Particle.h
 		objects/graphics/particles/FireParticle.cpp
-		objects/graphics/particles/FireParticle.h)
+		objects/graphics/particles/FireParticle.h
+		objects/graphics/volumes/CubeVolume.cpp
+		objects/graphics/volumes/CubeVolume.h
+)
 target_include_directories(${TARGET_NAME} PUBLIC
 	"${SDL2_INCLUDE_DIRS}"
 	"${GLEW_INCLUDE_DIRS}"

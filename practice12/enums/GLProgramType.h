@@ -11,6 +11,7 @@ enum ProgramType{
     PARTICLES,
     SHADOW,
     VIEW,
+    VOLUMETRIC,
     LIGHT
 };
 

@@ -152,6 +152,9 @@ inline GLuint createFragmentShader(ProgramType type) {
         case MAIN:
             return createShader(GL_FRAGMENT_SHADER,
                                 readShaderFile(projectRoot + "/utils/shaders/main_shader.frag").c_str());
+        case VOLUMETRIC:
+            return createShader(GL_FRAGMENT_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/volumetric_shader.frag").c_str());
         case PARTICLES:
             return createShader(GL_FRAGMENT_SHADER,
                                 readShaderFile(projectRoot + "/utils/shaders/particles_shader.frag").c_str());
@@ -173,6 +176,9 @@ inline GLuint createVertexShader(ProgramType type) {
         case MAIN:
             return createShader(GL_VERTEX_SHADER,
                                 readShaderFile(projectRoot + "/utils/shaders/main_shader.vert").c_str());
+        case VOLUMETRIC:
+            return createShader(GL_VERTEX_SHADER,
+                                readShaderFile(projectRoot + "/utils/shaders/volumetric_shader.vert").c_str());
         case PARTICLES:
             return createShader(GL_VERTEX_SHADER,
                                 readShaderFile(projectRoot + "/utils/shaders/particles_shader.vert").c_str());

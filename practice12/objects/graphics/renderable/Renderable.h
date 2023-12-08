@@ -42,6 +42,8 @@ private:
 
 public:
 
+    Renderable(std::vector<glm::vec3> lVertices, std::vector<std::uint32_t> lIndices);
+
     Renderable(std::vector<Particle> particles);
 
 public:

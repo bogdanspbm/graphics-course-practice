@@ -2,8 +2,8 @@
 
 uniform vec3 camera_position;
 uniform vec3 light_direction;
-uniform vec3 bbox_min;
-uniform vec3 bbox_max;
+uniform vec3 bBoxMin;
+uniform vec3 bBoxMax;
 
 layout (location = 0) out vec4 out_color;
 
@@ -29,8 +29,8 @@ float vmax(vec3 v)
 
 vec2 intersect_bbox(vec3 origin, vec3 direction)
 {
-    vec3 tmin = (bbox_min - origin) / direction;
-    vec3 tmax = (bbox_max - origin) / direction;
+    vec3 tmin = (bBoxMin - origin) / direction;
+    vec3 tmax = (bBoxMax - origin) / direction;
 
     sort(tmin.x, tmax.x);
     sort(tmin.y, tmax.y);

@@ -54,6 +54,7 @@ public:
         new GLProgram(window, MAIN);
         new GLProgram(window, PARTICLES);
         new GLProgram(window, SHADOW);
+        new GLProgram(window, VOLUMETRIC);
         new GLProgram(window, VIEW);
         new GLProgram(window, LIGHT);
     }

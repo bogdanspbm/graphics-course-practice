@@ -90,7 +90,7 @@ void Renderable::updateVBO() {
     if (isParticle()) {
         glBufferData(GL_ARRAY_BUFFER, particles.size() * sizeof(Particle), particles.data(), GL_STATIC_DRAW);
 
-        if(vgoGenerated){
+        if (vgoGenerated) {
             return;
         }
 
@@ -119,7 +119,7 @@ void Renderable::updateVBO() {
     } else {
         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
-        if(vgoGenerated){
+        if (vgoGenerated) {
             return;
         }
 
@@ -153,8 +153,20 @@ void Renderable::updateVBO() {
     }
 }
 
-Renderable::Renderable() {
+Renderable::Renderable(std::vector<glm::vec3> lVertices, std::vector<std::uint32_t> lIndices) {
+    for (int i = 0; i < lVertices.size(); i++) {
+        glm::vec3 position = lVertices[i];
+        auto vertex = Vertex();
+        vertex.position = position;
+        this->vertices.push_back(vertex);
+    }
 
+    for (int i = 0; i < lIndices.size(); i++) {
+        std::uint32_t index = lIndices[i];
+        this->indices.push_back(index);
+    }
+
+    this->generateBuffers();
 }
 
 void Renderable::generateBuffers() {
@@ -177,7 +189,7 @@ std::string Renderable::getName() {
 }
 
 bool Renderable::isParticle() {
-    return true;
+    return particles.size() > 0;
 }
 
 Renderable::Renderable(std::vector<Particle> particles) {
@@ -185,7 +197,7 @@ Renderable::Renderable(std::vector<Particle> particles) {
     generateBuffers();
 }
 
-void Renderable::setParticles(std::vector<Particle> particles){
+void Renderable::setParticles(std::vector<Particle> particles) {
     this->particles = particles;
     bindVBO();
     updateVBO();
