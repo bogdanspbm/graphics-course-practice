@@ -94,6 +94,9 @@ int main() try {
     Sun::getSun()->setColor({0.8, 0.72, 0.74});
     Sun::getSun()->setDirection({0, 1, 0});
 
+    auto fog = new CubeVolume();
+    fog->getPlaceable()->setScale({10, 10, 10});
+
     std::string project_root = PROJECT_ROOT;
     std::string scene_path = project_root + "/sphere.obj";
 
@@ -123,13 +126,9 @@ int main() try {
     sphere->getMaterial()->addTexture(
             Texture::getTexture(project_root + "/textures/environment_map.jpg", REFLECTION_MAP));
 
-    auto cubeMap = new Placeable(project_root + "/cube_map.obj");
-    cubeMap->setScale({10, 10, 10});
-    cubeMap->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", DEFAULT));
 
     auto cubeVolume = new CubeVolume();
     cubeVolume->getPlaceable()->setScale({2, 2, 2});
-    cubeVolume->getPlaceable()->setPosition({0, 1, -1});
 
     auto texture3D = Texture::getTexture(project_root + "/cloud.data", DEFAULT_3D);
     cubeVolume->getPlaceable()->getMaterial()->addTexture(texture3D);
@@ -191,13 +190,24 @@ int main() try {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-        bunny->draw();
-
         for (int i = 0; i < objectList.size(); i++) {
             objectList[i]->draw();
         }
 
+        GLProgram::getGLProgram(VOLUMETRIC)->useProgram();
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        fog->draw();
+
+        //glDisable(GL_BLEND);
+
         glClearColor(0.8f, 0.8f, 1.f, 0.f);
+
 
         screenView->draw();
 

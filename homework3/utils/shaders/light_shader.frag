@@ -140,7 +140,7 @@ void main()
     if (enabledTextures[0] == 0){
         materialColor.xyz = inputAlbedo;
     }
-    
+
     vec3 color = materialColor.xyz * lightness;
 
     outColor = vec4(vec3(color), 1);

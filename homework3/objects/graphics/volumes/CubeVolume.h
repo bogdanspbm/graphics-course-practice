@@ -10,8 +10,8 @@
 
 class CubeVolume {
 private:
-    glm::vec3 boxMin{-2.f, -1.f, -1.f};
-    glm::vec3 boxMax{2.f, 1.f, 1.f};
+    glm::vec3 boxMin{-200.f, -100.f, -100.f};
+    glm::vec3 boxMax{200.f, 100.f, 100.f};
     glm::vec3 absorption = {1, 1, 1};
     glm::vec3 scattering = {4, 1, 10};
 

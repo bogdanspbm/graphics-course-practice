@@ -13,9 +13,6 @@ out vec3 position;
 
 void main()
 {
-    vec3 lPosition = bBoxMin + in_position * (bBoxMax - bBoxMin);
-
-    position = (model * vec4(lPosition, 1.0)).xyz;
-
+    position = bBoxMin + in_position * (bBoxMax - bBoxMin);
     gl_Position = projection * view * vec4(position, 1.0);
 }
