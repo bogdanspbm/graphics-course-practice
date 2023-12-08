@@ -141,7 +141,7 @@ void main()
         materialColor.xyz = inputAlbedo;
     }
 
-    vec3 color = materialColor.xyz * lightness;
+    vec3 color = materialColor.xyz * lightness + envAlbedo / 2;
 
     outColor = vec4(vec3(color), 1);
 }

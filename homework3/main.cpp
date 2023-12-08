@@ -116,23 +116,20 @@ int main() try {
 
     auto sphere = new Placeable(scene_path);
     sphere->setRotation({150, 0, 0});
-    sphere->setScale({0.7, 0.7, 0.7});
+    sphere->setScale({35,35,35});
     sphere->setPosition({0, 1, 0});
 
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_albedo.jpg", DEFAULT));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_ao.jpg", GLOSS_MAP));
-    sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_normal.jpg", NORMAL_MAP));
     sphere->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/brick_roughness.jpg", ROUGH_MAP));
     sphere->getMaterial()->addTexture(
-            Texture::getTexture(project_root + "/textures/environment_map.jpg", REFLECTION_MAP));
+            Texture::getTexture(project_root + "/textures/environment_map_reflection.jpg", REFLECTION_MAP));
 
 
-    auto cubeVolume = new CubeVolume();
-    cubeVolume->getPlaceable()->setScale({2, 2, 2});
-
-    auto texture3D = Texture::getTexture(project_root + "/cloud.data", DEFAULT_3D);
-    cubeVolume->getPlaceable()->getMaterial()->addTexture(texture3D);
-    cubeVolume->getPlaceable();
+    auto cubeMap = new Placeable(project_root + "/cube_map.obj");
+    cubeMap->setScale({2000,2000,2000});
+    cubeMap->setRotation({180,0,0});
+    cubeMap->getMaterial()->addTexture(Texture::getTexture(project_root + "/textures/environment_map.jpg", DEFAULT));
 
     auto last_frame_start = std::chrono::high_resolution_clock::now();
 
@@ -164,6 +161,8 @@ int main() try {
         if (!running)
             break;
 
+
+
         auto now = std::chrono::high_resolution_clock::now();
         float dt = std::chrono::duration_cast<std::chrono::duration<float>>(now - last_frame_start).count();
         last_frame_start = now;
@@ -173,7 +172,7 @@ int main() try {
         Sun::getSun()->setDirection({std::cos(time * 0.25f), 4, std::sin(time * 0.25f)});
 
         GLProgram::getGLProgram(SHADOW)->useProgram();
-        bunny->draw();
+        sphere->draw();
         for (int i = 0; i < objectList.size(); i++) {
             objectList[i]->draw();
         }
@@ -190,19 +189,13 @@ int main() try {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
+        sphere->draw();
+        cubeMap->draw();
+
         for (int i = 0; i < objectList.size(); i++) {
             objectList[i]->draw();
         }
 
-        GLProgram::getGLProgram(VOLUMETRIC)->useProgram();
-
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_FRONT);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        fog->draw();
 
         //glDisable(GL_BLEND);
 
