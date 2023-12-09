@@ -17,6 +17,7 @@ uniform float lightRange;
 uniform float useDisplacementMap;
 
 uniform int enabledTextures[32];
+uniform int useNormal;
 
 uniform sampler2D texture0;// ALBEDO
 uniform sampler2D texture1;// DISPLACEMENT_MAP
@@ -79,12 +80,12 @@ void main()
     mat3 tbn = mat3(inputTangent, bitangent, inputNormal);
     vec3 normal = inputNormal;
 
-    if (enabledTextures[7] == 1){
+    if (enabledTextures[7] == 1 && useNormal == 1){
         vec3 normilizedMapNormal = texture(texture7, texCoord).xyz * 2.0 - 1.0;
         normal = tbn * normilizedMapNormal;
     }
 
-    if (enabledTextures[6] == 1) {
+    if (enabledTextures[6] == 1 && useNormal == 1) {
         vec3 normalOffset = getBumpOffsets(texCoord);
         normal = normal + 2 * inputTangent * normalOffset.x + 2 * bitangent * normalOffset.y;
     }

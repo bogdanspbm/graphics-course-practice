@@ -23,6 +23,8 @@ private:
     int width = 1920;
     int height = 1080;
 
+    int useNormal = 1;
+
     // Projection Params
     float near = 10.f;
     float far = 4000.0f;

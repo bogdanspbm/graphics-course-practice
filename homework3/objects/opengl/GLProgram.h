@@ -22,6 +22,7 @@ private:
     static GLuint currentProgramID;
     static ProgramType currentProgramType;
 
+
     GLuint programID;
     ProgramType type;
 
@@ -81,6 +82,8 @@ private:
     void setProjectionMatrix();
 
 public:
+
+
     // Methods
     void useProgram() {
         GLProgram::currentProgramType = type;

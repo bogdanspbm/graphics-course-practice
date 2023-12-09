@@ -44,8 +44,8 @@ void Camera::setRotation(const glm::vec3 &rotation) {
 
 glm::mat4 Camera::calcViewMatrix() {
     glm::mat4 view(1.f);
-    view = glm::rotate(view,  glm::radians(this->rotation.x), {1.f, 0.f, 0.f});
-    view = glm::rotate(view,  glm::radians(this->rotation.y), {0.f, 1.f, 0.f});
+    view = glm::rotate(view, glm::radians(this->rotation.x), {1.f, 0.f, 0.f});
+    view = glm::rotate(view, glm::radians(this->rotation.y), {0.f, 1.f, 0.f});
     view = glm::translate(view, this->location);
     return view;
 }
@@ -60,6 +60,7 @@ glm::mat4 Camera::calcProjectionMatrix() {
 void Camera::bindView() {
     GLProgram::getGLProgram()->setUniformFloat("far", getFar());
     GLProgram::getGLProgram()->setUniformFloat("near", getNear());
+    GLProgram::getGLProgram()->setUniformInt("useNormal", useNormal);
     GLProgram::getGLProgram()->setUniformVector3F("inputViewDirection", calculateForwardVector(getRotation()));
     GLProgram::getGLProgram()->setUniformVector3F("inputViewPosition", getLocation());
 }
@@ -68,6 +69,14 @@ void Camera::bindView() {
 void Camera::bindControl(KeyHandler *keyHandler) {
 
     float speed = 5;
+
+    keyHandler->bindOnPressEvent([this]() -> void {
+        if (this->useNormal == 1) {
+            this->useNormal = 0;
+        } else {
+            this->useNormal = 1;
+        }
+    }, SDLK_e);
 
     keyHandler->bindOnMouseMotionEvent([this](glm::vec2 position, glm::vec2 offset) -> void {
         this->rotation.x += offset.y;
